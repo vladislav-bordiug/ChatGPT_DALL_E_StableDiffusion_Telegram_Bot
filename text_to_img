@@ -10,8 +10,9 @@ load_dotenv()
 class TextToImg:
 
     def to_image(self, prompt):
-        # Set up our warning to print to the console if the adult content classifier is tripped.
-        # If adult content classifier is not tripped, save generated images.
+        load_dotenv()
+
+        openai.api_key = os.getenv("CHAT_GPT3_API_KEY")
         try:
             response = openai.Image.create(
                 prompt=prompt,
