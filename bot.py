@@ -61,7 +61,7 @@ def _dall_e(text: str):
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
 
-    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")],[KeyboardButton(text="Image generation — Stable Diffusion")]]
+    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — Stable Diffusion")], [KeyboardButton(text="Image generation — DALL·E")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
