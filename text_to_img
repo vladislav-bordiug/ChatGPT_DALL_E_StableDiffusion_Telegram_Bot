@@ -5,8 +5,6 @@ import warnings
 from PIL import Image
 from dotenv import load_dotenv
 
-load_dotenv()
-
 class TextToImg:
 
     def to_image(self, prompt):
