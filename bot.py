@@ -184,9 +184,12 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
     )
 
     question = update.message.text
+    print(question)
 
-    answer = _dall_e(question)
-
+    en_v = _translate(question)
+    print(en_v)
+    
+    answer = _dall_e(en_v)
     context.user_data['answer'] = answer
     
     if answer != None:
