@@ -1,7 +1,3 @@
-import pip
-import openai
-import python-dotenv
-
 import os
 import json
 from dotenv import load_dotenv
