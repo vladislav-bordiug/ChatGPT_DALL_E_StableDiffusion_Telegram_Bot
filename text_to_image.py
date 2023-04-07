@@ -2,8 +2,6 @@ import os
 import io
 import warnings
 from PIL import Image
-import pip
-import stability_sdk
 from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 from dotenv import load_dotenv
