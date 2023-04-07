@@ -175,7 +175,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
 
     return IMAGE_STATE
   
- async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
+async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     """Display the answer to the user."""
 
     button = [[KeyboardButton(text="Back")]]
