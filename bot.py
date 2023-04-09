@@ -10,7 +10,7 @@ from text_to_image import TextToImage
 from text_to_img import TextToImg
 from dotenv import load_dotenv
 load_dotenv()
-db_connection = psycopg2.connect(DATABASE_URL, sslmode="require")
+db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
 db_object = db_connection.cursor()
 
 from telegram import (
