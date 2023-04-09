@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from telegram import (
     ReplyKeyboardMarkup,
     Update,
+    Message,
     KeyboardButton,
 )
 from telegram.ext import (
