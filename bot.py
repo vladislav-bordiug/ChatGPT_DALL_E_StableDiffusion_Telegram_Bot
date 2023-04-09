@@ -9,7 +9,7 @@ from copilot import Copilot
 from text_to_image import TextToImage
 from text_to_img import TextToImg
 from dotenv import load_dotenv
-
+load_dotenv()
 db_connection = psycopg2.connect(DATABASE_URL, sslmode="require")
 db_object = db_connection.cursor()
 
@@ -220,7 +220,6 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     return DALL_E_STATE
   
 if __name__ == '__main__':
-    load_dotenv()
 
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
 
