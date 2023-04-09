@@ -59,7 +59,7 @@ def _dall_e(text: str):
 
     return i
   
-async def start(update: Update, context: ContextTypes):
+async def start(message: Message, update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
     print(1000)
     user_id = message.from_user.id
