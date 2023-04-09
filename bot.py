@@ -61,7 +61,7 @@ def _dall_e(text: str):
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
 
-    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")]]
+    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="Restart")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -212,14 +212,14 @@ if __name__ == '__main__':
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_query_handler),MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),MessageHandler(filters.Regex('^Back$'), start)],
+        entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start),MessageHandler(filters.Regex('^Restart$'), start)],
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
                 MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_query_handler),
                 MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),
                 MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
+                MessageHandler(filters.Regex('^Restart$'), start),
             ],
             QUESTION_STATE: [
                 CommandHandler('start', start),
