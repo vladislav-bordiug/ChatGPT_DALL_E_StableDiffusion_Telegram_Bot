@@ -3,7 +3,6 @@ import deep_translator
 from deep_translator import GoogleTranslator
   
 import os
-
 import psycopg2
 from copilot import Copilot
 from text_to_image import TextToImage
