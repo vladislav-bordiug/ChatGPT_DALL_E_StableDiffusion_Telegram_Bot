@@ -10,6 +10,9 @@ from text_to_image import TextToImage
 from text_to_img import TextToImg
 from dotenv import load_dotenv
 
+db_connection = psycopg2.connect(DATABASE_URL, sslmode="require")
+db_object = db_connection.cursor()
+
 from telegram import (
     ReplyKeyboardMarkup,
     Update,
@@ -61,7 +64,16 @@ def _dall_e(text: str):
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
-
+    user_id = message.from_user.id
+    username = message.from_user.username
+    
+    db_object.execute(f"SELECT id FROM users WHERE id = {user_id}")
+    result = db_object.fetchone()
+    
+    if not result:
+        db_object.execute("INSERT INTO users(id, username, chatgpt, dall_e, stable_diffusion) VALUES (%d, %s, %d, %d, %d)", (user_id, username, 3000,3,3))
+        db_connection.commit()
+        
     button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="Restart")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
