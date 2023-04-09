@@ -221,7 +221,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     return DALL_E_STATE
   
 if __name__ == '__main__':
-
+    load_dotenv()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
 
     conv_handler = ConversationHandler(
