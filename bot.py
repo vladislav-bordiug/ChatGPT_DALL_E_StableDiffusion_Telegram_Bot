@@ -146,7 +146,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
-    result = int(db_object.fetchone())
+    result = int(db_object.fetchone()[0])
     
     if result > 0:
         question = update.message.text
@@ -191,7 +191,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
     
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = {user_id}")
-    result = int(db_object.fetchone())
+    result = int(db_object.fetchone()[0])
     
     if result > 0:
         question = update.message.text
@@ -235,7 +235,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT dall_e FROM users WHERE user_id = {user_id}")
-    result = int(db_object.fetchone())
+    result = int(db_object.fetchone()[0])
     
     if result > 0:
         question = update.message.text
