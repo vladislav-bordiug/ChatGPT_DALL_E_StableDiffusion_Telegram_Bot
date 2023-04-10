@@ -147,7 +147,6 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
     result = int(db_object.fetchone()[0])
-    print(result)
     
     if result > 0:
         question = update.message.text
@@ -163,10 +162,10 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
             )
             result -= len(question) + len(answer)
             if result > 0:
-                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE id = {user_id}")
+                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE user_id = {user_id}")
                 db_connection.commit()
             else:
-                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE id = {user_id}")
+                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE user_id = {user_id}")
                 db_connection.commit()
         else:
             await update.message.reply_text(
@@ -216,7 +215,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
                 )
         else:
             result -= 1
-            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE id = {user_id}")
+            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = {user_id}")
             db_connection.commit()
     else:
         await update.message.reply_text(
@@ -253,7 +252,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
                   caption=question, 
                   )
             result -= 1
-            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE id = {user_id}")
+            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE user_id = {user_id}")
             db_connection.commit()
         else:
             await update.message.reply_text(
