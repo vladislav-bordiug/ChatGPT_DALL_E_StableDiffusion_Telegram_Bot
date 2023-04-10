@@ -69,7 +69,7 @@ async def start(update: Update, context: ContextTypes):
     result = db_object.fetchone()
     
     if not result:
-        db_object.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%d, %s, %d, %d, %d)", (user_id, username, 3000,3,3))
+        db_object.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id, username, 3000,3,3))
         db_connection.commit()
         
     button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="Restart")]]
