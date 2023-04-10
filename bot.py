@@ -142,23 +142,41 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-
-    question = update.message.text
-
-    answer = _generate_copilot(question)
-
-    context.user_data['answer'] = answer
     
-    if answer != None:
-      await update.message.reply_text(
-        answer, 
-        reply_markup=reply_markup,
-      )
+    user_id = update.message.from_user.id
+    db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+    
+    if result > 0:
+        question = update.message.text
+
+        answer = _generate_copilot(question)
+
+        context.user_data['answer'] = answer
+
+        if answer != None:
+            await update.message.reply_text(
+                answer, 
+                reply_markup=reply_markup,
+            )
+            result -= len(question) + len(answer)
+            if result > 0:
+                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE id = {user_id}")
+                db_connection.commit()
+            else:
+                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE id = {user_id}")
+                db_connection.commit()
+        else:
+            await update.message.reply_text(
+                "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+                reply_markup=reply_markup,
+            )
+        
     else:
-      await update.message.reply_text(
-        "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
-        reply_markup=reply_markup,
-        )
+        await update.message.reply_text(
+            "Your have 0 ChatGPT tokens. You need to buy them to use ChatGPT.", 
+            reply_markup=reply_markup,
+            )
 
     return QUESTION_STATE
 
@@ -169,29 +187,40 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-
-    question = update.message.text
-    print(question)
-
-    en_v = _translate(question)
-    print(en_v)
-
-    path = _to_image(en_v)
-    context.user_data['image_path'] = _to_image
-
-    try:
-      await update.message.reply_photo(
-          photo=open(path, 'rb'), 
-          reply_markup=reply_markup, 
-          caption=question, 
-          )
     
-      os.remove(path)
-    except:
-      await update.message.reply_text(
-        "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
-        reply_markup=reply_markup,
-        )
+    user_id = update.message.from_user.id
+    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+    
+    if result > 0:
+        question = update.message.text
+
+        en_v = _translate(question)
+
+        path = _to_image(en_v)
+        context.user_data['image_path'] = _to_image
+
+        try:
+            await update.message.reply_photo(
+                photo=open(path, 'rb'), 
+                reply_markup=reply_markup, 
+                caption=question, 
+                )
+            os.remove(path)
+        except:
+            await update.message.reply_text(
+                "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+                reply_markup=reply_markup,
+                )
+        else:
+            result -= 1
+            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE id = {user_id}")
+            db_connection.commit()
+    else:
+        await update.message.reply_text(
+            "Your have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.", 
+            reply_markup=reply_markup,
+            )
 
     return IMAGE_STATE
   
@@ -202,27 +231,38 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-
-    question = update.message.text
-    print(question)
-
-    en_v = _translate(question)
-    print(en_v)
     
-    answer = _dall_e(en_v)
-    context.user_data['answer'] = answer
+    user_id = update.message.from_user.id
+    db_object.execute(f"SELECT dall_e FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
     
-    if answer != None:
-      await update.message.reply_photo(
-            photo=answer, 
-            reply_markup=reply_markup, 
-            caption=question, 
-            )
+    if result > 0:
+        question = update.message.text
+
+        en_v = _translate(question)
+
+        answer = _dall_e(en_v)
+        context.user_data['answer'] = answer
+
+        if answer != None:
+            await update.message.reply_photo(
+                  photo=answer, 
+                  reply_markup=reply_markup, 
+                  caption=question, 
+                  )
+            result -= 1
+            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE id = {user_id}")
+            db_connection.commit()
+        else:
+            await update.message.reply_text(
+              "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+              reply_markup=reply_markup,
+              )
     else:
-      await update.message.reply_text(
-        "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
-        reply_markup=reply_markup,
-        )
+        await update.message.reply_text(
+            "Your have 0 DALL·E image generations. You need to buy them to use DALL·E.", 
+            reply_markup=reply_markup,
+            )
 
     return DALL_E_STATE
   
