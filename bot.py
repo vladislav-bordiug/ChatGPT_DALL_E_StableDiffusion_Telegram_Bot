@@ -147,6 +147,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
     result = int(db_object.fetchone()[0])
+    print(result)
     
     if result > 0:
         question = update.message.text
