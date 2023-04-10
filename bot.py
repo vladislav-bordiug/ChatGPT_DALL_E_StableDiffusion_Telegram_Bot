@@ -148,11 +148,17 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     answer = _generate_copilot(question)
 
     context.user_data['answer'] = answer
-
-    await update.message.reply_text(
+    
+    if answer != None:
+      await update.message.reply_text(
         answer, 
         reply_markup=reply_markup,
-    )
+      )
+    else:
+      await update.message.reply_text(
+        "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+        reply_markup=reply_markup,
+        )
 
     return QUESTION_STATE
 
