@@ -357,9 +357,9 @@ if __name__ == '__main__':
             PURCHASE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
-                MessageHandler(filters.Regex('^ChatGPT tokens$'), currencies("chatgpt")),
-                MessageHandler(filters.Regex('^DALL·E image generations$'), currencies("dall_e")),
-                MessageHandler(filters.Regex('^Stable Diffusion image generations$'), currencies("stable_diffusion")),
+                MessageHandler(filters.Regex('^ChatGPT tokens$'), currencies(Update,ContextTypes,"chatgpt")),
+                MessageHandler(filters.Regex('^DALL·E image generations$'), currencies(Update,ContextTypes,"dall_e")),
+                MessageHandler(filters.Regex('^Stable Diffusion image generations$'), currencies(Update,ContextTypes,"stable_diffusion")),
             ],
         },
         fallbacks=[],
