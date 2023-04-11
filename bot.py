@@ -315,7 +315,6 @@ async def purchase_chatgpt(update: Update, context: ContextTypes):
         "Choose currency: 👇",
         reply_markup=keyboards,
         )
-
     return PURCHASE_STATE
   
 if __name__ == '__main__':
