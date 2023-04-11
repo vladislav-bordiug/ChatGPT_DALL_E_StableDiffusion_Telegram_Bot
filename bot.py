@@ -298,7 +298,7 @@ async def purchase(update: Update, context: ContextTypes):
 
     return PURCHASE_STATE
 
-async def purchase_chatgpt(update: Update, context: ContextTypes):
+async def currencies(update: Update, context: ContextTypes, text):
     keyboard = ReplyKeyboardMarkup(
          [
             [KeyboardButton(text="USDT"),
@@ -357,9 +357,9 @@ if __name__ == '__main__':
             PURCHASE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
-                MessageHandler(filters.Regex('^ChatGPT tokens$'), purchase_chatgpt),
-                MessageHandler(filters.Regex('^DALL·E image generations$'), purchase),
-                MessageHandler(filters.Regex('^Stable Diffusion image generations$'), purchase),
+                MessageHandler(filters.Regex('^ChatGPT tokens$'), currencies("chatgpt")),
+                MessageHandler(filters.Regex('^DALL·E image generations$'), currencies("dall_e")),
+                MessageHandler(filters.Regex('^Stable Diffusion image generations$'), currencies("stable_diffusion")),
             ],
         },
         fallbacks=[],
