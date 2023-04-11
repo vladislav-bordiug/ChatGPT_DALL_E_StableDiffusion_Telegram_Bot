@@ -1,3 +1,4 @@
+import os
 from aiocryptopay import AioCryptoPay, Networks
 from dotenv import load_dotenv
 load_dotenv()
