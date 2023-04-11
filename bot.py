@@ -8,6 +8,7 @@ from copilot import Copilot
 from text_to_image import TextToImage
 from text_to_img import TextToImg
 from dotenv import load_dotenv
+import cryptopay
 
 from telegram import (
     ReplyKeyboardMarkup,
