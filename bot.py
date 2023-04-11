@@ -67,7 +67,7 @@ async def start(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account")],[KeyboardButton(text="Restart")]]
+    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -81,7 +81,7 @@ async def start(update: Update, context: ContextTypes):
         )
     else:
         await update.message.reply_text(
-            "Choose an option: 👇🏻 \n If the other buttons do not work, press the button 'Restart'",
+            "Choose an option: 👇🏻 \n If the other buttons do not work, enter /start command",
             reply_markup=reply_markup,
         )
 
@@ -297,7 +297,6 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),
                 MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
                 MessageHandler(filters.Regex('^My account$'), display_info),
-                MessageHandler(filters.Regex('^Restart$'), start),
                 MessageHandler(filters.Regex('^Back$'), start),
             ],
             QUESTION_STATE: [
