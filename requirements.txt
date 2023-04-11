@@ -44,3 +44,4 @@ typing_extensions==4.4.0
 uritemplate==4.1.1
 urllib3==1.26.13
 psycopg2==2.9.6
+aiocryptopay==0.2.6
