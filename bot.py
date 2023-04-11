@@ -92,7 +92,7 @@ async def pre_query_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
-    reply_markup = ReplyKeyboardMarkup(
+    reply_markup = InlineKeyboardMarkup(
         button, resize_keyboard=True
     )
 
