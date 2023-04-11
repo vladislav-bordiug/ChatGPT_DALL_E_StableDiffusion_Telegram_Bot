@@ -308,7 +308,7 @@ async def purchase_chatgpt(update: Update, context: ContextTypes):
     )
     buttons = [[InlineKeyboardButton(text="USDT")],[InlineKeyboardButton(text="TON")],[InlineKeyboardButton(text="BTC")],[InlineKeyboardButton(text="Back")]]
     keyboard = InlineKeyboardMarkup(
-        buttons, *, api_kwargs=None
+        buttons
     )
     keyboards = [reply_markup,keyboard]
     await update.message.reply_text(
