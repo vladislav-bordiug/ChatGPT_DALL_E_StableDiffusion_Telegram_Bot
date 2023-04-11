@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 from cryptopay import Payment
 
 from telegram import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
     ReplyKeyboardMarkup,
     Update,
     Message,
