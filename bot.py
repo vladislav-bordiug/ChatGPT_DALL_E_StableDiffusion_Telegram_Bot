@@ -296,6 +296,17 @@ async def purchase(update: Update, context: ContextTypes):
         )
 
     return PURCHASE_STATE
+
+async def purchase_chatgpt(update: Update, context: ContextTypes):
+    keyboard = InlineKeyboardMarkup()
+    buttons = [InlineKeyboardButton(text="USDT"),InlineKeyboardButton(text="TON"),InlineKeyboardButton(text="BTC"),InlineKeyboardButton(text="Back")]
+    keyboard.add(buttons)
+    await update.message.reply_text(
+        "Choose currency: 👇",
+        reply_markup=keyboard,
+        )
+
+    return PURCHASE_STATE
   
 if __name__ == '__main__':
     load_dotenv()
@@ -337,7 +348,7 @@ if __name__ == '__main__':
             PURCHASE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
-                MessageHandler(filters.Regex('^ChatGPT tokens$'), purchase),
+                MessageHandler(filters.Regex('^ChatGPT tokens$'), purchase_chatgpt),
                 MessageHandler(filters.Regex('^DALL·E image generations$'), purchase),
                 MessageHandler(filters.Regex('^Stable Diffusion image generations$'), purchase),
             ],
