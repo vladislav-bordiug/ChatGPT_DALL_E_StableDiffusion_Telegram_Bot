@@ -301,13 +301,13 @@ async def purchase(update: Update, context: ContextTypes):
 async def purchase_chatgpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="USDT"),
-            InlineKeyboardButton(text="TON")],
-            [InlineKeyboardButton(text="BTC"),
-            InlineKeyboardButton(text="ETH")],
-            [InlineKeyboardButton(text="BNB"),
-            InlineKeyboardButton(text="BUSD")],
-            [InlineKeyboardButton(text="Back")]
+            [InlineKeyboardButton(text="USDT",callback_data="USDT"),
+            InlineKeyboardButton(text="TON",callback_data="TON")],
+            [InlineKeyboardButton(text="BTC",callback_data="BTC"),
+            InlineKeyboardButton(text="ETH",callback_data="ETH")],
+            [InlineKeyboardButton(text="BNB",callback_data="BNB"),
+            InlineKeyboardButton(text="BUSD",callback_data="BUSD")],
+            [InlineKeyboardButton(text="Back",callback_data="Back")]
          ]
     )
     await update.message.reply_text(
