@@ -315,6 +315,7 @@ async def currencies(update: Update, context: ContextTypes):
         "Choose currency: 👇",
         reply_markup=keyboard,
         )
+    product = update.message.text
     return PURCHASE_STATE
   
 if __name__ == '__main__':
