@@ -64,7 +64,6 @@ async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    print(user_id,username)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
