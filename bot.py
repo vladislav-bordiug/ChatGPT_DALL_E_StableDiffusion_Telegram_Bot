@@ -306,7 +306,8 @@ async def purchase_chatgpt(update: Update, context: ContextTypes):
             [KeyboardButton(text="BTC"),
             KeyboardButton(text="ETH")],
             [KeyboardButton(text="BNB"),
-            KeyboardButton(text="BUSD"]
+            KeyboardButton(text="BUSD")],
+            [KeyboardButton(text="Back")]
          ],
          resize_keyboard=True
     )
