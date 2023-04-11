@@ -3,7 +3,7 @@ load_dotenv()
 crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
 
 class Payment:
-    def payment(self):
+    async def payment(self):
         invoice = await crypto.create_invoice(asset='TON', amount=1.5)
         print(invoice.pay_url)
 
