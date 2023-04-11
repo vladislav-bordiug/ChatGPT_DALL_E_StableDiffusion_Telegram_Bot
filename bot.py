@@ -298,7 +298,7 @@ async def purchase(update: Update, context: ContextTypes):
     return PURCHASE_STATE
 
 async def purchase_chatgpt(update: Update, context: ContextTypes):
-    keyboard = InlineKeyboardMarkup(InlineKeyboardButton(text="USDT"),InlineKeyboardButton(text="TON"),InlineKeyboardButton(text="BTC"),InlineKeyboardButton(text="Back"))
+    keyboard = InlineKeyboardMarkup.setKeyboard(InlineKeyboardButton(text="USDT"),InlineKeyboardButton(text="TON"),InlineKeyboardButton(text="BTC"),InlineKeyboardButton(text="Back"))
     await update.message.reply_text(
         "Choose currency: 👇",
         reply_markup=keyboard,
