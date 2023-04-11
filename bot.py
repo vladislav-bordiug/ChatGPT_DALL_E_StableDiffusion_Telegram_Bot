@@ -307,7 +307,7 @@ async def purchase_chatgpt(update: Update, context: ContextTypes):
             InlineKeyboardButton(text="ETH",callback_data="ETH")],
             [InlineKeyboardButton(text="BNB",callback_data="BNB"),
             InlineKeyboardButton(text="BUSD",callback_data="BUSD")],
-            [InlineKeyboardButton(text="Back",callback_data="Back")]
+            [KeyboardButton(text="Back")]
          ]
     )
     await update.message.reply_text(
