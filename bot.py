@@ -8,7 +8,7 @@ from copilot import Copilot
 from text_to_image import TextToImage
 from text_to_img import TextToImg
 from dotenv import load_dotenv
-import cryptopay
+from cryptopay import Payment
 
 from telegram import (
     ReplyKeyboardMarkup,
@@ -62,6 +62,7 @@ def _dall_e(text: str):
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
+    payment()
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
