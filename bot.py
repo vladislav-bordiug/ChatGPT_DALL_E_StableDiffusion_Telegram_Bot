@@ -298,6 +298,7 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
                 MessageHandler(filters.Regex('^My account$'), display_info),
                 MessageHandler(filters.Regex('^Restart$'), start),
+                MessageHandler(filters.Regex('^Back$'), start),
             ],
             QUESTION_STATE: [
                 CommandHandler('start', start),
