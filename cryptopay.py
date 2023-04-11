@@ -11,4 +11,4 @@ class Payment:
         print(invoice.pay_url)
 
         invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
-        print(invoices.status)
+        print("dsdfsfds",invoices.status)
