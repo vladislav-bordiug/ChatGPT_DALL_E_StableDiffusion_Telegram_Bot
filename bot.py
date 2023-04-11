@@ -27,7 +27,7 @@ from telegram.ext import (
 
 (ENTRY_STATE, 
 QUESTION_STATE,
-IMAGE_STATE, DALL_E_STATE) = range(4)
+IMAGE_STATE, DALL_E_STATE, INFO_STATE, PURCHASE_STATE) = range(6)
 
 def _generate_copilot(prompt: str):
     """Gets answer from copilot"""
@@ -67,7 +67,7 @@ async def start(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account")]]
+    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account | Buy")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -271,7 +271,7 @@ async def display_info(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="Back")]]
+    button = [[KeyboardButton(text="Buy tokens and generations")],[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -280,7 +280,20 @@ async def display_info(update: Update, context: ContextTypes):
         reply_markup=reply_markup,
         )
 
-    return ENTRY_STATE
+    return INFO_STATE
+
+async def purchase(update: Update, context: ContextTypes):
+        
+    button = [[KeyboardButton(text="ChatGPT tokens")],[KeyboardButton(text="DALL·E image generations")],[KeyboardButton(text="Stable Diffusion image generations")],[KeyboardButton(text="Back")]]
+    reply_markup = ReplyKeyboardMarkup(
+        button, resize_keyboard=True
+    )
+    await update.message.reply_text(
+        "Choose product: 👇",
+        reply_markup=reply_markup,
+        )
+
+    return PURCHASE_STATE
   
 if __name__ == '__main__':
     load_dotenv()
@@ -296,7 +309,7 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_query_handler),
                 MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),
                 MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
-                MessageHandler(filters.Regex('^My account$'), display_info),
+                MessageHandler(filters.Regex('^My account | Buy$'), display_info),
                 MessageHandler(filters.Regex('^Back$'), start),
             ],
             QUESTION_STATE: [
@@ -313,6 +326,18 @@ if __name__ == '__main__':
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
                 MessageHandler(filters.TEXT, pre_dall_e_answer_handler),
+            ],
+            INFO_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^Buy tokens and generations$'), purchase),
+            ],
+            PURCHASE_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^ChatGPT tokens$'), purchase),
+                MessageHandler(filters.Regex('^DALL·E image generations$'), purchase),
+                MessageHandler(filters.Regex('^Stable Diffusion image generations$'), purchase),
             ],
         },
         fallbacks=[],
