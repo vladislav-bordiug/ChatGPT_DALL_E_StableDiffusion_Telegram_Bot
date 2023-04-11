@@ -67,7 +67,7 @@ async def start(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="Restart")]]
+    button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account"][KeyboardButton(text="Restart")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -81,7 +81,7 @@ async def start(update: Update, context: ContextTypes):
         )
     else:
         await update.message.reply_text(
-            "Choose an option: 👇🏻",
+            "Choose an option: 👇🏻 \n If the other buttons do not work, press the button 'Restart'",
             reply_markup=reply_markup,
         )
 
@@ -265,6 +265,22 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
             )
 
     return DALL_E_STATE
+ 
+async def display_info(update: Update, context: ContextTypes):
+    user_id = update.message.from_user.id
+    db_object.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+        
+    button = [[KeyboardButton(text="Back")]]
+    reply_markup = ReplyKeyboardMarkup(
+        button, resize_keyboard=True
+    )
+    await update.message.reply_text(
+        f"You have: {result[2]} ChatGPT tokens, {result[3]} DALL·E image generations, {result[4]} Stable Diffusion image generations",
+        reply_markup=reply_markup,
+        )
+
+    return ENTRY_STATE
   
 if __name__ == '__main__':
     load_dotenv()
@@ -280,6 +296,7 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_query_handler),
                 MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),
                 MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
+                MessageHandler(filters.Regex('^My account$'), display_info),
                 MessageHandler(filters.Regex('^Restart$'), start),
             ],
             QUESTION_STATE: [
