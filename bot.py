@@ -76,7 +76,7 @@ async def start(update: Update, context: ContextTypes):
         db_object.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id, username, 3000,3,3))
         db_connection.commit()
         await update.message.reply_text(
-            "You have free 3000 ChatGPT tokens, 3 DALL·E Image Generations and 3 Stable Diffusion Image generations\n Choose an option: 👇🏻",
+            "You have free 3000 ChatGPT tokens, 3 DALL·E Image Generations and 3 Stable Diffusion Image generations\n Choose an option: 👇 \n If the other buttons do not work, enter /start command🏻",
             reply_markup=reply_markup,
         )
     else:
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start),MessageHandler(filters.Regex('^Restart$'), start)],
+        entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start)],
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
