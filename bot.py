@@ -318,6 +318,7 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
+    print(product)
     await buy(product)
     return PURCHASE_STATE
   
@@ -328,6 +329,7 @@ async def buy(product: str):
             InlineKeyboardButton(text="Check",callback_data="Check"+product)],
          ]
     )
+    print(1000)
     await update.message.reply_text(
         "Choose currency: 👇",
         reply_markup=keyboard,
