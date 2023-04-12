@@ -332,7 +332,6 @@ async def buy(product: str):
         reply_markup=keyboard,
         )
 
-@application.callback_query_handler(func=lambda call: True)
 async def callback_inline(call):
     if call.message:
         if call.data == 'BuyChatGPT tokens':
