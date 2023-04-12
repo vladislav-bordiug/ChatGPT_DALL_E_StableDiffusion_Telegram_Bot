@@ -317,7 +317,7 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    buy(product)
+    await buy(product)
     return PURCHASE_STATE
   
 async def buy(product: str):
