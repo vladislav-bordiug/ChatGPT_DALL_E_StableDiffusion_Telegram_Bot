@@ -344,6 +344,7 @@ def callback_inline(call):
           invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
           print(invoices.status)
           bot.send_message(call.message.chat.id, 'Check')
+          return
     
 if __name__ == '__main__':
     load_dotenv()
