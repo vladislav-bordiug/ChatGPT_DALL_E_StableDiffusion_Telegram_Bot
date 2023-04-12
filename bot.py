@@ -336,7 +336,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
@@ -368,7 +368,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
@@ -400,7 +400,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
