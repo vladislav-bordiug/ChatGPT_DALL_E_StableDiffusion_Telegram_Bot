@@ -326,7 +326,16 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice = await crypto.create_invoice(asset=currency, amount=5)
+    price = 5
+    if currency == "USDT":
+        price = 5
+    elif currency == "TON":
+        price = 2.57
+    elif currency == "BTC":
+        price = 0.000033
+    elif currency == "ETH":
+        price = 0.00052
+    invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
@@ -349,7 +358,16 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice = await crypto.create_invoice(asset=currency, amount=5)
+    price = 5
+    if currency == "USDT":
+        price = 5
+    elif currency == "TON":
+        price = 2.57
+    elif currency == "BTC":
+        price = 0.000033
+    elif currency == "ETH":
+        price = 0.00052
+    invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
@@ -372,7 +390,16 @@ async def buy_dall_e(update: Update, context: ContextTypes):
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice = await crypto.create_invoice(asset=currency, amount=5)
+    price = 5
+    if currency == "USDT":
+        price = 5
+    elif currency == "TON":
+        price = 2.57
+    elif currency == "BTC":
+        price = 0.000033
+    elif currency == "ETH":
+        price = 0.00052
+    invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
