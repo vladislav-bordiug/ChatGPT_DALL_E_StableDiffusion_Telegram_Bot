@@ -318,7 +318,6 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    print(product)
     if product == "ChatGPT tokens":
         return PURCHASE_CHATGPT_STATE
     elif product == "DALL·E image generations":
@@ -326,7 +325,7 @@ async def currencies(update: Update, context: ContextTypes):
     else:
         return PURCHASE_STABLE_STATE
   
-async def buy(update: Update, product: str):
+async def buy(update: Update, context: ContextTypes, product: str):
     user_id = update.message.from_user.id
     invoice = await crypto.create_invoice(asset='TON', amount=1.5)
     db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
