@@ -333,7 +333,7 @@ async def buy(product: str):
         )
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
+async def callback_inline(call):
     if call.message:
         if call.data == 'BuyChatGPT tokens':
             invoice = await crypto.create_invoice(asset='TON', amount=1.5)
