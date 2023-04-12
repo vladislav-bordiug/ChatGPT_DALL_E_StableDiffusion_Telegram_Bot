@@ -328,7 +328,7 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice = await crypto.create_invoice(asset=currency, amount=0.1)
+    invoice = await crypto.create_invoice(asset=currency, amount=1)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
