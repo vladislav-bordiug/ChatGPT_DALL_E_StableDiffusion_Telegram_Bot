@@ -27,6 +27,7 @@ from telegram.ext import (
     ConversationHandler,
     MessageHandler,
     filters,
+    CallbackQueryHandler,
     )
 
 (ENTRY_STATE, 
@@ -332,19 +333,17 @@ async def buy(product: str):
         reply_markup=keyboard,
         )
 
-async def callback_inline(call):
-    if call.message:
-        if call.data == 'BuyChatGPT tokens':
-            invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-            bot.send_message(call.message.chat.id, 'Click the button and pay')
-            return invoice.invoice_id
-        if call.data == 'CheckChatGPT tokens':
-            invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
-            print(invoices.status)
-            bot.send_message(call.message.chat.id, 'Check')
-            return
-    else:
-        pass
+async keyboard_callback(update, context):
+    message = update.callback_query
+    if message == 'BuyChatGPT tokens':
+        invoice = await crypto.create_invoice(asset='TON', amount=1.5)
+        bot.send_message(call.message.chat.id, 'Click the button and pay')
+        return invoice.invoice_id
+    if message == 'CheckChatGPT tokens':
+        invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
+        print(invoices.status)
+        bot.send_message(call.message.chat.id, 'Check')
+        return
     
 if __name__ == '__main__':
     load_dotenv()
@@ -396,4 +395,5 @@ if __name__ == '__main__':
     )
     
     application.add_handler(conv_handler)
+    application.add_handler(CallbackQueryHandler(keyboard_callback))
     application.run_polling()
