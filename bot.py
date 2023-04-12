@@ -404,7 +404,7 @@ if __name__ == '__main__':
             PURCHASE_CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt,
+                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt),
                 MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
                 MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
                 MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
