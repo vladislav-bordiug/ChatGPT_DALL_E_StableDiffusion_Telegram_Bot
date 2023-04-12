@@ -340,12 +340,12 @@ async def keyboard_callback(update, context):
     message = query.data
     if message == 'BuyChatGPT tokens':
         invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-        application.update.send_message(call.message.chat.id, 'Click the button and pay')
+        #application.update.send_message(call.message.chat.id, 'Click the button and pay')
         query.answer(invoice.invoice_id)
     if message == 'CheckChatGPT tokens':
         invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
         print(invoices.status)
-        application.update.send_message(call.message.chat.id, 'Check')
+        #application.update.send_message(call.message.chat.id, 'Check')
         query.answer(1)
     
 if __name__ == '__main__':
