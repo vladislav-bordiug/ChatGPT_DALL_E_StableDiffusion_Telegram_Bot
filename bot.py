@@ -334,7 +334,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="Check"+product)],
+            InlineKeyboardButton(text="Check",callback_data="CheckChatGPT tokens")],
         ]
     )
     await update.message.reply_text(
