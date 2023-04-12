@@ -333,16 +333,16 @@ async def buy(product: str):
         reply_markup=keyboard,
         )
 
-async keyboard_callback(update, context):
+async def keyboard_callback(update, context):
     message = update.callback_query
     if message == 'BuyChatGPT tokens':
         invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-        bot.send_message(call.message.chat.id, 'Click the button and pay')
+        application.update.send_message(call.message.chat.id, 'Click the button and pay')
         return invoice.invoice_id
     if message == 'CheckChatGPT tokens':
         invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
         print(invoices.status)
-        bot.send_message(call.message.chat.id, 'Check')
+        application.update.send_message(call.message.chat.id, 'Check')
         return
     
 if __name__ == '__main__':
