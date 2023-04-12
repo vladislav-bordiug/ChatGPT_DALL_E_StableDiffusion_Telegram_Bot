@@ -289,7 +289,7 @@ async def display_info(update: Update, context: ContextTypes):
 
 async def purchase(update: Update, context: ContextTypes):
         
-    button = [[KeyboardButton(text="ChatGPT tokens")],[KeyboardButton(text="DALL·E image generations")],[KeyboardButton(text="Stable Diffusion image generations")],[KeyboardButton(text="Back")]]
+    button = [[KeyboardButton(text="1 million ChatGPT tokens - 5 USDT")],[KeyboardButton(text="100 DALL·E image generations - 5 USDT")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USDT")],[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -307,8 +307,6 @@ async def currencies(update: Update, context: ContextTypes):
             KeyboardButton(text="TON")],
             [KeyboardButton(text="BTC"),
             KeyboardButton(text="ETH")],
-            [KeyboardButton(text="BNB"),
-            KeyboardButton(text="BUSD")],
             [KeyboardButton(text="Back")]
          ],
          resize_keyboard=True
@@ -318,17 +316,17 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    if product == "ChatGPT tokens":
+    if product == "1 million ChatGPT tokens - 5 USDT":
         return PURCHASE_CHATGPT_STATE
-    elif product == "DALL·E image generations":
+    elif product == "100 DALL·E image generations - 5 USDT":
         return PURCHASE_DALL_E_STATE
-    else:
+    elif product == "100 Stable Diffusion image generations - 5 USDT":
         return PURCHASE_STABLE_STATE
   
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice = await crypto.create_invoice(asset=currency, amount=1)
+    invoice = await crypto.create_invoice(asset=currency, amount=5)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
     if not result:
@@ -347,7 +345,53 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
-
+    
+async def buy_dall_e(update: Update, context: ContextTypes):
+    user_id = update.message.from_user.id
+    currency = update.message.text
+    invoice = await crypto.create_invoice(asset=currency, amount=5)
+    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+    if not result:
+        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
+        db_connection.commit()
+    else:
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_connection.commit()
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
+            InlineKeyboardButton(text="Check",callback_data="dall_e "+str(user_id))],
+        ]
+    )
+    await update.message.reply_text(
+        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        reply_markup=keyboard,
+        )
+    
+async def buy_stable(update: Update, context: ContextTypes):
+    user_id = update.message.from_user.id
+    currency = update.message.text
+    invoice = await crypto.create_invoice(asset=currency, amount=5)
+    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+    if not result:
+        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
+        db_connection.commit()
+    else:
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_connection.commit()
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
+            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(user_id))],
+        ]
+    )
+    await update.message.reply_text(
+        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        reply_markup=keyboard,
+        )
+    
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     message = query.data.split()[0]
@@ -359,9 +403,38 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         if invoices.status == "active":
             await query.answer("We have not received payment yet")
         elif invoices.status == "paid":
-            db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 5000 WHERE user_id = {user_id}")
+            db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = {user_id}")
+            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
             db_connection.commit()
             await query.answer("Successful payment, tokens were added to your account")
+        elif invoices.status == "expired":
+            await query.answer("Payment timed out, create a new payment")
+    if message == 'dall_e':
+        user_id = query.data.split()[1]
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        result = int(db_object.fetchone()[0])
+        invoices = await crypto.get_invoices(invoice_ids=result)
+        if invoices.status == "active":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "paid":
+            db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = {user_id}")
+            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, image generations were added to your account")
+        elif invoices.status == "expired":
+            await query.answer("Payment timed out, create a new payment")
+    if message == 'stable_diffusion':
+        user_id = query.data.split()[1]
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        result = int(db_object.fetchone()[0])
+        invoices = await crypto.get_invoices(invoice_ids=result)
+        if invoices.status == "active":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "paid":
+            db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = {user_id}")
+            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, image generations were added to your account")
         elif invoices.status == "expired":
             await query.answer("Payment timed out, create a new payment")
             
@@ -371,7 +444,7 @@ if __name__ == '__main__':
     db_object = db_connection.cursor()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
     crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
-    
+    print(crypto.getExchangeRates())
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start)],
         states={
@@ -417,28 +490,22 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
                 MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
                 MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
             ],
             PURCHASE_DALL_E_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^USDT$'), buy_dall_e),
+                MessageHandler(filters.Regex('^TON$'), buy_dall_e),
+                MessageHandler(filters.Regex('^BTC$'), buy_dall_e),
+                MessageHandler(filters.Regex('^ETH$'), buy_dall_e),
             ],
             PURCHASE_STABLE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^USDT$'), buy_stable),
+                MessageHandler(filters.Regex('^TON$'), buy_stable),
+                MessageHandler(filters.Regex('^BTC$'), buy_stable),
+                MessageHandler(filters.Regex('^ETH$'), buy_stable),
             ],
         },
         fallbacks=[],
