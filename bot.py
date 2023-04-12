@@ -340,19 +340,19 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data=["CheckChatGPT tokens",user_id])],
+            InlineKeyboardButton(text="Check",callback_data="CheckChatGPT tokens "+user_id)],
         ]
     )
     await update.message.reply_text(
-        "If you want to pay click the button 'Buy' and follow the instructions in Crypto Bot \n After payment you should tap 'Check' button to check payment \n If you don't want to buy this product tap the 'Back' button: 👇",
+        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to buy this product tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
 
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
-    message = query.data
-    if message[0] == 'CheckChatGPT tokens':
-        user_id = message[1]
+    message = query.data.split()[0]
+    if message == 'CheckChatGPT tokens':
+        user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
         invoices = await crypto.get_invoices(invoice_ids=result)
