@@ -334,7 +334,7 @@ async def buy(product: str):
         )
 
 async def keyboard_callback(update, context):
-    message = update.callback_query
+    message = update.callback_query.data
     if message == 'BuyChatGPT tokens':
         invoice = await crypto.create_invoice(asset='TON', amount=1.5)
         application.update.send_message(call.message.chat.id, 'Click the button and pay')
