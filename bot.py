@@ -334,17 +334,18 @@ async def buy(product: str):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-  try:
     if call.message:
-      if call.data == 'BuyChatGPT tokens':
-          invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-          bot.send_message(call.message.chat.id, 'Click the button and pay')
-          return invoice.invoice_id
-      if call.data == 'CheckChatGPT tokens':
-          invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
-          print(invoices.status)
-          bot.send_message(call.message.chat.id, 'Check')
-          return
+        if call.data == 'BuyChatGPT tokens':
+            invoice = await crypto.create_invoice(asset='TON', amount=1.5)
+            bot.send_message(call.message.chat.id, 'Click the button and pay')
+            return invoice.invoice_id
+        if call.data == 'CheckChatGPT tokens':
+            invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
+            print(invoices.status)
+            bot.send_message(call.message.chat.id, 'Check')
+            return
+     else:
+        pass
     
 if __name__ == '__main__':
     load_dotenv()
