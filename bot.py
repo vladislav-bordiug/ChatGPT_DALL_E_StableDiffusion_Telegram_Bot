@@ -324,7 +324,7 @@ async def buy(product: str):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",callback_data="Buy"+product),
-            KeyboardButton(text="Check",callback_data="Check"+product)],
+            InlineKeyboardButton(text="Check",callback_data="Check"+product)],
          ]
     )
     await update.message.reply_text(
@@ -338,9 +338,12 @@ def callback_inline(call):
     if call.message:
       if call.data == 'BuyChatGPT tokens':
           invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-          bot.send_message(call.message.chat.id, 'Вот и отличненько ')
+          bot.send_message(call.message.chat.id, 'Click the button and pay')
+          return invoice.invoice_id
       if call.data == 'CheckChatGPT tokens':
-          bot.send_message(call.message.chat.id, 'Бывает ')
+          invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
+          print(invoices.status)
+          bot.send_message(call.message.chat.id, 'Check')
     
 if __name__ == '__main__':
     load_dotenv()
