@@ -317,31 +317,30 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
+    buy(product)
     return PURCHASE_STATE
   
-async def purchase_gpt(update: Update, context: ContextTypes):
+async def buy(product: str):
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            KeyboardButton(text="Check")],
+            [InlineKeyboardButton(text="Buy",callback_data="Buy"+product),
+            KeyboardButton(text="Check",callback_data="Check"+product)],
          ]
     )
-    
-async def purchase_dalle(update: Update, context: ContextTypes):
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            KeyboardButton(text="Check")],
-         ]
-    )
-    
-async def purchase_stable(update: Update, context: ContextTypes):
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            KeyboardButton(text="Check")],
-         ]
-    )
+    await update.message.reply_text(
+        "Choose currency: 👇",
+        reply_markup=keyboard,
+        )
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+  try:
+    if call.message:
+      if call.data == 'BuyChatGPT tokens':
+          invoice = await crypto.create_invoice(asset='TON', amount=1.5)
+          bot.send_message(call.message.chat.id, 'Вот и отличненько ')
+      if call.data == 'CheckChatGPT tokens':
+          bot.send_message(call.message.chat.id, 'Бывает ')
     
 if __name__ == '__main__':
     load_dotenv()
