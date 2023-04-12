@@ -329,8 +329,14 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     invoice = await crypto.create_invoice(asset=currency, amount=1.5)
-    db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
-    db_connection.commit()
+    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
+    result = db_object.fetchone()
+    if not result:
+        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
+        db_connection.commit()
+    else:
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
