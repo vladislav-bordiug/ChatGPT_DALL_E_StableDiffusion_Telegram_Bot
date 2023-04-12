@@ -69,7 +69,7 @@ async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {str(user_id)}")
+    db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
     button = [[KeyboardButton(text="Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="Image generation — DALL·E")], [KeyboardButton(text="Image generation — Stable Diffusion")],[KeyboardButton(text="My account | Buy")]]
@@ -148,7 +148,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
     result = int(db_object.fetchone()[0])
     
@@ -193,7 +193,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = {user_id}")
     result = int(db_object.fetchone()[0])
     
@@ -237,7 +237,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     db_object.execute(f"SELECT dall_e FROM users WHERE user_id = {user_id}")
     result = int(db_object.fetchone()[0])
     
@@ -272,7 +272,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     return DALL_E_STATE
  
 async def display_info(update: Update, context: ContextTypes):
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     db_object.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
     result = db_object.fetchone()
         
@@ -324,7 +324,7 @@ async def currencies(update: Update, context: ContextTypes):
         return PURCHASE_STABLE_STATE
   
 async def buy_chatgpt(update: Update, context: ContextTypes):
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     currency = update.message.text
     invoice = await crypto.create_invoice(asset=currency, amount=5)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
@@ -347,7 +347,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         )
     
 async def buy_dall_e(update: Update, context: ContextTypes):
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     currency = update.message.text
     invoice = await crypto.create_invoice(asset=currency, amount=5)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
@@ -370,7 +370,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
         )
     
 async def buy_stable(update: Update, context: ContextTypes):
-    user_id = str(update.message.from_user.id)
+    user_id = update.message.from_user.id
     currency = update.message.text
     invoice = await crypto.create_invoice(asset=currency, amount=5)
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = {user_id}")
