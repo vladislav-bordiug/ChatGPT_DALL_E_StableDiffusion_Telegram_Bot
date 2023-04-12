@@ -428,6 +428,9 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         result = int(db_object.fetchone()[0])
         try:
             invoices = await crypto.get_invoices(invoice_ids=result)
+        except:
+            await query.answer("Payment timed out, create a new payment")
+        else:
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
@@ -437,14 +440,15 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("Successful payment, tokens were added to your account")
             elif invoices.status == "expired":
                 await query.answer("Payment timed out, create a new payment")
-        except:
-            await query.answer("Payment timed out, create a new payment")
     if message == 'dall_e':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
         try:
             invoices = await crypto.get_invoices(invoice_ids=result)
+        except:
+            await query.answer("Payment timed out, create a new payment")
+        else:
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
@@ -454,14 +458,15 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
                 await query.answer("Payment timed out, create a new payment")
-        except:
-            await query.answer("Payment timed out, create a new payment")
     if message == 'stable_diffusion':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
         try:
             invoices = await crypto.get_invoices(invoice_ids=result)
+        except:
+            await query.answer("Payment timed out, create a new payment")
+        else:
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
@@ -471,8 +476,6 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
                 await query.answer("Payment timed out, create a new payment")
-        except:
-            await query.answer("Payment timed out, create a new payment")
             
 if __name__ == '__main__':
     load_dotenv()
