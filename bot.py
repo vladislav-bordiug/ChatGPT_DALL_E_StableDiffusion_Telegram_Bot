@@ -325,9 +325,10 @@ async def currencies(update: Update, context: ContextTypes):
     else:
         return PURCHASE_STABLE_STATE
   
-async def buy(update: Update, context: ContextTypes, product: str):
+async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
-    invoice = await crypto.create_invoice(asset='TON', amount=1.5)
+    currency = update.message.text
+    invoice = await crypto.create_invoice(asset=currency, amount=1.5)
     db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
@@ -337,7 +338,7 @@ async def buy(update: Update, context: ContextTypes, product: str):
         ]
     )
     await update.message.reply_text(
-        "Choose currency: 👇",
+        "If you want to pay click the button 'Buy' and follow the instructions in Crypto Bot \n After payment you should tap 'Check' button to check payment \n If you don't want to buy this product tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
 
@@ -403,32 +404,32 @@ if __name__ == '__main__':
             PURCHASE_CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy(Update, ContextTypes, "ChatGPT tokens")),
-                MessageHandler(filters.Regex('^TON$'), buy),
-                MessageHandler(filters.Regex('^BTC$'), buy),
-                MessageHandler(filters.Regex('^ETH$'), buy),
-                MessageHandler(filters.Regex('^BNB$'), buy),
-                MessageHandler(filters.Regex('^BUSD$'), buy),
+                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt,
+                MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
             ],
             PURCHASE_DALL_E_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy),
-                MessageHandler(filters.Regex('^TON$'), buy),
-                MessageHandler(filters.Regex('^BTC$'), buy),
-                MessageHandler(filters.Regex('^ETH$'), buy),
-                MessageHandler(filters.Regex('^BNB$'), buy),
-                MessageHandler(filters.Regex('^BUSD$'), buy),
+                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
             ],
             PURCHASE_STABLE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy),
-                MessageHandler(filters.Regex('^TON$'), buy),
-                MessageHandler(filters.Regex('^BTC$'), buy),
-                MessageHandler(filters.Regex('^ETH$'), buy),
-                MessageHandler(filters.Regex('^BNB$'), buy),
-                MessageHandler(filters.Regex('^BUSD$'), buy),
+                MessageHandler(filters.Regex('^USDT$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^TON$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BTC$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^ETH$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BNB$'), buy_chatgpt),
+                MessageHandler(filters.Regex('^BUSD$'), buy_chatgpt),
             ],
         },
         fallbacks=[],
