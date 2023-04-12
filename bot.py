@@ -318,6 +318,30 @@ async def currencies(update: Update, context: ContextTypes):
     product = update.message.text
     return PURCHASE_STATE
   
+async def purchase_gpt(update: Update, context: ContextTypes):
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
+            InlineKeyboardButton(text="Check",callback_data="TON")],
+         ]
+    )
+    
+async def purchase_dalle(update: Update, context: ContextTypes):
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
+            InlineKeyboardButton(text="Check",callback_data="TON")],
+         ]
+    )
+    
+async def purchase_stable(update: Update, context: ContextTypes):
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton(text="Buy",callback_data="USDT"),
+            InlineKeyboardButton(text="Check",callback_data="TON")],
+         ]
+    )
+    
 if __name__ == '__main__':
     load_dotenv()
     db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
