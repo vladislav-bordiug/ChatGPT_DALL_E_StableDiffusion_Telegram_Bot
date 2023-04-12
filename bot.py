@@ -403,7 +403,7 @@ if __name__ == '__main__':
             PURCHASE_CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), purchase),
-                MessageHandler(filters.Regex('^USDT$'), buy),
+                MessageHandler(filters.Regex('^USDT$'), buy(Update, ContextTypes, "ChatGPT tokens")),
                 MessageHandler(filters.Regex('^TON$'), buy),
                 MessageHandler(filters.Regex('^BTC$'), buy),
                 MessageHandler(filters.Regex('^ETH$'), buy),
