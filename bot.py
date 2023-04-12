@@ -32,7 +32,7 @@ from telegram.ext import (
 
 (ENTRY_STATE, 
 QUESTION_STATE,
-IMAGE_STATE, DALL_E_STATE, INFO_STATE, PURCHASE_STATE) = range(6)
+IMAGE_STATE, DALL_E_STATE, INFO_STATE, PURCHASE_STATE, PURCHASE_CHATGPT_STATE, PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
 
 def _generate_copilot(prompt: str):
     """Gets answer from copilot"""
@@ -318,35 +318,41 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    print(product)
-    await buy(update,product)
-    return PURCHASE_STATE
+    if product == "ChatGPT tokens":
+        return PURCHASE_CHATGPT_STATE
+    elif product == "DALL·E image generations":
+        return PURCHASE_DALL_E_STATE
+    else:
+        return PURCHASE_STABLE_STATE
   
 async def buy(update: Update, product: str):
+    user_id = update.message.from_user.id
+    invoice = await crypto.create_invoice(asset='TON', amount=1.5)
+    db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s, %s, %s, %s)", (user_id, invoice.invoice_id))
+    db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="Buy",callback_data="Buy"+product),
+            [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
             InlineKeyboardButton(text="Check",callback_data="Check"+product)],
-         ]
+        ]
     )
-    print(1000)
     await update.message.reply_text(
         "Choose currency: 👇",
         reply_markup=keyboard,
         )
 
-async def keyboard_callback(update, context):
+async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     message = query.data
-    if message == 'BuyChatGPT tokens':
-        invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-        #application.update.send_message(call.message.chat.id, 'Click the button and pay')
-        await query.answer(invoice.invoice_id)
     if message == 'CheckChatGPT tokens':
-        invoices = await crypto.get_invoices(invoice_ids=invoice.invoice_id)
-        print(invoices.status)
-        #application.update.send_message(call.message.chat.id, 'Check')
-        query.answer(1)
+        user_id = update.message.from_user.id
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        result = int(db_object.fetchone()[0])
+        invoices = await crypto.get_invoices(invoice_ids=result)
+        if invoices.status == "":
+            query.answer(1)
+        else:
+            query.answer(1)
     
 if __name__ == '__main__':
     load_dotenv()
@@ -392,6 +398,36 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^ChatGPT tokens$'), currencies),
                 MessageHandler(filters.Regex('^DALL·E image generations$'), currencies),
                 MessageHandler(filters.Regex('^Stable Diffusion image generations$'), currencies),
+            ],
+            PURCHASE_CHATGPT_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^USDT$'), buy),
+                MessageHandler(filters.Regex('^TON$'), buy),
+                MessageHandler(filters.Regex('^BTC$'), buy),
+                MessageHandler(filters.Regex('^ETH$'), buy),
+                MessageHandler(filters.Regex('^BNB$'), buy),
+                MessageHandler(filters.Regex('^BUSD$'), buy),
+            ],
+            PURCHASE_DALL_E_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^USDT$'), currencies),
+                MessageHandler(filters.Regex('^TON$'), currencies),
+                MessageHandler(filters.Regex('^BTC$'), currencies),
+                MessageHandler(filters.Regex('^ETH$'), currencies),
+                MessageHandler(filters.Regex('^BNB$'), currencies),
+                MessageHandler(filters.Regex('^BUSD$'), currencies),
+            ],
+            PURCHASE_STABLE_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^USDT$'), currencies),
+                MessageHandler(filters.Regex('^TON$'), currencies),
+                MessageHandler(filters.Regex('^BTC$'), currencies),
+                MessageHandler(filters.Regex('^ETH$'), currencies),
+                MessageHandler(filters.Regex('^BNB$'), currencies),
+                MessageHandler(filters.Regex('^BUSD$'), currencies),
             ],
         },
         fallbacks=[],
