@@ -329,7 +329,7 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy(update: Update, product: str):
     user_id = update.message.from_user.id
     invoice = await crypto.create_invoice(asset='TON', amount=1.5)
-    db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s, %s, %s, %s)", (user_id, invoice.invoice_id))
+    db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
