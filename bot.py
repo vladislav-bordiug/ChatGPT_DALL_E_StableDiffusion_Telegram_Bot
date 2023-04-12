@@ -319,10 +319,10 @@ async def currencies(update: Update, context: ContextTypes):
         )
     product = update.message.text
     print(product)
-    await buy(product)
+    await buy(update,product)
     return PURCHASE_STATE
   
-async def buy(product: str):
+async def buy(update: Update, product: str):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",callback_data="Buy"+product),
