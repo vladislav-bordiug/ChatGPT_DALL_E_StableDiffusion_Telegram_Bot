@@ -355,13 +355,12 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
-        print(result)
         invoices = await crypto.get_invoices(invoice_ids=result)
         print(invoices.status)
         if invoices.status == "":
-            query.answer(1)
+            await query.answer(1)
         else:
-            query.answer(result)
+            await query.answer(result)
     
 if __name__ == '__main__':
     load_dotenv()
