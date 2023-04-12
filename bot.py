@@ -322,7 +322,7 @@ async def purchase_gpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            InlineKeyboardButton(text="Check",callback_data="TON")],
+            KeyboardButton(text="Check")],
          ]
     )
     
@@ -330,7 +330,7 @@ async def purchase_dalle(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            InlineKeyboardButton(text="Check",callback_data="TON")],
+            KeyboardButton(text="Check")],
          ]
     )
     
@@ -338,7 +338,7 @@ async def purchase_stable(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",callback_data="USDT"),
-            InlineKeyboardButton(text="Check",callback_data="TON")],
+            KeyboardButton(text="Check")],
          ]
     )
     
