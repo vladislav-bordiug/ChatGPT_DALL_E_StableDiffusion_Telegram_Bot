@@ -344,7 +344,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to buy this product tap the 'Back' button: 👇",
+        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
 
@@ -356,12 +356,15 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
         invoices = await crypto.get_invoices(invoice_ids=result)
-        print(invoices.status)
-        if invoices.status == "":
-            await query.answer(1)
-        else:
-            await query.answer(result)
-    
+        if invoices.status == "InvoiceStatus.ACTIVE":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "InvoiceStatus.PAID":
+            db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 5000 WHERE user_id = {user_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, tokens were added to your account")
+        elif invoices.status == "InvoiceStatus.EXPIRED":
+            await query.answer("Payment timed out, create a new payment")
+            
 if __name__ == '__main__':
     load_dotenv()
     db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
