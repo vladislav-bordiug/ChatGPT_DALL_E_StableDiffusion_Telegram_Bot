@@ -356,13 +356,13 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
         invoices = await crypto.get_invoices(invoice_ids=result)
-        if invoices.status == "InvoiceStatus.ACTIVE":
+        if invoices.status == "active":
             await query.answer("We have not received payment yet")
-        elif invoices.status == "InvoiceStatus.PAID":
+        elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 5000 WHERE user_id = {user_id}")
             db_connection.commit()
             await query.answer("Successful payment, tokens were added to your account")
-        elif invoices.status == "InvoiceStatus.EXPIRED":
+        elif invoices.status == "expired":
             await query.answer("Payment timed out, create a new payment")
             
 if __name__ == '__main__':
