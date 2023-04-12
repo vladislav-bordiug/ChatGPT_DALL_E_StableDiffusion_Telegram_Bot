@@ -318,6 +318,7 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
+    print(product)
     if product == "ChatGPT tokens":
         return PURCHASE_CHATGPT_STATE
     elif product == "DALL·E image generations":
@@ -395,14 +396,14 @@ if __name__ == '__main__':
             ],
             PURCHASE_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^Back$'), display_info),
                 MessageHandler(filters.Regex('^ChatGPT tokens$'), currencies),
                 MessageHandler(filters.Regex('^DALL·E image generations$'), currencies),
                 MessageHandler(filters.Regex('^Stable Diffusion image generations$'), currencies),
             ],
             PURCHASE_CHATGPT_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^Back$'), purchase),
                 MessageHandler(filters.Regex('^USDT$'), buy),
                 MessageHandler(filters.Regex('^TON$'), buy),
                 MessageHandler(filters.Regex('^BTC$'), buy),
@@ -412,7 +413,7 @@ if __name__ == '__main__':
             ],
             PURCHASE_DALL_E_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^Back$'), purchase),
                 MessageHandler(filters.Regex('^USDT$'), buy),
                 MessageHandler(filters.Regex('^TON$'), buy),
                 MessageHandler(filters.Regex('^BTC$'), buy),
@@ -422,7 +423,7 @@ if __name__ == '__main__':
             ],
             PURCHASE_STABLE_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.Regex('^Back$'), purchase),
                 MessageHandler(filters.Regex('^USDT$'), buy),
                 MessageHandler(filters.Regex('^TON$'), buy),
                 MessageHandler(filters.Regex('^BTC$'), buy),
