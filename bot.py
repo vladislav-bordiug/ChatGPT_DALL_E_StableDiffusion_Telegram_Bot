@@ -409,7 +409,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         pur_id = int(purchase_id)
         invoices = await crypto.get_invoices(invoice_ids=pur_id)
         if invoices.status == "active":
-            await query.answer("We have not received payment yet", pur_id)
+            await query.answer("We have not received payment yet" + str(pur_id))
         elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 100000 WHERE user_id = '{user_id}'")
             db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
