@@ -424,8 +424,9 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     if message == 'ChatGPT_tokens':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        result = int(db_object.fetchone()[0])
-        if result:
+        res = int(db_object.fetchone()[0])
+        if res:
+            result = int(res[0])
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
@@ -442,8 +443,9 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     if message == 'dall_e':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        result = int(db_object.fetchone()[0])
-        if result:
+        res = int(db_object.fetchone()[0])
+        if res:
+            result = int(res[0])
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
@@ -459,8 +461,9 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     if message == 'stable_diffusion':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        result = int(db_object.fetchone()[0])
-        if result:
+        res = int(db_object.fetchone()[0])
+        if res:
+            result = int(res[0])
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
