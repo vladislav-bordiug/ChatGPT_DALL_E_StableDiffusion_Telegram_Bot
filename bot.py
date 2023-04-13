@@ -327,7 +327,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     if currency == "USDT":
-        price = 0.97
+        price = 5
     elif currency == "TON":
         price = 2.52
     elif currency == "BTC":
