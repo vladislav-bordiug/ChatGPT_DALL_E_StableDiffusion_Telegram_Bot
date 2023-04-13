@@ -281,7 +281,7 @@ async def display_info(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        f"You have: \n {result[2]} ChatGPT tokens \n {result[3]} DALL·E image generations \n {result[4]} Stable Diffusion image generations",
+        f"You have: \n {result[2]} ChatGPT tokens \n {result[3]} DALL·E image generations \n {result[4]} Stable Diffusion image generations \т You can buy more with crypto",
         reply_markup=reply_markup,
         )
 
