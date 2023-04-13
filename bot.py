@@ -326,15 +326,14 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    price = 5
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.57
+        price = 2.52
     elif currency == "BTC":
-        price = 0.000033
+        price = 0.000166
     elif currency == "ETH":
-        price = 0.00052
+        price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
@@ -362,11 +361,11 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.57
+        price = 2.52
     elif currency == "BTC":
-        price = 0.000033
+        price = 0.000166
     elif currency == "ETH":
-        price = 0.00052
+        price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
@@ -394,11 +393,11 @@ async def buy_stable(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.57
+        price = 2.52
     elif currency == "BTC":
-        price = 0.000033
+        price = 0.000166
     elif currency == "ETH":
-        price = 0.00052
+        price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
