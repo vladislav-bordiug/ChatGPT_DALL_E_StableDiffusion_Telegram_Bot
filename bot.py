@@ -426,44 +426,54 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
-        invoices = await crypto.get_invoices(invoice_ids=result)
-        if invoices.status == "active":
-            await query.answer("We have not received payment yet")
-        elif invoices.status == "paid":
-            db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = {user_id}")
-            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
-            db_connection.commit()
-            await query.answer("Successful payment, tokens were added to your account")
-        elif invoices.status == "expired":
-            await query.answer("Payment timed out, create a new payment")
+        if result:
+            invoices = await crypto.get_invoices(invoice_ids=result)
+            if invoices.status == "active":
+                await query.answer("We have not received payment yet")
+            elif invoices.status == "paid":
+                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_connection.commit()
+                await query.answer("Successful payment, tokens were added to your account")
+            elif invoices.status == "expired":
+                await query.answer("Payment has expired, create a new payment")
+        else:
+          await query.answer("Payment has expired, create a new payment")
+        
     if message == 'dall_e':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
-        invoices = await crypto.get_invoices(invoice_ids=result)
-        if invoices.status == "active":
-            await query.answer("We have not received payment yet")
-        elif invoices.status == "paid":
-            db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = {user_id}")
-            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
-            db_connection.commit()
-            await query.answer("Successful payment, image generations were added to your account")
-        elif invoices.status == "expired":
-            await query.answer("Payment timed out, create a new payment")
+        if result:
+            invoices = await crypto.get_invoices(invoice_ids=result)
+            if invoices.status == "active":
+                await query.answer("We have not received payment yet")
+            elif invoices.status == "paid":
+                db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_connection.commit()
+                await query.answer("Successful payment, image generations were added to your account")
+            elif invoices.status == "expired":
+                await query.answer("Payment has expired, create a new payment")
+        else:
+            await query.answer("Payment has expired, create a new payment")
     if message == 'stable_diffusion':
         user_id = query.data.split()[1]
         db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
         result = int(db_object.fetchone()[0])
-        invoices = await crypto.get_invoices(invoice_ids=result)
-        if invoices.status == "active":
-            await query.answer("We have not received payment yet")
-        elif invoices.status == "paid":
-            db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = {user_id}")
-            db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
-            db_connection.commit()
-            await query.answer("Successful payment, image generations were added to your account")
-        elif invoices.status == "expired":
-            await query.answer("Payment timed out, create a new payment")
+        if result:
+            invoices = await crypto.get_invoices(invoice_ids=result)
+            if invoices.status == "active":
+                await query.answer("We have not received payment yet")
+            elif invoices.status == "paid":
+                db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_connection.commit()
+                await query.answer("Successful payment, image generations were added to your account")
+            elif invoices.status == "expired":
+                await query.answer("Payment has expired, create a new payment")
+        else:
+            await query.answer("Payment has expired, create a new payment")
             
 if __name__ == '__main__':
     load_dotenv()
