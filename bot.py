@@ -425,7 +425,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         pur_id = int(purchase_id)
         invoices = await crypto.get_invoices(invoice_ids=pur_id)
         if invoices.status == "active":
-            await query.answer("We have not received payment yet")
+            await query.answer(f"We have not received payment {pur_id} yet")
         elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
             db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
@@ -441,7 +441,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         pur_id = int(purchase_id)
         invoices = await crypto.get_invoices(invoice_ids=pur_id)
         if invoices.status == "active":
-            await query.answer("We have not received payment yet")
+            await query.answer(f"We have not received payment {pur_id} yet")
         elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
             db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
