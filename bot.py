@@ -431,7 +431,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
                 db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE * FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, tokens were added to your account")
             elif invoices.status == "expired":
@@ -449,7 +449,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
                 db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE * FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
@@ -466,7 +466,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
                 db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
+                db_object.execute(f"DELETE * FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
