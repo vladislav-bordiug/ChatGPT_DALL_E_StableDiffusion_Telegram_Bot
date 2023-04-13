@@ -329,24 +329,18 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.52
+        price = 2.26
     elif currency == "BTC":
         price = 0.000166
     elif currency == "ETH":
         price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
-    result = db_object.fetchone()
-    if not result:
-        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
-        db_connection.commit()
-    else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
-        db_connection.commit()
+    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
+    db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="ChatGPT_tokens "+str(user_id))],
+            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -361,31 +355,24 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.52
+        price = 2.26
     elif currency == "BTC":
         price = 0.000166
     elif currency == "ETH":
         price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
-    result = db_object.fetchone()
-    if not result:
-        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
-        db_connection.commit()
-    else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
-        db_connection.commit()
+    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
+    db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="dall_e "+str(user_id))],
+            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
         "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
-    
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
@@ -393,24 +380,18 @@ async def buy_stable(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.52
+        price = 2.26
     elif currency == "BTC":
         price = 0.000166
     elif currency == "ETH":
         price = 0.002614
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
-    result = db_object.fetchone()
-    if not result:
-        db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
-        db_connection.commit()
-    else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
-        db_connection.commit()
+    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
+    db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(user_id))],
+            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -422,59 +403,51 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     message = query.data.split()[0]
     if message == 'ChatGPT_tokens':
-        user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        res = db_object.fetchone()
-        if res:
-            result = int(res[0])
-            invoices = await crypto.get_invoices(invoice_ids=result)
-            if invoices.status == "active":
-                await query.answer("We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 100000 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = '{user_id}'")
-                db_connection.commit()
-                await query.answer("Successful payment, tokens were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("Payment has expired, create a new payment")
-        else:
-          await query.answer("Payment has expired, create a new payment")
+        purchase_id = query.data.split()[1]
+        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
+        user_id = db_object.fetchone()[0]
+        pur_id = int(purchase_id)
+        invoices = await crypto.get_invoices(invoice_ids=pur_id)
+        if invoices.status == "active":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "paid":
+            db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 100000 WHERE user_id = '{user_id}'")
+            db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, tokens were added to your account")
+        elif invoices.status == "expired":
+            await query.answer("Payment has expired, create a new payment")
         
     if message == 'dall_e':
-        user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        res = db_object.fetchone()
-        if res:
-            result = int(res[0])
-            invoices = await crypto.get_invoices(invoice_ids=result)
-            if invoices.status == "active":
-                await query.answer("We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = '{user_id}'")
-                db_connection.commit()
-                await query.answer("Successful payment, image generations were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("Payment has expired, create a new payment")
-        else:
+        purchase_id = query.data.split()[1]
+        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
+        user_id = db_object.fetchone()[0]
+        pur_id = int(purchase_id)
+        invoices = await crypto.get_invoices(invoice_ids=pur_id)
+        if invoices.status == "active":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "paid":
+            db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
+            db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, tokens were added to your account")
+        elif invoices.status == "expired":
             await query.answer("Payment has expired, create a new payment")
+            
     if message == 'stable_diffusion':
-        user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
-        res = db_object.fetchone()
-        if res:
-            result = int(res[0])
-            invoices = await crypto.get_invoices(invoice_ids=result)
-            if invoices.status == "active":
-                await query.answer("We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE user_id = '{user_id}'")
-                db_connection.commit()
-                await query.answer("Successful payment, image generations were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("Payment has expired, create a new payment")
-        else:
+        purchase_id = query.data.split()[1]
+        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
+        user_id = db_object.fetchone()[0]
+        pur_id = int(purchase_id)
+        invoices = await crypto.get_invoices(invoice_ids=pur_id)
+        if invoices.status == "active":
+            await query.answer("We have not received payment yet")
+        elif invoices.status == "paid":
+            db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
+            db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
+            db_connection.commit()
+            await query.answer("Successful payment, tokens were added to your account")
+        elif invoices.status == "expired":
             await query.answer("Payment has expired, create a new payment")
             
 if __name__ == '__main__':
