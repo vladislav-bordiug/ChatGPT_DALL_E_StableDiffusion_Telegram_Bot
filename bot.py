@@ -281,7 +281,7 @@ async def display_info(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        f"You have: \n {result[2]} ChatGPT tokens \n {result[3]} DALL·E image generations \n {result[4]} Stable Diffusion image generations \т You can buy more with crypto",
+        f"You have: \n {result[2]} ChatGPT tokens \n {result[3]} DALL·E image generations \n {result[4]} Stable Diffusion image generations \n You can buy more with crypto",
         reply_markup=reply_markup,
         )
 
@@ -327,7 +327,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     if currency == "USDT":
-        price = 5
+        price = 0.97
     elif currency == "TON":
         price = 2.52
     elif currency == "BTC":
