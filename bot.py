@@ -340,7 +340,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
+            InlineKeyboardButton(text="Check",callback_data="ChatGPT_tokens "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -366,7 +366,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
+            InlineKeyboardButton(text="Check",callback_data="dall_e "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -425,7 +425,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         pur_id = int(purchase_id)
         invoices = await crypto.get_invoices(invoice_ids=pur_id)
         if invoices.status == "active":
-            await query.answer(f"We have not received payment {pur_id} yet")
+            await query.answer("We have not received payment yet")
         elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
             db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
@@ -441,7 +441,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         pur_id = int(purchase_id)
         invoices = await crypto.get_invoices(invoice_ids=pur_id)
         if invoices.status == "active":
-            await query.answer(f"We have not received payment {pur_id} yet")
+            await query.answer("We have not received payment yet")
         elif invoices.status == "paid":
             db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
             db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
