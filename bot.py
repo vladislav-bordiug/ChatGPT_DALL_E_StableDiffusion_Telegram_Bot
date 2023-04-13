@@ -149,7 +149,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     )
     
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = '{user_id}'")
     result = int(db_object.fetchone()[0])
     
     if result > 0:
@@ -166,10 +166,10 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
             )
             result -= len(question) + len(answer)
             if result > 0:
-                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE user_id = {user_id}")
+                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE user_id = '{user_id}'")
                 db_connection.commit()
             else:
-                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE user_id = {user_id}")
+                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE user_id = '{user_id}'")
                 db_connection.commit()
         else:
             await update.message.reply_text(
@@ -194,7 +194,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
     )
     
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = '{user_id}'")
     result = int(db_object.fetchone()[0])
     
     if result > 0:
@@ -219,7 +219,7 @@ async def pre_image_answer_handler(update: Update, context: ContextTypes):
                 )
         else:
             result -= 1
-            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = {user_id}")
+            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = '{user_id}'")
             db_connection.commit()
     else:
         await update.message.reply_text(
@@ -238,7 +238,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     )
     
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT dall_e FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT dall_e FROM users WHERE user_id = '{user_id}'")
     result = int(db_object.fetchone()[0])
     
     if result > 0:
@@ -256,7 +256,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
                   caption=question, 
                   )
             result -= 1
-            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE user_id = {user_id}")
+            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE user_id = '{user_id}'")
             db_connection.commit()
         else:
             await update.message.reply_text(
@@ -273,7 +273,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
  
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT * FROM users WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
         
     button = [[KeyboardButton(text="Buy tokens and generations")],[KeyboardButton(text="Back")]]
@@ -336,13 +336,13 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
         db_connection.commit()
     else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
         db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
@@ -368,13 +368,13 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
         db_connection.commit()
     else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
         db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
@@ -400,13 +400,13 @@ async def buy_stable(update: Update, context: ContextTypes):
     elif currency == "ETH":
         price = 0.00052
     invoice = await crypto.create_invoice(asset=currency, amount=price)
-    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = {user_id}")
+    db_object.execute(f"SELECT user_id FROM orders WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
     if not result:
         db_object.execute("INSERT INTO orders(user_id, purchase_id) VALUES (%s, %s)", (user_id, invoice.invoice_id))
         db_connection.commit()
     else:
-        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = {user_id}")
+        db_object.execute(f"UPDATE orders SET purchase_id = {invoice.invoice_id} WHERE user_id = '{user_id}'")
         db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
@@ -424,14 +424,14 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     message = query.data.split()[0]
     if message == 'ChatGPT_tokens':
         user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
         result = int(db_object.fetchone()[0])
         if result:
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = {user_id}")
+                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, tokens were added to your account")
@@ -442,14 +442,14 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         
     if message == 'dall_e':
         user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
         result = int(db_object.fetchone()[0])
         if result:
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = {user_id}")
+                db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, image generations were added to your account")
@@ -459,14 +459,14 @@ async def keyboard_callback(update: Update, context: ContextTypes):
             await query.answer("Payment has expired, create a new payment")
     if message == 'stable_diffusion':
         user_id = query.data.split()[1]
-        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = {user_id}")
+        db_object.execute(f"SELECT purchase_id FROM orders WHERE user_id = '{user_id}'")
         result = int(db_object.fetchone()[0])
         if result:
             invoices = await crypto.get_invoices(invoice_ids=result)
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = {user_id}")
+                db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE user_id = {user_id}")
                 db_connection.commit()
                 await query.answer("Successful payment, image generations were added to your account")
