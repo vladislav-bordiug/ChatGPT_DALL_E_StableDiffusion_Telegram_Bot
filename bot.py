@@ -289,7 +289,7 @@ async def display_info(update: Update, context: ContextTypes):
 
 async def purchase(update: Update, context: ContextTypes):
         
-    button = [[KeyboardButton(text="1 million ChatGPT tokens - 5 USDT")],[KeyboardButton(text="100 DALL·E image generations - 5 USDT")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USDT")],[KeyboardButton(text="Back")]]
+    button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USDT")],[KeyboardButton(text="100 DALL·E image generations - 5 USDT")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USDT")],[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -316,7 +316,7 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    if product == "1 million ChatGPT tokens - 5 USDT":
+    if product == "100K ChatGPT tokens - 5 USDT":
         return PURCHASE_CHATGPT_STATE
     elif product == "100 DALL·E image generations - 5 USDT":
         return PURCHASE_DALL_E_STATE
@@ -431,7 +431,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
             if invoices.status == "active":
                 await query.answer("We have not received payment yet")
             elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 1000000 WHERE user_id = '{user_id}'")
+                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 100000 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE user_id = '{user_id}'")
                 db_connection.commit()
                 await query.answer("Successful payment, tokens were added to your account")
@@ -517,7 +517,7 @@ if __name__ == '__main__':
             PURCHASE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), display_info),
-                MessageHandler(filters.Regex('^1 million ChatGPT tokens - 5 USDT$'), currencies),
+                MessageHandler(filters.Regex('^100K ChatGPT tokens - 5 USDT$'), currencies),
                 MessageHandler(filters.Regex('^100 DALL·E image generations - 5 USDT$'), currencies),
                 MessageHandler(filters.Regex('^100 Stable Diffusion image generations - 5 USDT$'), currencies),
             ],
