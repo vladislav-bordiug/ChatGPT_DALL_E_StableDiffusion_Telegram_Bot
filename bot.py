@@ -5,9 +5,9 @@ from deep_translator import GoogleTranslator
 import os
 
 import psycopg2
-from copilot import Copilot
-from text_to_image import TextToImage
-from text_to_img import TextToImg
+from chatgpt import Chatgpt
+from stablediffusion import StableDiffusion
+from dalle import DallE
 from dotenv import load_dotenv
 
 from aiocryptopay import AioCryptoPay, Networks
@@ -30,15 +30,17 @@ from telegram.ext import (
     CallbackQueryHandler,
     )
 
-(ENTRY_STATE, 
-QUESTION_STATE,
-IMAGE_STATE, DALL_E_STATE, INFO_STATE, PURCHASE_STATE, PURCHASE_CHATGPT_STATE, PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
+(ENTRY_STATE, CHATGPT_STATE,
+STABLE_STATE, DALL_E_STATE, 
+INFO_STATE, PURCHASE_STATE, 
+PURCHASE_CHATGPT_STATE, 
+PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
 
-def _generate_copilot(prompt: str):
+def _generate_chatgpt(prompt: str):
     """Gets answer from copilot"""
     
-    copilot = Copilot()
-    c = copilot.get_answer(prompt)
+    chatgpt = Chatgpt()
+    c = chatgpt.get_answer(prompt)
 
     return c
 
@@ -49,21 +51,21 @@ def _translate(text: str):
 
     return t
 
-def _to_image(text: str):
+def _stable_diffusion(text: str):
     """Converts text to image"""
     
-    tti = TextToImage()
-    i = tti.to_image(text)
+    stablediffusion = StableDiffusion()
+    image = stablediffusion.to_image(text)
 
-    return i
+    return image
   
 def _dall_e(text: str):
     """Converts text to image"""
     
-    tti = TextToImg()
-    i = tti.to_image(text)
+    dalle = DallE()
+    image = dalle.to_image(text)
 
-    return i
+    return image
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
@@ -93,7 +95,7 @@ async def start(update: Update, context: ContextTypes):
     return ENTRY_STATE
 
 #Handling the question
-async def pre_query_handler(update: Update, context: ContextTypes):
+async def pre_chatgpt_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
@@ -106,10 +108,10 @@ async def pre_query_handler(update: Update, context: ContextTypes):
         reply_markup=reply_markup,
     )
 
-    return QUESTION_STATE
+    return CHATGPT_STATE
 
 #Handling the question
-async def pre_image_handler(update: Update, context: ContextTypes):
+async def pre_stable_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
@@ -122,7 +124,7 @@ async def pre_image_handler(update: Update, context: ContextTypes):
         reply_markup=reply_markup,
     )
 
-    return IMAGE_STATE
+    return STABLE_STATE
   
 async def pre_dall_e(update: Update, context: ContextTypes):
     """Ask the user for a query."""
@@ -140,7 +142,7 @@ async def pre_dall_e(update: Update, context: ContextTypes):
     return DALL_E_STATE
   
 #Handling the answer
-async def pre_query_answer_handler(update: Update, context: ContextTypes):
+async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     """Display the answer to the user."""
 
     button = [[KeyboardButton(text="Back")]]
@@ -155,7 +157,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        answer = _generate_copilot(question)
+        answer = _generate_chatgpt(question)
 
         context.user_data['answer'] = answer
 
@@ -183,51 +185,7 @@ async def pre_query_answer_handler(update: Update, context: ContextTypes):
             reply_markup=reply_markup,
             )
 
-    return QUESTION_STATE
-
-async def pre_image_answer_handler(update: Update, context: ContextTypes):
-    """Display the answer to the user."""
-
-    button = [[KeyboardButton(text="Back")]]
-    reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
-    )
-    
-    user_id = update.message.from_user.id
-    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = '{user_id}'")
-    result = int(db_object.fetchone()[0])
-    
-    if result > 0:
-        question = update.message.text
-
-        en_v = _translate(question)
-
-        path = _to_image(en_v)
-        context.user_data['image_path'] = _to_image
-
-        try:
-            await update.message.reply_photo(
-                photo=open(path, 'rb'), 
-                reply_markup=reply_markup, 
-                caption=question, 
-                )
-            os.remove(path)
-        except:
-            await update.message.reply_text(
-                "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
-                reply_markup=reply_markup,
-                )
-        else:
-            result -= 1
-            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = '{user_id}'")
-            db_connection.commit()
-    else:
-        await update.message.reply_text(
-            "Your have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.", 
-            reply_markup=reply_markup,
-            )
-
-    return IMAGE_STATE
+    return CHATGPT_STATE
   
 async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     """Display the answer to the user."""
@@ -271,6 +229,50 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
 
     return DALL_E_STATE
  
+async def pre_stable_answer_handler(update: Update, context: ContextTypes):
+    """Display the answer to the user."""
+
+    button = [[KeyboardButton(text="Back")]]
+    reply_markup = ReplyKeyboardMarkup(
+        button, resize_keyboard=True
+    )
+    
+    user_id = update.message.from_user.id
+    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = '{user_id}'")
+    result = int(db_object.fetchone()[0])
+    
+    if result > 0:
+        question = update.message.text
+
+        en_v = _translate(question)
+
+        path = _stable_diffusion(en_v)
+        context.user_data['image_path'] = _stable_diffusion
+        print(path,_stable_diffusion)
+        try:
+            await update.message.reply_photo(
+                photo=open(path, 'rb'), 
+                reply_markup=reply_markup, 
+                caption=question, 
+                )
+            os.remove(path)
+        except:
+            await update.message.reply_text(
+                "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+                reply_markup=reply_markup,
+                )
+        else:
+            result -= 1
+            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = '{user_id}'")
+            db_connection.commit()
+    else:
+        await update.message.reply_text(
+            "Your have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.", 
+            reply_markup=reply_markup,
+            )
+
+    return STABLE_STATE
+  
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
@@ -479,12 +481,12 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^My account | Buy$'), display_info),
                 MessageHandler(filters.Regex('^Back$'), start),
             ],
-            QUESTION_STATE: [
+            CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
                 MessageHandler(filters.TEXT, pre_query_answer_handler),
             ],
-            IMAGE_STATE: [
+            STABLE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
                 MessageHandler(filters.TEXT, pre_image_answer_handler),
