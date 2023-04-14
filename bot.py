@@ -69,8 +69,6 @@ def _dall_e(text: str):
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
-    rates = await crypto.get_exchange_rates()
-    print(rates[19],rates[37],rates[55],rates[73])
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
@@ -329,14 +327,21 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
+    rates = await crypto.get_exchange_rates()
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        price = 2.26
+        exchange = float(rates[19].split()[3][5:8])
+        price = 5/exchange
+        print(price)
     elif currency == "BTC":
-        price = 0.000166
+        exchange = float(rates[37].split()[3][5:8])
+        price = 5/exchange
+        print(price)
     elif currency == "ETH":
-        price = 0.002614
+        exchange = float(rates[55].split()[3][5:8])
+        price = 5/exchange
+        print(price)
     invoice = await crypto.create_invoice(asset=currency, amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
     db_connection.commit()
