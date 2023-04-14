@@ -69,7 +69,7 @@ def _dall_e(text: str):
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
-    rates = await crypto.get_exchange_rates()[0]
+    rates = await crypto.get_exchange_rates()
     print(rates[0])
     user_id = update.message.from_user.id
     username = update.message.from_user.username
