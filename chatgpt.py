@@ -3,7 +3,7 @@ import json
 from dotenv import load_dotenv
 import openai
 
-class Copilot:
+class Chatgpt:
 
     def clear_text(self, text):
         a = text.replace("\n", " ")
