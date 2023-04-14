@@ -331,15 +331,15 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     if currency == "USDT":
         price = 5
     elif currency == "TON":
-        exchange = float(str(rates[19]).split()[3][5:8])
+        exchange = float(str(rates[19]).split()[3][5:10])
         price = 5/exchange
         print(price)
     elif currency == "BTC":
-        exchange = float(str(rates[37]).split()[3][5:8])
+        exchange = float(str(rates[37]).split()[3][5:10])
         price = 5/exchange
         print(price)
     elif currency == "ETH":
-        exchange = float(str(rates[55]).split()[3][5:8])
+        exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
         print(price)
     invoice = await crypto.create_invoice(asset=currency, amount=price)
