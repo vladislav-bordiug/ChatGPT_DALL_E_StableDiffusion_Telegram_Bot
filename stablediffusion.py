@@ -7,7 +7,6 @@ import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 from dotenv import load_dotenv
 
 load_dotenv()
-
 # Our Host URL should not be prepended with "https" nor should it have a trailing slash.
 os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
 
