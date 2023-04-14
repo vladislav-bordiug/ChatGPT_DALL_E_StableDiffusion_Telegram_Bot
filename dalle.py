@@ -6,7 +6,6 @@ from PIL import Image
 from dotenv import load_dotenv
 
 class DallE:
-
     def to_image(self, prompt):
         load_dotenv()
 
