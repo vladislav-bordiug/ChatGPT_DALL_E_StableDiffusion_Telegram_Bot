@@ -17,7 +17,7 @@ os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
 # Click on the following link once you have created an account to be taken to your API Key.
 # https://beta.dreamstudio.ai/membership?tab=apiKeys
 
-class TextToImage:
+class StableDiffusion:
     PATH_TO_IMAGES = "images/"
 
     def __init__(self):
