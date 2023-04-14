@@ -10,7 +10,8 @@ from stablediffusion import StableDiffusion
 from dalle import DallE
 from dotenv import load_dotenv
 
-from aiocryptopay import AioCryptoPay, Networks, ExchangeRate
+from aiocryptopay import AioCryptoPay, Networks
+from exchange import get_rate, get_rate_summ
 
 from telegram import (
     InlineKeyboardMarkup,
