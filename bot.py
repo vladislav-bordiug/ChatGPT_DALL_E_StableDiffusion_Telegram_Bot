@@ -97,7 +97,6 @@ async def start(update: Update, context: ContextTypes):
 
 #Question Handling
 async def pre_chatgpt_handler(update: Update, context: ContextTypes):
-    """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -113,7 +112,6 @@ async def pre_chatgpt_handler(update: Update, context: ContextTypes):
 
 #Question Handling
 async def pre_stable_handler(update: Update, context: ContextTypes):
-    """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -129,7 +127,6 @@ async def pre_stable_handler(update: Update, context: ContextTypes):
   
 #Question Handling
 async def pre_dall_e_handler(update: Update, context: ContextTypes):
-    """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -275,6 +272,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
   
 #Displays information about user
 async def display_info(update: Update, context: ContextTypes):
+ 
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
