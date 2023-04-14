@@ -342,7 +342,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     elif currency == "💲ETH":
         exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
-    invoice = await crypto.create_invoice(asset=currency, amount=price)
+    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
@@ -372,7 +372,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     elif currency == "💲ETH":
         exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
-    invoice = await crypto.create_invoice(asset=currency, amount=price)
+    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
@@ -402,7 +402,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     elif currency == "💲ETH":
         exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
-    invoice = await crypto.create_invoice(asset=currency, amount=price)
+    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
