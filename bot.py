@@ -31,7 +31,7 @@ from telegram.ext import (
     )
 
 (ENTRY_STATE, CHATGPT_STATE,
-STABLE_STATE, DALL_E_STATE, 
+DALL_E_STATE, STABLE_STATE, 
 INFO_STATE, PURCHASE_STATE, 
 PURCHASE_CHATGPT_STATE, 
 PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
@@ -126,7 +126,7 @@ async def pre_stable_handler(update: Update, context: ContextTypes):
 
     return STABLE_STATE
   
-async def pre_dall_e(update: Update, context: ContextTypes):
+async def pre_dall_e_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
     button = [[KeyboardButton(text="Back")]]
@@ -475,26 +475,26 @@ if __name__ == '__main__':
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_query_handler),
-                MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e),
-                MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_image_handler),
+                MessageHandler(filters.Regex('^Question-Answering — ChatGPT 3.5 Turbo$'), pre_chatgpt_handler),
+                MessageHandler(filters.Regex('^Image generation — DALL·E$'), pre_dall_e_handler),
+                MessageHandler(filters.Regex('^Image generation — Stable Diffusion$'), pre_stable_handler),
                 MessageHandler(filters.Regex('^My account | Buy$'), display_info),
                 MessageHandler(filters.Regex('^Back$'), start),
             ],
             CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
-                MessageHandler(filters.TEXT, pre_query_answer_handler),
-            ],
-            STABLE_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^Back$'), start),
-                MessageHandler(filters.TEXT, pre_image_answer_handler),
+                MessageHandler(filters.TEXT, pre_chatgpt_answer_handler),
             ],
             DALL_E_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^Back$'), start),
                 MessageHandler(filters.TEXT, pre_dall_e_answer_handler),
+            ],
+            STABLE_STATE: [
+                CommandHandler('start', start),
+                MessageHandler(filters.Regex('^Back$'), start),
+                MessageHandler(filters.TEXT, pre_stable_answer_handler),
             ],
             INFO_STATE: [
                 CommandHandler('start', start),
