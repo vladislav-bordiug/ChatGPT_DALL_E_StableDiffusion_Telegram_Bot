@@ -310,7 +310,7 @@ async def currencies(update: Update, context: ContextTypes):
             KeyboardButton(text="💲TON")],
             [KeyboardButton(text="💲BTC"),
             KeyboardButton(text="💲ETH")],
-            [KeyboardButton(text="💲Back")]
+            [KeyboardButton(text="🔙Back")]
          ],
          resize_keyboard=True
     )
@@ -331,15 +331,15 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
-    if currency == "USDT":
+    if currency == "💲USDT":
         price = 5
-    elif currency == "TON":
+    elif currency == "💲TON":
         exchange = float(str(rates[19]).split()[3][5:10])
         price = 5/exchange
-    elif currency == "BTC":
+    elif currency == "💲BTC":
         exchange = float(str(rates[37]).split()[3][5:10])
         price = 5/exchange
-    elif currency == "ETH":
+    elif currency == "💲ETH":
         exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
     invoice = await crypto.create_invoice(asset=currency, amount=price)
@@ -352,7 +352,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
     
@@ -361,15 +361,15 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
-    if currency == "USDT":
+    if currency == "💲USDT":
         price = 5
-    elif currency == "TON":
+    elif currency == "💲TON":
         exchange = float(str(rates[19]).split()[3][5:10])
         price = 5/exchange
-    elif currency == "BTC":
+    elif currency == "💲BTC":
         exchange = float(str(rates[37]).split()[3][5:10])
         price = 5/exchange
-    elif currency == "ETH":
+    elif currency == "💲ETH":
         exchange = float(str(rates[55]).split()[3][5:10])
         price = 5/exchange
     invoice = await crypto.create_invoice(asset=currency, amount=price)
@@ -382,7 +382,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
     
@@ -412,7 +412,7 @@ async def buy_stable(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
     
