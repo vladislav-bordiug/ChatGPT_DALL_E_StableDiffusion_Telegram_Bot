@@ -75,7 +75,7 @@ async def start(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="💭Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="🌄Image generation — DALL·E")], [KeyboardButton(text="🌅Image generation — Stable Diffusion")],[KeyboardButton(text="👤My account | 💰Buy")]]
+    button = [[KeyboardButton(text="💭Chatting — ChatGPT 3.5 Turbo")], [KeyboardButton(text="🌄Image generation — DALL·E")], [KeyboardButton(text="🌅Image generation — Stable Diffusion")],[KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
