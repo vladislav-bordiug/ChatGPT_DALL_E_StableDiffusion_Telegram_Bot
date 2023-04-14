@@ -69,6 +69,7 @@ def _dall_e(text: str):
   
 async def start(update: Update, context: ContextTypes):
     """Start the conversation and ask user for an option."""
+    print(await crypto.get_exchange_rates())
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
@@ -469,7 +470,6 @@ if __name__ == '__main__':
     db_object = db_connection.cursor()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
     crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
-    print(crypto.exchange_rates())
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start)],
         states={
