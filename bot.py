@@ -36,39 +36,40 @@ INFO_STATE, PURCHASE_STATE,
 PURCHASE_CHATGPT_STATE, 
 PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
 
+#Gets answer from chatgpt
 def _generate_chatgpt(prompt: str):
-    """Gets answer from copilot"""
     
     chatgpt = Chatgpt()
     c = chatgpt.get_answer(prompt)
 
     return c
 
+#Translates text into English
 def _translate(text: str):
-    """Translates the text to English"""
+
     translator = GoogleTranslator(source='auto', target='en')
     t = translator.translate(text)
 
     return t
 
+#Converts text to image using Stable Diffusion
 def _stable_diffusion(text: str):
-    """Converts text to image"""
     
     stablediffusion = StableDiffusion()
     image = stablediffusion.to_image(text)
 
     return image
-  
+
+#Converts text to image using Dall E
 def _dall_e(text: str):
-    """Converts text to image"""
     
     dalle = DallE()
     image = dalle.to_image(text)
 
     return image
   
+#Starts a conversation
 async def start(update: Update, context: ContextTypes):
-    """Start the conversation and ask user for an option."""
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
@@ -94,7 +95,7 @@ async def start(update: Update, context: ContextTypes):
 
     return ENTRY_STATE
 
-#Handling the question
+#Question Handling
 async def pre_chatgpt_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
@@ -110,7 +111,7 @@ async def pre_chatgpt_handler(update: Update, context: ContextTypes):
 
     return CHATGPT_STATE
 
-#Handling the question
+#Question Handling
 async def pre_stable_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
@@ -126,6 +127,7 @@ async def pre_stable_handler(update: Update, context: ContextTypes):
 
     return STABLE_STATE
   
+#Question Handling
 async def pre_dall_e_handler(update: Update, context: ContextTypes):
     """Ask the user for a query."""
 
@@ -141,9 +143,8 @@ async def pre_dall_e_handler(update: Update, context: ContextTypes):
 
     return DALL_E_STATE
   
-#Handling the answer
+#Answer Handling
 async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
-    """Display the answer to the user."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -187,8 +188,8 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
 
     return CHATGPT_STATE
   
+#Answer Handling
 async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
-    """Display the answer to the user."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -229,8 +230,8 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
 
     return DALL_E_STATE
  
+#Answer Handling
 async def pre_stable_answer_handler(update: Update, context: ContextTypes):
-    """Display the answer to the user."""
 
     button = [[KeyboardButton(text="Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -272,6 +273,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
 
     return STABLE_STATE
   
+#Displays information about user
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     db_object.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
@@ -288,6 +290,7 @@ async def display_info(update: Update, context: ContextTypes):
 
     return INFO_STATE
 
+#Displays goods
 async def purchase(update: Update, context: ContextTypes):
         
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USDT")],[KeyboardButton(text="100 DALL·E image generations - 5 USDT")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USDT")],[KeyboardButton(text="Back")]]
@@ -301,6 +304,7 @@ async def purchase(update: Update, context: ContextTypes):
 
     return PURCHASE_STATE
 
+#Displays cryptocurrencies
 async def currencies(update: Update, context: ContextTypes):
     keyboard = ReplyKeyboardMarkup(
          [
@@ -324,6 +328,7 @@ async def currencies(update: Update, context: ContextTypes):
     elif product == "100 Stable Diffusion image generations - 5 USDT":
         return PURCHASE_STABLE_STATE
   
+#Makes invoice and displays it
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
@@ -353,6 +358,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     
+#Makes invoice and displays it
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
@@ -381,6 +387,8 @@ async def buy_dall_e(update: Update, context: ContextTypes):
         "If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
+    
+#Makes invoice and displays it
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
@@ -410,6 +418,7 @@ async def buy_stable(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     
+#Checks payment
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     message = query.data.split()[0]
