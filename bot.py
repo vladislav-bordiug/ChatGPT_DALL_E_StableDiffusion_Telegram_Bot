@@ -84,7 +84,7 @@ async def start(update: Update, context: ContextTypes):
         db_object.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id, username, 3000,3,3))
         db_connection.commit()
         await update.message.reply_text(
-            "👋You have free 3000 ChatGPT tokens, 3 DALL·E Image Generations and 3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
+            "👋You have free 💭3000 ChatGPT tokens, 🌄3 DALL·E Image Generations and 🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
     else:
