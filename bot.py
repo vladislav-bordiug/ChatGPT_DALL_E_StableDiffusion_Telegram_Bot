@@ -247,8 +247,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
         en_v = _translate(question)
 
         path = _stable_diffusion(en_v)
-        context.user_data['image_path'] = _stable_diffusion
-        print(path,_stable_diffusion)
+        context.user_data['image_path'] = path
         try:
             await update.message.reply_photo(
                 photo=open(path, 'rb'), 
