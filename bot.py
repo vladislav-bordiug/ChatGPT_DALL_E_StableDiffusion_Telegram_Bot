@@ -75,7 +75,7 @@ async def start(update: Update, context: ContextTypes):
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
     result = db_object.fetchone()
         
-    button = [[KeyboardButton(text="💭Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="🖥Image generation — DALL·E")], [KeyboardButton(text="🖥Image generation — Stable Diffusion")],[KeyboardButton(text="👤My account | 💰Buy")]]
+    button = [[KeyboardButton(text="💭Question-Answering — ChatGPT 3.5 Turbo")], [KeyboardButton(text="🌄Image generation — DALL·E")], [KeyboardButton(text="🌅Image generation — Stable Diffusion")],[KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -84,7 +84,7 @@ async def start(update: Update, context: ContextTypes):
         db_object.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id, username, 3000,3,3))
         db_connection.commit()
         await update.message.reply_text(
-            "You have free 3000 ChatGPT tokens, 3 DALL·E Image Generations and 3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
+            "👋You have free 3000 ChatGPT tokens, 3 DALL·E Image Generations and 3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
     else:
@@ -179,7 +179,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
         
     else:
         await update.message.reply_text(
-            "❎Your have 0 ChatGPT tokens. You need to buy them to use ChatGPT.", 
+            "❎You have 0 ChatGPT tokens. You need to buy them to use ChatGPT.", 
             reply_markup=reply_markup,
             )
 
@@ -216,12 +216,12 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
             db_connection.commit()
         else:
             await update.message.reply_text(
-              "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+              "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
               reply_markup=reply_markup,
               )
     else:
         await update.message.reply_text(
-            "Your have 0 DALL·E image generations. You need to buy them to use DALL·E.", 
+            "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.", 
             reply_markup=reply_markup,
             )
 
@@ -255,7 +255,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
             os.remove(path)
         except:
             await update.message.reply_text(
-                "Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
+                "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.", 
                 reply_markup=reply_markup,
                 )
         else:
@@ -264,7 +264,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
             db_connection.commit()
     else:
         await update.message.reply_text(
-            "Your have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.", 
+            "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.", 
             reply_markup=reply_markup,
             )
 
@@ -282,7 +282,7 @@ async def display_info(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        f"You have: \n {result[2]} ChatGPT tokens \n {result[3]} DALL·E image generations \n {result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
+        f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
         reply_markup=reply_markup,
         )
 
@@ -377,8 +377,8 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="dall_e "+str(invoice.invoice_id))],
+            [InlineKeyboardButton(text="💰Buy",url=invoice.pay_url),
+            InlineKeyboardButton(text="☑️Check",callback_data="dall_e "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -407,8 +407,8 @@ async def buy_stable(update: Update, context: ContextTypes):
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="Buy",url=invoice.pay_url),
-            InlineKeyboardButton(text="Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
+            [InlineKeyboardButton(text="💰Buy",url=invoice.pay_url),
+            InlineKeyboardButton(text="☑️Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -492,8 +492,8 @@ if __name__ == '__main__':
             ENTRY_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^💭Chatting — ChatGPT 3.5 Turbo$'), pre_chatgpt_handler),
-                MessageHandler(filters.Regex('^🖥Image generation — DALL·E$'), pre_dall_e_handler),
-                MessageHandler(filters.Regex('^🖥Image generation — Stable Diffusion$'), pre_stable_handler),
+                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), pre_dall_e_handler),
+                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), pre_stable_handler),
                 MessageHandler(filters.Regex('^👤My account | 💰Buy$'), display_info),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
             ],
