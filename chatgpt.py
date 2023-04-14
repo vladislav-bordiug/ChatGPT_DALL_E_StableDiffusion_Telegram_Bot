@@ -27,7 +27,6 @@ class Chatgpt:
             )
 
             json_object = response
-
             # Convert the JSON object to a JSON string
             json_string = json.dumps(json_object)
 
