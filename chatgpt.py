@@ -5,13 +5,6 @@ import openai
 
 class Chatgpt:
 
-    def clear_text(self, text):
-        a = text.replace("\n", " ")
-        b = a.split()
-        c = " ".join(b)
-
-        return c
-
     def get_answer(self, question):
         prompt = question
         
@@ -32,8 +25,7 @@ class Chatgpt:
             parsed_json = json.loads(json_string)
 
             text = parsed_json['choices'][0]['text']
-            cleared_text = self.clear_text(text)
 
-            return cleared_text
+            return text
         except:
             return
