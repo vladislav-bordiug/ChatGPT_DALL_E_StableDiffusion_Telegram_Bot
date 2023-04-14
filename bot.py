@@ -11,7 +11,6 @@ from dalle import DallE
 from dotenv import load_dotenv
 
 from aiocryptopay import AioCryptoPay, Networks
-from exchange import get_rate, get_rate_summ
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -470,7 +469,7 @@ if __name__ == '__main__':
     db_object = db_connection.cursor()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
     crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
-    print(get_rate("USDT","BTC"))
+    print(await crypto.exchange_rates())
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start),MessageHandler(filters.Regex('^Back$'), start)],
         states={
