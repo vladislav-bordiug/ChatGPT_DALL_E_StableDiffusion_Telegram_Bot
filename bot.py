@@ -382,7 +382,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
     
@@ -412,7 +412,7 @@ async def buy_stable(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions (Consider the network commission!) \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
         )
     
