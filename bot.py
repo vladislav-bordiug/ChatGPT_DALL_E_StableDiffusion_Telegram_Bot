@@ -70,6 +70,7 @@ def _dall_e(text: str):
   
 #Starts a conversation
 async def start(update: Update, context: ContextTypes):
+    
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
