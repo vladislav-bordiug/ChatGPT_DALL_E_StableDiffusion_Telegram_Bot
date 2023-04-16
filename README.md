@@ -59,7 +59,7 @@ Generated image:
 
 ![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
 
-In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are two parameters:
+In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are eight parameters:
 
 ```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-v1, stable-diffusion-v1-5, stable-diffusion-512-v2-0, stable-diffusion-768-v2-0, stable-diffusion-512-v2-1, stable-diffusion-768-v2-1, stable-inpainting-v1-0, stable-inpainting-512-v2-0.
 
