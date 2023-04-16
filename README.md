@@ -29,7 +29,7 @@ If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-34-00 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232324085-8998d1e4-c075-4b72-818f-e516838c199a.gif)
 
-In [chatgpt.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/chatgpt.py) there are two parametrs:
+In [chatgpt.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/chatgpt.py) there are two parameters:
 
 ```max_tokens``` - The maximum number of tokens to generate in the chat completion.
 
@@ -44,7 +44,7 @@ Generated image:
 
 <img src="https://user-images.githubusercontent.com/60838512/232324828-8d4d1f50-20cd-412b-bb01-ae975a771361.png" width="512" height="512">
 
-In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parametrs:
+In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parameters:
 
 ```n``` - The number of images to generate. Must be between 1 and 10.
 
@@ -59,7 +59,7 @@ Generated image:
 
 ![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
 
-In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are two parametrs:
+In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are two parameters:
 
 ```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-v1, stable-diffusion-v1-5, stable-diffusion-512-v2-0, stable-diffusion-768-v2-0, stable-diffusion-512-v2-1, stable-diffusion-768-v2-1, stable-inpainting-v1-0, stable-inpainting-512-v2-0.
 
