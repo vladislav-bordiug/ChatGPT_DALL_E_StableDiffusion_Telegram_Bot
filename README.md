@@ -42,7 +42,7 @@ If the user wants to generate image with DALL·E, he presses the "🌄Image gene
 
 Generated image:
 
-<img src="https://user-images.githubusercontent.com/60838512/232324828-8d4d1f50-20cd-412b-bb01-ae975a771361.png" width="512" height="512">
+<img src="https://user-images.githubusercontent.com/60838512/232324828-8d4d1f50-20cd-412b-bb01-ae975a771361.png" width=50% height=50%>
 
 In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parameters:
 
