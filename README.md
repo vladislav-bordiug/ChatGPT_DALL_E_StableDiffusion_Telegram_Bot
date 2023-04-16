@@ -29,6 +29,12 @@ If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-34-00 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232324085-8998d1e4-c075-4b72-818f-e516838c199a.gif)
 
+In [chatgpt.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/chatgpt.py) there are two parametrs:
+
+```max_tokens``` - The maximum number of tokens to generate in the chat completion.
+
+```temperature``` - What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+
 ## DALL·E <a name = "dalle"></a>
 If the user wants to generate image with DALL·E, he presses the "🌄Image generation — DALL·E" button and generates.
 
@@ -38,6 +44,12 @@ Generated image:
 
 <img src="https://user-images.githubusercontent.com/60838512/232324828-8d4d1f50-20cd-412b-bb01-ae975a771361.png" width="512" height="512">
 
+In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parametrs:
+
+```n``` - The number of images to generate. Must be between 1 and 10.
+
+```size``` - The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024.
+
 ## Stable Diffusion <a name = "stablediffusion"></a>
 If the user wants to generate image with Stable Diffusion, he presses the "🌅Image generation — Stable Diffusion" button and generates.
 
@@ -46,6 +58,24 @@ If the user wants to generate image with Stable Diffusion, he presses the "🌅I
 Generated image:
 
 ![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
+
+In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are two parametrs:
+
+```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-v1, stable-diffusion-v1-5, stable-diffusion-512-v2-0, stable-diffusion-768-v2-0, stable-diffusion-512-v2-1, stable-diffusion-768-v2-1, stable-inpainting-v1-0, stable-inpainting-512-v2-0.
+
+```seed``` - If a seed is provided, the resulting generated image will be deterministic. What this means is that as long as all generation parameters remain the same, you can always recall the same image simply by generating it again.
+
+```steps``` - Amount of inference steps performed on image generation. Defaults to 30.
+
+```cfg_scale``` - Influences how strongly your generation is guided to match your prompt. Setting this value higher increases the strength in which it tries to match your prompt. Defaults to 7.0 if not specified.
+
+```width``` - Generation width, defaults to 512 if not included.
+
+```height``` - Generation height, defaults to 512 if not included.
+
+```samples``` - Number of images to generate, defaults to 1 if not included.
+
+```sampler``` - Choose which sampler we want to denoise our generation with. Defaults to k_dpmpp_2m if not specified. Clip Guidance only supports ancestral samplers. (Available Samplers: ddim, plms, k_euler, k_euler_ancestral, k_heun, k_dpm_2, k_dpm_2_ancestral, k_dpmpp_2s_ancestral, k_lms, k_dpmpp_2m)
 
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If user wants to buy tokens and generations, he presses "💰Buy tokens and generations" button, selects product and currrency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
