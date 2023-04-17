@@ -138,7 +138,7 @@ Here you need to press create tables.
 
 ![image](https://user-images.githubusercontent.com/60838512/232328709-476b146f-42e6-44ed-826f-c10762697aeb.png)
 
-For example, tables for these projects:
+For example, tables for this project:
 
 ![image](https://user-images.githubusercontent.com/60838512/232328867-a2c7237a-36da-4b0f-bc1f-7b55ab55832c.png)
 
