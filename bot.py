@@ -1,4 +1,3 @@
-import requests
 import deep_translator
 from deep_translator import GoogleTranslator
   
