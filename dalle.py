@@ -1,8 +1,5 @@
 from openai import OpenAI
 import os
-import io
-import warnings
-from PIL import Image
 from dotenv import load_dotenv
 
 class DallE:
