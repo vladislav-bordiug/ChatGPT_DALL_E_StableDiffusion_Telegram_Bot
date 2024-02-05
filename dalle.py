@@ -14,7 +14,6 @@ class DallE:
                 model="dall-e-2",
                 prompt=prompt,
                 size="1024x1024",
-                quality="standard",
                 n=1,
             )
             return response.data[0].url
