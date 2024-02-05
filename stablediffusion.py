@@ -20,7 +20,7 @@ class StableDiffusion:
         stability_api = client.StabilityInference(
             key=os.getenv("STABLE_DIFFUSION_API_KEY"), 
             verbose=True, 
-            engine="stable-diffusion-v1-5", 
+            engine="stable-diffusion-xl-1024-v1-0", 
         )
 
         answers = stability_api.generate(
