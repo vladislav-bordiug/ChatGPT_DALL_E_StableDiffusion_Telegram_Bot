@@ -11,19 +11,16 @@ class Chatgpt:
         client = OpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
         )
-        try:
-            response = client.completions.create(
-              model="gpt-3.5-turbo-instruct",
-              prompt=question
-            )
+        response = client.completions.create(
+            model="gpt-3.5-turbo-instruct",
+            prompt=question
+        )
             
-            json_object = response
-            json_string = json.dumps(json_object)
+        json_object = response
+        json_string = json.dumps(json_object)
 
-            parsed_json = json.loads(json_string)
+        parsed_json = json.loads(json_string)
 
-            text = parsed_json['choices'][0]['text']
+        text = parsed_json['choices'][0]['text']
 
-            return text
-        except:
-            return
+        return text
