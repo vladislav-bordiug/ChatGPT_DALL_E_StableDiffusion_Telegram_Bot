@@ -29,12 +29,6 @@ If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-34-00 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232324085-8998d1e4-c075-4b72-818f-e516838c199a.gif)
 
-In [chatgpt.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/chatgpt.py) there are two parameters:
-
-```max_tokens``` - The maximum number of tokens to generate in the chat completion.
-
-```temperature``` - What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
-
 ## DALL·E <a name = "dalle"></a>
 If the user wants to generate image with DALL·E, he presses the "🌄Image generation — DALL·E" button and generates.
 
@@ -45,6 +39,8 @@ Generated image:
 ![photo_2023-04-16_18-47-57](https://user-images.githubusercontent.com/60838512/232333088-8cca3d7c-81b8-4f99-81b1-f621a2759452.jpg)
 
 In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parameters:
+
+```model``` - The model which is used for generation.
 
 ```n``` - The number of images to generate. Must be between 1 and 10.
 
@@ -61,7 +57,7 @@ Generated image:
 
 In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are eight parameters:
 
-```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-v1, stable-diffusion-v1-5, stable-diffusion-512-v2-0, stable-diffusion-768-v2-0, stable-diffusion-512-v2-1, stable-diffusion-768-v2-1, stable-inpainting-v1-0, stable-inpainting-512-v2-0.
+```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-xl-1024-v0-9, stable-diffusion-xl-1024-v1-0, esrgan-v1-x2plus.
 
 ```seed``` - If a seed is provided, the resulting generated image will be deterministic. What this means is that as long as all generation parameters remain the same, you can always recall the same image simply by generating it again.
 
