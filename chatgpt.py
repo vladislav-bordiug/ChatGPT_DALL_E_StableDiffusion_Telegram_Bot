@@ -5,7 +5,9 @@ from openai import OpenAI
 
 class Chatgpt:
 
-    def get_answer(self, question):      
+    def get_answer(self, question):
+        prompt = question
+        
         load_dotenv()
         
         client = OpenAI(
@@ -13,14 +15,9 @@ class Chatgpt:
         )
         response = client.completions.create(
             model="gpt-3.5-turbo-instruct",
-            prompt=question
+            prompt=prompt,
+            max_tokens=1500,
+            temperature=0.5,
         )
-            
-        json_object = response
-        json_string = json.dumps(json_object)
 
-        parsed_json = json.loads(json_string)
-
-        text = parsed_json['choices'][0]['text']
-
-        return text
+        return response
