@@ -523,9 +523,9 @@ if __name__ == '__main__':
             PURCHASE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^🔙Back$'), display_info),
-                MessageHandler(filters.Regex('^100K ChatGPT tokens - 5 USDT💵$'), currencies),
-                MessageHandler(filters.Regex('^100 DALL·E image generations - 5 USDT💵$'), currencies),
-                MessageHandler(filters.Regex('^100 Stable Diffusion image generations - 5 USDT💵$'), currencies),
+                MessageHandler(filters.Regex('^100K ChatGPT tokens - 5 USD💵$'), currencies),
+                MessageHandler(filters.Regex('^100 DALL·E image generations - 5 USD💵$'), currencies),
+                MessageHandler(filters.Regex('^100 Stable Diffusion image generations - 5 USD💵$'), currencies),
             ],
             PURCHASE_CHATGPT_STATE: [
                 CommandHandler('start', start),
