@@ -140,7 +140,7 @@ Here you need to press create tables.
 
 For example, tables for this project:
 
-![image](https://user-images.githubusercontent.com/60838512/232328867-a2c7237a-36da-4b0f-bc1f-7b55ab55832c.png)
+![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/08cefb41-6997-434d-9a87-ed9fc4d834b5)
 
 ![image](https://user-images.githubusercontent.com/60838512/232328899-2a0dd7de-932e-45c8-8580-06e3a281fb7a.png)
 
