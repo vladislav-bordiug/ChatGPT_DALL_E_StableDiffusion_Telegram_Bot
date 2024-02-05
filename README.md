@@ -80,7 +80,7 @@ In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_Stab
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If user wants to buy tokens and generations, he presses "💰Buy tokens and generations" button, selects product and currrency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 19-14-29 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232326500-dc77b158-bb4f-49b9-a7c3-f9198ae56bfb.gif)
+![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2024-02-05 21-52-10 (8)](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/5a7dbbd6-41f4-4efa-89a8-53f0c900aafd)
 
 ## API tokens <a name = "apitokens"></a>
 
