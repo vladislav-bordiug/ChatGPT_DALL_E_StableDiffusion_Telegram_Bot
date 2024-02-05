@@ -334,6 +334,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     print(rates)
     print(rates[0])
     print(rates[37])
+    print(rates['USDT']['USD'])
     if currency == "💲USDT":
         exchange = float(str(rates[1]).split()[3][5:])
         price = 5/exchange
