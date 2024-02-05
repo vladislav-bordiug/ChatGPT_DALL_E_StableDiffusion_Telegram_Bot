@@ -5,20 +5,16 @@ from openai import OpenAI
 
 class Chatgpt:
 
-    def get_answer(self, question):
-        prompt = question
-        
+    def get_answer(self, question):      
         load_dotenv()
         
         client = OpenAI(
-            # This is the default and can be omitted
             api_key=os.getenv("OPENAI_API_KEY"),
         )
         try:
-            response = client.chat.completions.create(
-                "model": "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.5
+            response = client.completions.create(
+              model="gpt-3.5-turbo-instruct",
+              prompt=question
             )
             
             json_object = response
