@@ -1,7 +1,7 @@
 import os
 import json
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 
 class Chatgpt:
 
@@ -10,9 +10,10 @@ class Chatgpt:
         
         load_dotenv()
         
+        client = OpenAI()
         openai.api_key = os.getenv("CHAT_GPT3_API_KEY")
         try:
-            response = openai.completions.create(
+            response = client.completions.create(
                 model="gpt-3.5-turbo-instruct",
                 prompt=prompt,
                 max_tokens=1500,
