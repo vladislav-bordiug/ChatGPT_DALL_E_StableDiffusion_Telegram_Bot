@@ -11,7 +11,7 @@ class Chatgpt:
         load_dotenv()
         
         client = OpenAI()
-        openai.api_key = os.getenv("CHAT_GPT3_API_KEY")
+        OpenAI.api_key = os.getenv("CHAT_GPT3_API_KEY")
         try:
             response = client.completions.create(
                 model="gpt-3.5-turbo-instruct",
