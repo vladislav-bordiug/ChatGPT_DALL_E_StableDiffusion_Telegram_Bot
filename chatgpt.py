@@ -10,16 +10,17 @@ class Chatgpt:
         
         load_dotenv()
         
-        client = OpenAI()
-        OpenAI.api_key = os.getenv("OPENAI_API_KEY")
+        client = OpenAI(
+            # This is the default and can be omitted
+            api_key=os.getenv("OPENAI_API_KEY"),
+        )
         try:
-            response = client.completions.create(
-                model="gpt-3.5-turbo-instruct",
-                prompt=prompt,
-                max_tokens=1500,
-                temperature=0.5,
+            response = client.chat.completions.create(
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.5
             )
-
+            
             json_object = response
             json_string = json.dumps(json_object)
 
