@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import os
 import io
 import warnings
@@ -9,15 +9,17 @@ class DallE:
     def to_image(self, prompt):
         load_dotenv()
 
-        openai.api_key = os.getenv("CHAT_GPT3_API_KEY")
+        client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+        )
         try:
-            response = openai.Image.create(
-                prompt=prompt,
-                n=1,
-                size="1024x1024"
+            response = client.images.generate(
+              model="dall-e-3",
+              prompt=prompt,
+              size="1024x1024",
+              quality="standard",
+              n=1,
             )
-            return response['data'][0]['url']
-        except openai.error.OpenAIError as e:
-            print(e.http_status)
-            print(e.error)
+            return response.data[0].url
+        except:
             return
