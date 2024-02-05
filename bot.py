@@ -9,7 +9,7 @@ from stablediffusion import StableDiffusion
 from dalle import DallE
 from dotenv import load_dotenv
 
-from aiocryptopay import AioCryptoPay, Networks
+from aiocryptopay import AioCryptoPay, Networks, utils
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -332,7 +332,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
-        exchange = float((await crypto.get_rate('USDT','USD',rates)).rate)
+        exchange = float((utils.exchange.get_rate('USDT','USD',rates)).rate)
         price = 5/exchange
     elif currency == "💲TON":
         exchange = await crypto.get_rate('TON','USD',rates)
