@@ -1,8 +1,8 @@
-deep-translator==1.9.1
-openai==0.25.0
-Pillow==9.3.0
-python-dotenv==0.21.0
-python-telegram-bot==20.0b0
-stability-sdk==0.3.1
-psycopg2==2.9.6
-aiocryptopay==0.2.6
+deep-translator==1.11.4
+openai==1.11.1
+Pillow==10.2.0
+python-dotenv==1.0.1
+python-telegram-bot==20.7
+stability-sdk==0.8.5
+psycopg2==2.9.9
+aiocryptopay==0.3.5
