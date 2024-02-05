@@ -347,7 +347,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy",url=invoice.pay_url),
+            [InlineKeyboardButton(text="💰Buy",url=invoice.bot_invoice_url),
             InlineKeyboardButton(text="☑️Check",callback_data="ChatGPT_tokens "+str(invoice.invoice_id))],
         ]
     )
@@ -377,7 +377,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy",url=invoice.pay_url),
+            [InlineKeyboardButton(text="💰Buy",url=invoice.bot_invoice_url),
             InlineKeyboardButton(text="☑️Check",callback_data="dall_e "+str(invoice.invoice_id))],
         ]
     )
@@ -407,7 +407,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     db_connection.commit()
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy",url=invoice.pay_url),
+            [InlineKeyboardButton(text="💰Buy",url=invoice.bot_invoice_url),
             InlineKeyboardButton(text="☑️Check",callback_data="stable_diffusion "+str(invoice.invoice_id))],
         ]
     )
@@ -454,7 +454,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
                 db_connection.commit()
-                await query.answer("✅Successful payment, tokens were added to your account")
+                await query.answer("✅Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
                 await query.answer("❎Payment has expired, create a new payment")
         else:
@@ -474,7 +474,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
                 db_object.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
                 db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
                 db_connection.commit()
-                await query.answer("✅Successful payment, tokens were added to your account")
+                await query.answer("✅Successful payment, image generations were added to your account")
             elif invoices.status == "expired":
                 await query.answer("❎Payment has expired, create a new payment")
         else:
