@@ -291,7 +291,7 @@ async def display_info(update: Update, context: ContextTypes):
 #Displays goods
 async def purchase(update: Update, context: ContextTypes):
         
-    button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USDT💵")],[KeyboardButton(text="100 DALL·E image generations - 5 USDT💵")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USDT💵")],[KeyboardButton(text="🔙Back")]]
+    button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],[KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],[KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")],[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
@@ -319,11 +319,11 @@ async def currencies(update: Update, context: ContextTypes):
         reply_markup=keyboard,
         )
     product = update.message.text
-    if product == "100K ChatGPT tokens - 5 USDT💵":
+    if product == "100K ChatGPT tokens - 5 USD💵":
         return PURCHASE_CHATGPT_STATE
-    elif product == "100 DALL·E image generations - 5 USDT💵":
+    elif product == "100 DALL·E image generations - 5 USD💵":
         return PURCHASE_DALL_E_STATE
-    elif product == "100 Stable Diffusion image generations - 5 USDT💵":
+    elif product == "100 Stable Diffusion image generations - 5 USD💵":
         return PURCHASE_STABLE_STATE
   
 #Makes invoice and displays it
@@ -331,17 +331,17 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
-    print(rates)
     if currency == "💲USDT":
-        price = 5
+        exchange = float(str(rates[1]).split()[3][5:])
+        price = 5/exchange
     elif currency == "💲TON":
-        exchange = float(str(rates[19]).split()[3][5:10])
+        exchange = float(str(rates[37]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲BTC":
-        exchange = float(str(rates[37]).split()[3][5:10])
+        exchange = float(str(rates[55]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲ETH":
-        exchange = float(str(rates[55]).split()[3][5:10])
+        exchange = float(str(rates[91]).split()[3][5:])
         price = 5/exchange
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
@@ -363,15 +363,16 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
-        price = 5
+        exchange = float(str(rates[1]).split()[3][5:])
+        price = 5/exchange
     elif currency == "💲TON":
-        exchange = float(str(rates[19]).split()[3][5:10])
+        exchange = float(str(rates[37]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲BTC":
-        exchange = float(str(rates[37]).split()[3][5:10])
+        exchange = float(str(rates[55]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲ETH":
-        exchange = float(str(rates[55]).split()[3][5:10])
+        exchange = float(str(rates[91]).split()[3][5:])
         price = 5/exchange
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
@@ -393,15 +394,16 @@ async def buy_stable(update: Update, context: ContextTypes):
     currency = update.message.text
     rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
-        price = 5
+        exchange = float(str(rates[1]).split()[3][5:])
+        price = 5/exchange
     elif currency == "💲TON":
-        exchange = float(str(rates[19]).split()[3][5:10])
+        exchange = float(str(rates[37]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲BTC":
-        exchange = float(str(rates[37]).split()[3][5:10])
+        exchange = float(str(rates[55]).split()[3][5:])
         price = 5/exchange
     elif currency == "💲ETH":
-        exchange = float(str(rates[55]).split()[3][5:10])
+        exchange = float(str(rates[91]).split()[3][5:])
         price = 5/exchange
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
