@@ -12,8 +12,8 @@ class Chatgpt:
         
         openai.api_key = os.getenv("CHAT_GPT3_API_KEY")
         try:
-            response = openai.Completion.create(
-                engine="text-davinci-003",
+            response = openai.completions.create(
+                model="gpt-3.5-turbo-instruct",
                 prompt=prompt,
                 max_tokens=1500,
                 temperature=0.5,
