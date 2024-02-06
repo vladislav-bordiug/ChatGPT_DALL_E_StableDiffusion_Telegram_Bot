@@ -13,6 +13,7 @@ from telegram import (
     InlineKeyboardButton,
     ReplyKeyboardMarkup,
     Update,
+    Message,
     KeyboardButton,
 )
 from telegram.ext import (
