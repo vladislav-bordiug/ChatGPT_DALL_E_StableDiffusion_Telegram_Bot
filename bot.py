@@ -325,7 +325,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     currency = update.message.text
     price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db.new_order(invoice.invoice_id, user_id, 'chatgpt')
+    db.new_order(str(invoice.invoice_id), user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
@@ -344,7 +344,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     currency = update.message.text
     price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db.new_order(invoice.invoice_id, user_id, 'dall_e')
+    db.new_order(str(invoice.invoice_id), user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
@@ -363,7 +363,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     currency = update.message.text
     price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db.new_order(invoice.invoice_id, user_id, 'stable')
+    db.new_order(str(invoice.invoice_id), user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
