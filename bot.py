@@ -379,7 +379,7 @@ async def buy_stable(update: Update, context: ContextTypes):
 # Checks payment
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
-    invoice_id = query.data
+    invoice_id = int(query.data)
     result = db.get_orderdata(invoice_id)
     if result:
         invoices = await crypto.get_invoices(invoice_ids=invoice_id)
