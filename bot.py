@@ -67,7 +67,6 @@ def _dall_e(text: str):
   
 #Starts a conversation
 async def start(update: Update, context: ContextTypes):
-    print('\n \n \n \n \n')
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     result = db.is_user(user_id)
