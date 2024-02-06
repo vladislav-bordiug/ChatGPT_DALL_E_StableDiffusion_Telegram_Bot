@@ -485,7 +485,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
             
 if __name__ == '__main__':
     load_dotenv()
-    keepalive_kwargs = {"keepalives": 1, "keepalives_idle": 60, "keepalives_interval": 10, "keepalives_count": 5}
+    keepalive_kwargs = {"keepalives": 1, "keepalives_idle": 30, "keepalives_interval": 10, "keepalives_count": 5}
     db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require", **keepalive_kwargs)
     db_object = db_connection.cursor()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
