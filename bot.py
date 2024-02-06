@@ -302,7 +302,8 @@ async def currencies(update: Update, context: ContextTypes):
 
 
 # Get price
-def getprice(cost, currency, rates):
+async def getprice(cost, currency):
+    rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
         exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
         price = cost / exchange
@@ -322,8 +323,7 @@ def getprice(cost, currency, rates):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    price = getprice(5, currency, rates)
+    price = getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db.new_order(invoice.invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
@@ -342,8 +342,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    price = getprice(5, currency, rates)
+    price = getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db.new_order(invoice.invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
@@ -362,8 +361,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    price = getprice(5, currency, rates)
+    price = getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
     db.new_order(invoice.invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
