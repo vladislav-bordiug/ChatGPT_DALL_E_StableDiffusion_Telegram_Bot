@@ -138,7 +138,7 @@ For example, tables for this project:
 
 ![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/08cefb41-6997-434d-9a87-ed9fc4d834b5)
 
-![image](https://user-images.githubusercontent.com/60838512/232328899-2a0dd7de-932e-45c8-8580-06e3a281fb7a.png)
+![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/4bf3c688-320c-4abb-809d-dbc05eac02c2)
 
 Return to variables and add DATABASE_URL. All variables:
 
