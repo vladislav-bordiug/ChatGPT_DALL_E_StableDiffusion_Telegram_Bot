@@ -329,7 +329,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
@@ -348,7 +348,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
@@ -367,7 +367,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
