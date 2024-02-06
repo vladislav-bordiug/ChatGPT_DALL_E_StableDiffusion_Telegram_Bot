@@ -67,11 +67,10 @@ def _dall_e(text: str):
   
 #Starts a conversation
 async def start(update: Update, context: ContextTypes):
-    
+    print('\n \n \n \n \n')
     user_id = update.message.from_user.id
     username = update.message.from_user.username
     result = db.is_user(user_id)
-        
     button = [[KeyboardButton(text="💭Chatting — ChatGPT 3.5 Turbo")], [KeyboardButton(text="🌄Image generation — DALL·E")], [KeyboardButton(text="🌅Image generation — Stable Diffusion")],[KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
