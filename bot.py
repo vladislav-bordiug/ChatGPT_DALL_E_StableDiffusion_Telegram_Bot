@@ -13,7 +13,6 @@ from telegram import (
     InlineKeyboardButton,
     ReplyKeyboardMarkup,
     Update,
-    Message,
     KeyboardButton,
 )
 from telegram.ext import (
@@ -136,7 +135,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = db.get_chatgpt()
+    result = db.get_chatgpt(user_id)
 
     if result > 0:
         question = update.message.text
