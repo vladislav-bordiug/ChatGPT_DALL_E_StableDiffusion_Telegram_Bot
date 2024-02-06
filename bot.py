@@ -1,8 +1,8 @@
-import deep_translator
 from deep_translator import GoogleTranslator
 
 import os
-import psycopg2
+
+import db
 from chatgpt import Chatgpt
 from stablediffusion import StableDiffusion
 from dalle import DallE
@@ -13,7 +13,6 @@ from telegram import (
     InlineKeyboardButton,
     ReplyKeyboardMarkup,
     Update,
-    Message,
     KeyboardButton,
 )
 from telegram.ext import (
@@ -65,8 +64,7 @@ def _dall_e(text: str):
 async def start(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
-    result = db_object.fetchone()
+    result = db.is_user(user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT 3.5 Turbo")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
@@ -77,10 +75,7 @@ async def start(update: Update, context: ContextTypes):
     )
 
     if not result:
-        db_object.execute(
-            "INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)",
-            (user_id, username, 3000, 3, 3))
-        db_connection.commit()
+        db.insert_user(user_id, username)
         await update.message.reply_text(
             "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
@@ -140,13 +135,13 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT chatgpt FROM users WHERE user_id = '{user_id}'")
-    result = int(db_object.fetchone()[0])
+    result = db.get_chatgpt()
 
     if result > 0:
         question = update.message.text
+
         answer = _generate_chatgpt(question)
-        context.user_data['answer'] = answer
+
         if answer != None:
             await update.message.reply_text(
                 answer,
@@ -154,11 +149,9 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
             )
             result -= len(question) + len(answer)
             if result > 0:
-                db_object.execute(f"UPDATE users SET chatgpt = {result} WHERE user_id = '{user_id}'")
-                db_connection.commit()
+                db.set_chatgpt(user_id, result)
             else:
-                db_object.execute(f"UPDATE users SET chatgpt = 0 WHERE user_id = '{user_id}'")
-                db_connection.commit()
+                db.set_chatgpt(user_id, 0)
         else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -181,23 +174,23 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT dall_e FROM users WHERE user_id = '{user_id}'")
-    result = int(db_object.fetchone()[0])
+    result = db.get_dalle(user_id)
 
     if result > 0:
         question = update.message.text
-        en_v = _translate(question)
-        answer = _dall_e(en_v)
-        context.user_data['answer'] = answer
-        if answer != None:
+
+        prompt = _translate(question)
+
+        answer = _dall_e(prompt)
+
+        if answer:
             await update.message.reply_photo(
                 photo=answer,
                 reply_markup=reply_markup,
                 caption=question,
             )
             result -= 1
-            db_object.execute(f"UPDATE users SET dall_e = {result} WHERE user_id = '{user_id}'")
-            db_connection.commit()
+            db.set_dalle(user_id, result)
         else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -219,14 +212,15 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT stable_diffusion FROM users WHERE user_id = '{user_id}'")
-    result = int(db_object.fetchone()[0])
+    result = db.get_stable(user_id)
 
     if result > 0:
         question = update.message.text
-        en_v = _translate(question)
-        path = _stable_diffusion(en_v)
-        context.user_data['image_path'] = path
+
+        prompt = _translate(question)
+
+        path = _stable_diffusion(prompt)
+
         try:
             await update.message.reply_photo(
                 photo=open(path, 'rb'),
@@ -241,8 +235,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
             )
         else:
             result -= 1
-            db_object.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = '{user_id}'")
-            db_connection.commit()
+            db.set_stable(user_id, result)
     else:
         await update.message.reply_text(
             "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",
@@ -254,8 +247,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
 # Displays information about user
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
-    db_object.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
-    result = db_object.fetchone()
+    result = db.get_userinfo(user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -308,30 +300,35 @@ async def currencies(update: Update, context: ContextTypes):
         return PURCHASE_STABLE_STATE
 
 
+# Get price
+async def getprice(cost, currency):
+    rates = await crypto.get_exchange_rates()
+    if currency == "💲USDT":
+        exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
+        price = cost / exchange
+    elif currency == "💲TON":
+        exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
+        price = cost / exchange
+    elif currency == "💲BTC":
+        exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
+        price = cost / exchange
+    elif currency == "💲ETH":
+        exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
+        price = cost / exchange
+    return price
+
+
 # Makes invoice and displays it
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    if currency == "💲USDT":
-        exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲TON":
-        exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲BTC":
-        exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲ETH":
-        exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
-        price = 5 / exchange
+    price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
-    db_connection.commit()
+    db.new_order(invoice.invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data="ChatGPT_tokens " + str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
@@ -344,26 +341,13 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    if currency == "💲USDT":
-        exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲TON":
-        exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲BTC":
-        exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲ETH":
-        exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
-        price = 5 / exchange
+    price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
-    db_connection.commit()
+    db.new_order(invoice.invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data="dall_e " + str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
@@ -376,26 +360,13 @@ async def buy_dall_e(update: Update, context: ContextTypes):
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    rates = await crypto.get_exchange_rates()
-    if currency == "💲USDT":
-        exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲TON":
-        exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲BTC":
-        exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
-        price = 5 / exchange
-    elif currency == "💲ETH":
-        exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
-        price = 5 / exchange
+    price = await getprice(5, currency)
     invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    db_object.execute("INSERT INTO orders(purchase_id, user_id) VALUES (%s, %s)", (invoice.invoice_id, user_id))
-    db_connection.commit()
+    db.new_order(invoice.invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data="stable_diffusion " + str(invoice.invoice_id))],
+             InlineKeyboardButton(text="☑️Check", callback_data=invoice.invoice_id)],
         ]
     )
     await update.message.reply_text(
@@ -407,75 +378,31 @@ async def buy_stable(update: Update, context: ContextTypes):
 # Checks payment
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
-    message = query.data.split()[0]
-    if message == 'ChatGPT_tokens':
-        purchase_id = query.data.split()[1]
-        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
-        user = db_object.fetchone()
-        if user:
-            user_id = user[0]
-            pur_id = int(purchase_id)
-            invoices = await crypto.get_invoices(invoice_ids=pur_id)
-            if invoices.status == "active":
-                await query.answer("⌚️We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET chatgpt = chatgpt + 100000 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
-                db_connection.commit()
+    invoice_id = query.data
+    result = db.get_orderdata(invoice_id)
+    if result:
+        invoices = await crypto.get_invoices(invoice_ids=invoice_id)
+        if invoices.status == "active":
+            await query.answer("⌚️We have not received payment yet")
+        elif invoices.status == "paid":
+            if result[1] == 'chatgpt':
+                db.update_chatgpt(result[0], invoice_id)
                 await query.answer("✅Successful payment, tokens were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("❎Payment has expired, create a new payment")
-        else:
-            await query.answer("❎Payment has expired, create a new payment")
-
-    if message == 'dall_e':
-        purchase_id = query.data.split()[1]
-        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
-        user = db_object.fetchone()
-        if user:
-            user_id = user[0]
-            pur_id = int(purchase_id)
-            invoices = await crypto.get_invoices(invoice_ids=pur_id)
-            if invoices.status == "active":
-                await query.answer("⌚️We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
-                db_connection.commit()
+            elif result[1] == 'dall_e':
+                db.update_dalle(result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("❎Payment has expired, create a new payment")
-        else:
-            await query.answer("❎Payment has expired, create a new payment")
-
-    if message == 'stable_diffusion':
-        purchase_id = query.data.split()[1]
-        db_object.execute(f"SELECT user_id FROM orders WHERE purchase_id = {purchase_id}")
-        user = db_object.fetchone()
-        if user:
-            user_id = user[0]
-            pur_id = int(purchase_id)
-            invoices = await crypto.get_invoices(invoice_ids=pur_id)
-            if invoices.status == "active":
-                await query.answer("⌚️We have not received payment yet")
-            elif invoices.status == "paid":
-                db_object.execute(
-                    f"UPDATE users SET stable_diffusion = stable_diffusion + 100 WHERE user_id = '{user_id}'")
-                db_object.execute(f"DELETE FROM orders WHERE purchase_id = {purchase_id}")
-                db_connection.commit()
+            elif result[1] == 'stable':
+                db.update_stable(result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
-            elif invoices.status == "expired":
-                await query.answer("❎Payment has expired, create a new payment")
-        else:
+        elif invoices.status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
+    else:
+        await query.answer("❎Payment has expired, create a new payment")
 
 
 if __name__ == '__main__':
     load_dotenv()
-    db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
-    db_object = db_connection.cursor()
-    application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(
-        100).get_updates_read_timeout(100).build()
+    application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
     crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
