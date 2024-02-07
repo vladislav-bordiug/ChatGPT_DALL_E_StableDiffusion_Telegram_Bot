@@ -7,21 +7,21 @@ class CryptoPay:
         load_dotenv()
         self.crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
 
-    async def getprice(self,cost: int, currency: str):
+    async def getprice(self, cost: int, currency: str):
         rates = await self.crypto.get_exchange_rates()
         if currency == "💲USDT":
             exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-            price = cost / exchange
+            cost = cost / exchange
         elif currency == "💲TON":
             exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
-            price = cost / exchange
+            cost = cost / exchange
         elif currency == "💲BTC":
             exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
-            price = cost / exchange
+            cost = cost / exchange
         elif currency == "💲ETH":
             exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
-            price = cost / exchange
-        return price
+            cost = cost / exchange
+        return cost
     async def create_invoice(self, cost: int, currency: str):
         price = await self.getprice(cost, currency)
         invoice = await self.crypto.create_invoice(asset=currency[1:], amount=price)
