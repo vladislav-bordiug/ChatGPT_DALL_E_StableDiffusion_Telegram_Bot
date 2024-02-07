@@ -16,7 +16,7 @@ class StableDiffusion:
     def __init__(self):
         pass
 
-    def to_image(self, prompt):
+    def to_image(self, prompt: str):
         stability_api = client.StabilityInference(
             key=os.getenv("STABLE_DIFFUSION_API_KEY"), 
             verbose=True, 

@@ -4,7 +4,7 @@ from openai import OpenAI
 
 class Chatgpt:
 
-    def get_answer(self, question):
+    def get_answer(self, question: str):
         prompt = question
         
         load_dotenv()

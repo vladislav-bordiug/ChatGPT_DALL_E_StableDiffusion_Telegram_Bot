@@ -34,28 +34,28 @@ from telegram.ext import (
 
 
 # Gets answer from chatgpt
-def _generate_chatgpt(prompt: str):
+def generate_chatgpt(prompt: str):
     chatgpt = Chatgpt()
     c = chatgpt.get_answer(prompt)
     return c
 
 
 # Translates text into English
-def _translate(text: str):
+def translate(text: str):
     translator = GoogleTranslator(source='auto', target='en')
     t = translator.translate(text)
     return t
 
 
 # Converts text to image using Stable Diffusion
-def _stable_diffusion(text: str):
+def stable_diffusion(text: str):
     stablediffusion = StableDiffusion()
     image = stablediffusion.to_image(text)
     return image
 
 
 # Converts text to image using Dall E
-def _dall_e(text: str):
+def dall_e(text: str):
     dalle = DallE()
     image = dalle.to_image(text)
     return image
@@ -141,7 +141,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        answer = _generate_chatgpt(question)
+        answer = generate_chatgpt(question)
 
         if answer != None:
             await update.message.reply_text(
@@ -180,9 +180,9 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        prompt = _translate(question)
+        prompt = translate(question)
 
-        answer = _dall_e(prompt)
+        answer = dall_e(prompt)
 
         if answer:
             await update.message.reply_photo(
@@ -218,9 +218,9 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        prompt = _translate(question)
+        prompt = translate(question)
 
-        path = _stable_diffusion(prompt)
+        path = stable_diffusion(prompt)
 
         try:
             await update.message.reply_photo(
@@ -302,7 +302,7 @@ async def currencies(update: Update, context: ContextTypes):
 
 
 # Get price
-async def getprice(cost, currency):
+async def getprice(cost: int, currency: str):
     rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
         exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)

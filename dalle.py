@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 class DallE:
-    def to_image(self, prompt):
+    def to_image(self, prompt: str):
         load_dotenv()
 
         client = OpenAI(
