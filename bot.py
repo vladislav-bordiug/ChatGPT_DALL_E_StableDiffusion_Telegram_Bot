@@ -33,12 +33,6 @@ from telegram.ext import (
  PURCHASE_CHATGPT_STATE,
  PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
 
-# Translates text into English
-def translate(text: str):
-    translator = GoogleTranslator(source='auto', target='en')
-    t = translator.translate(text)
-    return t
-
 # Starts a conversation
 async def start(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
@@ -158,7 +152,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        prompt = translate(question)
+        prompt = translator.translate(question)
 
         answer = openaitools.get_dalle(prompt)
 
@@ -196,7 +190,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        prompt = translate(question)
+        prompt = translator.translate(question)
 
         path = stablediffusion.get_stable(prompt)
 
@@ -382,6 +376,7 @@ if __name__ == '__main__':
     load_dotenv()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
     crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
+    translator = GoogleTranslator(source='auto', target='en')
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
         states={
