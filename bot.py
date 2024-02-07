@@ -3,11 +3,12 @@ from deep_translator import GoogleTranslator
 import os
 
 import db
-from chatgpt import Chatgpt
-from stablediffusion import StableDiffusion
-from dalle import DallE
+import openaitools
+import stablediffusion
+
 from dotenv import load_dotenv
 from aiocryptopay import AioCryptoPay, Networks, utils
+
 from telegram import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
@@ -32,34 +33,11 @@ from telegram.ext import (
  PURCHASE_CHATGPT_STATE,
  PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
 
-
-# Gets answer from chatgpt
-def generate_chatgpt(prompt: str):
-    chatgpt = Chatgpt()
-    c = chatgpt.get_answer(prompt)
-    return c
-
-
 # Translates text into English
 def translate(text: str):
     translator = GoogleTranslator(source='auto', target='en')
     t = translator.translate(text)
     return t
-
-
-# Converts text to image using Stable Diffusion
-def stable_diffusion(text: str):
-    stablediffusion = StableDiffusion()
-    image = stablediffusion.to_image(text)
-    return image
-
-
-# Converts text to image using Dall E
-def dall_e(text: str):
-    dalle = DallE()
-    image = dalle.to_image(text)
-    return image
-
 
 # Starts a conversation
 async def start(update: Update, context: ContextTypes):
@@ -141,7 +119,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        answer = generate_chatgpt(question)
+        answer = openaitools.get_chatgpt(question)
 
         if answer != None:
             await update.message.reply_text(
@@ -182,7 +160,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
 
         prompt = translate(question)
 
-        answer = dall_e(prompt)
+        answer = openaitools.get_dalle(prompt)
 
         if answer:
             await update.message.reply_photo(
@@ -220,7 +198,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
 
         prompt = translate(question)
 
-        path = stable_diffusion(prompt)
+        path = stablediffusion.get_stable(prompt)
 
         try:
             await update.message.reply_photo(
