@@ -7,6 +7,7 @@ class DataBase:
         load_dotenv()
         self.db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
         self.db_object = self.db_connection.cursor()
+
     def is_user(self,user_id: int):
         self.db_object.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
         result = self.db_object.fetchone()
