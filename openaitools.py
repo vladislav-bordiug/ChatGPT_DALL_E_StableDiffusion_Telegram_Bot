@@ -22,6 +22,8 @@ class OpenAiTools:
                     }
                 ],
                 model="gpt-3.5-turbo",
+                max_tokens=2000,
+                temperature=1,
             )
 
             return response.choices[0].message.content
