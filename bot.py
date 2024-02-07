@@ -5,9 +5,9 @@ import os
 from db import DataBase
 from openaitools import OpenAiTools
 from stablediffusion import StableDiffusion
+from cryptopay import CryptoPay
 
 from dotenv import load_dotenv
-from aiocryptopay import AioCryptoPay, Networks, utils
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -115,7 +115,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
 
         answer = openai_tools.get_chatgpt(question)
 
-        if answer != None:
+        if answer:
             await update.message.reply_text(
                 answer,
                 reply_markup=reply_markup,
@@ -271,36 +271,16 @@ async def currencies(update: Update, context: ContextTypes):
     elif product == "100 Stable Diffusion image generations - 5 USD💵":
         return PURCHASE_STABLE_STATE
 
-
-# Gets actual price
-async def getprice(cost: int, currency: str):
-    rates = await crypto.get_exchange_rates()
-    if currency == "💲USDT":
-        exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-        price = cost / exchange
-    elif currency == "💲TON":
-        exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
-        price = cost / exchange
-    elif currency == "💲BTC":
-        exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
-        price = cost / exchange
-    elif currency == "💲ETH":
-        exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
-        price = cost / exchange
-    return price
-
-
 # Makes invoice and displays it
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    price = await getprice(5, currency)
-    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    database.new_order(str(invoice.invoice_id), user_id, 'chatgpt')
+    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
+    database.new_order(invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+            [InlineKeyboardButton(text="💰Buy", url=invoice_url),
+             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -313,13 +293,12 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    price = await getprice(5, currency)
-    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    database.new_order(str(invoice.invoice_id), user_id, 'dall_e')
+    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
+    database.new_order(invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+            [InlineKeyboardButton(text="💰Buy", url=invoice_url),
+             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -332,13 +311,12 @@ async def buy_dall_e(update: Update, context: ContextTypes):
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    price = await getprice(5, currency)
-    invoice = await crypto.create_invoice(asset=currency[1:], amount=price)
-    database.new_order(str(invoice.invoice_id), user_id, 'stable')
+    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
+    database.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(text="💰Buy", url=invoice.bot_invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice.invoice_id))],
+            [InlineKeyboardButton(text="💰Buy", url=invoice_url),
+             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
     await update.message.reply_text(
@@ -353,10 +331,10 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     invoice_id = int(query.data)
     result = database.get_orderdata(invoice_id)
     if result:
-        invoices = await crypto.get_invoices(invoice_ids=invoice_id)
-        if invoices.status == "active":
+        status = await cryptopayments.get_status(invoice_id)
+        if status == "active":
             await query.answer("⌚️We have not received payment yet")
-        elif invoices.status == "paid":
+        elif status == "paid":
             if result[1] == 'chatgpt':
                 database.update_chatgpt(result[0], invoice_id)
                 await query.answer("✅Successful payment, tokens were added to your account")
@@ -366,7 +344,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
             elif result[1] == 'stable':
                 database.update_stable(result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
-        elif invoices.status == "expired":
+        elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
     else:
         await query.answer("❎Payment has expired, create a new payment")
@@ -375,8 +353,8 @@ async def keyboard_callback(update: Update, context: ContextTypes):
 if __name__ == '__main__':
     load_dotenv()
     application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100).get_updates_read_timeout(100).build()
-    crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
     translator = GoogleTranslator(source='auto', target='en')
+    cryptopayments = CryptoPay()
     database = DataBase()
     openai_tools = OpenAiTools()
     stable = StableDiffusion()
