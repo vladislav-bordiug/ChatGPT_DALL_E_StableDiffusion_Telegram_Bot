@@ -1,6 +1,7 @@
 from deep_translator import GoogleTranslator
 
 import os
+import tiktoken
 
 from db import DataBase
 from openaitools import OpenAiTools
@@ -120,7 +121,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
                 answer,
                 reply_markup=reply_markup,
             )
-            result -= len(question) + len(answer)
+            result -= len(encoding.encode(question)) + len(encoding.encode(answer))
             if result > 0:
                 database.set_chatgpt(user_id, result)
             else:
@@ -357,6 +358,7 @@ if __name__ == '__main__':
     cryptopayments = CryptoPay()
     database = DataBase()
     openai_tools = OpenAiTools()
+    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
     stable = StableDiffusion()
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],

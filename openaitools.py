@@ -22,7 +22,7 @@ class OpenAiTools:
                     }
                 ],
                 model="gpt-3.5-turbo",
-                max_tokens=2000,
+                max_tokens=3000,
                 temperature=1,
             )
 
