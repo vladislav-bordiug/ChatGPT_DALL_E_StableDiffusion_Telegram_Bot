@@ -38,7 +38,7 @@ Generated image:
 
 ![photo_2023-04-16_18-47-57](https://user-images.githubusercontent.com/60838512/232333088-8cca3d7c-81b8-4f99-81b1-f621a2759452.jpg)
 
-In [dalle.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/dalle.py) there are two parameters:
+In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_dalle function:
 
 ```model``` - The model which is used for generation.
 
@@ -55,7 +55,7 @@ Generated image:
 
 ![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
 
-In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there are eight parameters:
+In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) in the StableDiffusion class there are eight parameters in the get_stable function:
 
 ```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-xl-1024-v0-9, stable-diffusion-xl-1024-v1-0, esrgan-v1-x2plus.
 
