@@ -1,3 +1,4 @@
+--upgrade pip
 deep-translator==1.11.4
 openai==1.11.1
 Pillow==10.2.0
