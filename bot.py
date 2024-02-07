@@ -200,21 +200,20 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
 
         path = stablediffusion.get_stable(prompt)
 
-        try:
+        if path:
             await update.message.reply_photo(
                 photo=open(path, 'rb'),
                 reply_markup=reply_markup,
                 caption=question,
             )
             os.remove(path)
-        except:
+            result -= 1
+            db.set_stable(user_id, result)
+        else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
-        else:
-            result -= 1
-            db.set_stable(user_id, result)
     else:
         await update.message.reply_text(
             "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",

@@ -32,11 +32,10 @@ def get_stable(prompt: str):
     for resp in answers:
         for artifact in resp.artifacts:
             if artifact.finish_reason == generation.FILTER:
-                warnings.warn("Your request activated the API's safety filters and could not be processed."
-                "Please modify the prompt and try again.")
+                return
             if artifact.type == generation.ARTIFACT_IMAGE:
                 img = Image.open(io.BytesIO(artifact.binary))
-                img_path = self.PATH_TO_IMAGES + str(artifact.seed)+ ".png"
+                img_path = PATH_TO_IMAGES + str(artifact.seed)+ ".png"
                 img.save(img_path)
 
                 return img_path
