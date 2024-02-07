@@ -301,7 +301,7 @@ async def currencies(update: Update, context: ContextTypes):
         return PURCHASE_STABLE_STATE
 
 
-# Get price
+# Gets actual price
 async def getprice(cost: int, currency: str):
     rates = await crypto.get_exchange_rates()
     if currency == "💲USDT":
