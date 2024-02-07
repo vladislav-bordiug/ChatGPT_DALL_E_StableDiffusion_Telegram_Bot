@@ -9,22 +9,22 @@ class CryptoPay:
 
     async def getprice(self, cost: int, currency: str):
         rates = await self.crypto.get_exchange_rates()
-        if currency == "💲USDT":
+        if currency == "USDT":
             exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
             cost = cost / exchange
-        elif currency == "💲TON":
+        elif currency == "TON":
             exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
             cost = cost / exchange
-        elif currency == "💲BTC":
+        elif currency == "BTC":
             exchange = float((utils.exchange.get_rate('BTC', 'USD', rates)).rate)
             cost = cost / exchange
-        elif currency == "💲ETH":
+        elif currency == "ETH":
             exchange = float((utils.exchange.get_rate('ETH', 'USD', rates)).rate)
             cost = cost / exchange
         return cost
     async def create_invoice(self, cost: int, currency: str):
         price = await self.getprice(cost, currency)
-        invoice = await self.crypto.create_invoice(asset=currency[1:], amount=price)
+        invoice = await self.crypto.create_invoice(asset=currency, amount=price)
         return invoice.bot_invoice_url, invoice.invoice_id
     async def get_status(self, invoice_id: int):
         invoices = await self.crypto.get_invoices(invoice_ids=invoice_id)
