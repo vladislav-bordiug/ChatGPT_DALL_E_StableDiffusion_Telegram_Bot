@@ -1,5 +1,5 @@
-import os
-import io
+from os import getenv, environ
+from io import BytesIO
 from PIL import Image
 from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 class StableDiffusion:
     def __init__(self):
         load_dotenv()
-        os.environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
+        environ['STABILITY_HOST'] = 'grpc.stability.ai:443'
         self.stability_api = client.StabilityInference(
-            key=os.getenv("STABLE_DIFFUSION_API_KEY"),
+            key=getenv("STABLE_DIFFUSION_API_KEY"),
             verbose=True,
             engine="stable-diffusion-xl-1024-v1-0",
         )
@@ -35,7 +35,7 @@ class StableDiffusion:
                 if artifact.finish_reason == generation.FILTER:
                     return
                 if artifact.type == generation.ARTIFACT_IMAGE:
-                    img = Image.open(io.BytesIO(artifact.binary))
+                    img = Image.open(BytesIO(artifact.binary))
                     img_path = self.PATH_TO_IMAGES + str(artifact.seed)+ ".png"
                     img.save(img_path)
 

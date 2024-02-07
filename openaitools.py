@@ -1,4 +1,4 @@
-import os
+from os import getenv
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -7,7 +7,7 @@ class OpenAiTools:
         load_dotenv()
 
         self.client = OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY"),
+            api_key=getenv("OPENAI_API_KEY"),
         )
 
     def get_chatgpt(self,question: str):

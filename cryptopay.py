@@ -1,11 +1,11 @@
 from dotenv import load_dotenv
 from aiocryptopay import AioCryptoPay, Networks, utils
-import os
+from os import getenv
 
 class CryptoPay:
     def __init__(self):
         load_dotenv()
-        self.crypto = AioCryptoPay(token=os.getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
+        self.crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
 
     async def getprice(self, cost: int, currency: str):
         rates = await self.crypto.get_exchange_rates()

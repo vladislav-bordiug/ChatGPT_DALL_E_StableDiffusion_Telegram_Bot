@@ -1,7 +1,7 @@
 from deep_translator import GoogleTranslator
 
-import os
-import tiktoken
+from os import remove, getenv
+from tiktoken import encoding_for_model
 
 from db import DataBase
 from openaitools import OpenAiTools
@@ -201,7 +201,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
                 reply_markup=reply_markup,
                 caption=question,
             )
-            os.remove(path)
+            remove(path)
             result -= 1
             database.set_stable(user_id, result)
         else:
@@ -353,12 +353,12 @@ async def keyboard_callback(update: Update, context: ContextTypes):
 
 if __name__ == '__main__':
     load_dotenv()
-    application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
+    application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
     translator = GoogleTranslator(source='auto', target='en')
     cryptopayments = CryptoPay()
     database = DataBase()
     openai_tools = OpenAiTools()
-    encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    encoding = encoding_for_model("gpt-3.5-turbo")
     stable = StableDiffusion()
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],

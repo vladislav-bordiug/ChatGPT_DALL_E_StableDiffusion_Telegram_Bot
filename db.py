@@ -1,11 +1,11 @@
 import psycopg2
-import os
+from os import getenv
 from dotenv import load_dotenv
 
 class DataBase:
     def __init__(self):
         load_dotenv()
-        self.db_connection = psycopg2.connect(os.getenv("DATABASE_URL"), sslmode="require")
+        self.db_connection = psycopg2.connect(getenv("DATABASE_URL"), sslmode="require")
         self.db_object = self.db_connection.cursor()
 
     def is_user(self,user_id: int):
