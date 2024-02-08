@@ -38,7 +38,7 @@ from telegram.ext import (
 async def start(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    result = database.is_user(user_id)
+    result = DataBase.is_user(user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT 3.5 Turbo")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
@@ -49,7 +49,7 @@ async def start(update: Update, context: ContextTypes):
     )
 
     if not result:
-        database.insert_user(user_id, username)
+        DataBase.insert_user(user_id, username)
         await update.message.reply_text(
             "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
@@ -109,12 +109,12 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = database.get_chatgpt(user_id)
+    result = DataBase.get_chatgpt(user_id)
 
     if result > 0:
         question = update.message.text
 
-        answer = openai_tools.get_chatgpt(question)
+        answer = OpenAiTools.get_chatgpt(question)
 
         if answer:
             await update.message.reply_text(
@@ -123,9 +123,9 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
             )
             result -= len(encoding.encode(question)) + len(encoding.encode(answer))
             if result > 0:
-                database.set_chatgpt(user_id, result)
+                DataBase.set_chatgpt(user_id, result)
             else:
-                database.set_chatgpt(user_id, 0)
+                DataBase.set_chatgpt(user_id, 0)
         else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -148,14 +148,14 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = database.get_dalle(user_id)
+    result = DataBase.get_dalle(user_id)
 
     if result > 0:
         question = update.message.text
 
         prompt = translator.translate(question)
 
-        answer = openai_tools.get_dalle(prompt)
+        answer = OpenAiTools.get_dalle(prompt)
 
         if answer:
             await update.message.reply_photo(
@@ -164,7 +164,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
                 caption=question,
             )
             result -= 1
-            database.set_dalle(user_id, result)
+            DataBase.set_dalle(user_id, result)
         else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -186,14 +186,14 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = database.get_stable(user_id)
+    result = DataBase.get_stable(user_id)
 
     if result > 0:
         question = update.message.text
 
         prompt = translator.translate(question)
 
-        path = stable.get_stable(prompt)
+        path = StableDiffusion.get_stable(prompt)
 
         if path:
             await update.message.reply_photo(
@@ -203,7 +203,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
             )
             remove(path)
             result -= 1
-            database.set_stable(user_id, result)
+            DataBase.set_stable(user_id, result)
         else:
             await update.message.reply_text(
                 "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -220,7 +220,7 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
 # Displays information about user
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
-    result = database.get_userinfo(user_id)
+    result = DataBase.get_userinfo(user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -276,8 +276,8 @@ async def currencies(update: Update, context: ContextTypes):
 async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
-    database.new_order(invoice_id, user_id, 'chatgpt')
+    invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
+    DataBase.new_order(invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -294,8 +294,8 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
 async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
-    database.new_order(invoice_id, user_id, 'dall_e')
+    invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
+    DataBase.new_order(invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -312,8 +312,8 @@ async def buy_dall_e(update: Update, context: ContextTypes):
 async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
-    invoice_url, invoice_id = await cryptopayments.create_invoice(5, currency[1:])
-    database.new_order(invoice_id, user_id, 'stable')
+    invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
+    DataBase.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -330,20 +330,20 @@ async def buy_stable(update: Update, context: ContextTypes):
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     invoice_id = int(query.data)
-    result = database.get_orderdata(invoice_id)
+    result = DataBase.get_orderdata(invoice_id)
     if result:
-        status = await cryptopayments.get_status(invoice_id)
+        status = await CryptoPay.get_status(invoice_id)
         if status == "active":
             await query.answer("⌚️We have not received payment yet")
         elif status == "paid":
             if result[1] == 'chatgpt':
-                database.update_chatgpt(result[0], invoice_id)
+                DataBase.update_chatgpt(result[0], invoice_id)
                 await query.answer("✅Successful payment, tokens were added to your account")
             elif result[1] == 'dall_e':
-                database.update_dalle(result[0], invoice_id)
+                DataBase.update_dalle(result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
             elif result[1] == 'stable':
-                database.update_stable(result[0], invoice_id)
+                DataBase.update_stable(result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
         elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
@@ -355,11 +355,7 @@ if __name__ == '__main__':
     load_dotenv()
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
     translator = GoogleTranslator(source='auto', target='en')
-    cryptopayments = CryptoPay()
-    database = DataBase()
-    openai_tools = OpenAiTools()
     encoding = encoding_for_model("gpt-3.5-turbo")
-    stable = StableDiffusion()
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
         states={

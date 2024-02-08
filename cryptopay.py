@@ -2,13 +2,12 @@ from dotenv import load_dotenv
 from aiocryptopay import AioCryptoPay, Networks, utils
 from os import getenv
 
-class CryptoPay:
-    def __init__(self):
-        load_dotenv()
-        self.crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
+load_dotenv()
+crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
 
-    async def getprice(self, cost: int, currency: str):
-        rates = await self.crypto.get_exchange_rates()
+class CryptoPay:
+    async def getprice(cost: int, currency: str):
+        rates = await crypto.get_exchange_rates()
         if currency == "USDT":
             exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
             cost = cost / exchange
@@ -23,11 +22,11 @@ class CryptoPay:
             cost = cost / exchange
         return cost
 
-    async def create_invoice(self, cost: int, currency: str):
-        price = await self.getprice(cost, currency)
-        invoice = await self.crypto.create_invoice(asset=currency, amount=price)
+    async def create_invoice(cost: int, currency: str):
+        price = await CryptoPay.getprice(cost, currency)
+        invoice = await crypto.create_invoice(asset=currency, amount=price)
         return invoice.bot_invoice_url, invoice.invoice_id
 
-    async def get_status(self, invoice_id: int):
-        invoices = await self.crypto.get_invoices(invoice_ids=invoice_id)
+    async def get_status(invoice_id: int):
+        invoices = await crypto.get_invoices(invoice_ids=invoice_id)
         return invoices.status
