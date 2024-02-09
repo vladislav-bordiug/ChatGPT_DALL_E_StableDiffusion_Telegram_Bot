@@ -14,7 +14,7 @@
 + [License](#license)
 
 ## About <a name = "about"></a>
-Nowadays neural networks are able to conduct a dialogue, quickly search for the information we need, answer questions, explain complex concepts and draw pictures according to words. This is Telegram bot written in Python that allows to chat with ChatGPT and generate images using DALL·E and Stable Diffusion. I think it is very comfortable to unite these neural networks in one Telegram bot.
+Nowadays neural networks are able to conduct a dialogue, quickly search for the information we need, answer questions and draw pictures from words. This is a Telegram bot written in Python that allows you to chat with ChatGPT and generate images using DALL·E and Stable Diffusion. I think it is very comfortable to unite these neural networks in one Telegram bot.
 
 You can look on this bot in Telegram: [@ChatGpt_Dall_E_Bot](https://t.me/ChatGPT_Dall_E_Bot)
 
@@ -63,9 +63,11 @@ Generated image:
 
 ![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
 
-In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) in the StableDiffusion class there are eight parameters in the get_stable function:
+In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there is one parameter:
 
 ```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-xl-1024-v0-9, stable-diffusion-xl-1024-v1-0, esrgan-v1-x2plus.
+
+Also in the StableDiffusion class there are seven parameters in the get_stable function:
 
 ```seed``` - If a seed is provided, the resulting generated image will be deterministic. What this means is that as long as all generation parameters remain the same, you can always recall the same image simply by generating it again.
 
@@ -82,7 +84,7 @@ In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_Stab
 ```sampler``` - Choose which sampler we want to denoise our generation with. Defaults to k_dpmpp_2m if not specified. Clip Guidance only supports ancestral samplers. (Available Samplers: ddim, plms, k_euler, k_euler_ancestral, k_heun, k_dpm_2, k_dpm_2_ancestral, k_dpmpp_2s_ancestral, k_lms, k_dpmpp_2m)
 
 ## Account and buy <a name = "accountbuy"></a>
-If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If user wants to buy tokens and generations, he presses "💰Buy tokens and generations" button, selects product and currrency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
+If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If the user wants to buy tokens and generations, he presses the "💰Buy tokens and generations" button, selects the product and currency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2024-02-05 21-52-10 (8)](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/5a7dbbd6-41f4-4efa-89a8-53f0c900aafd)
 
@@ -100,9 +102,9 @@ These project needs these API tokens:
 
 ## Database <a name = "database"></a>
 
-These project requires PostgreSQL database with two tables: orders(purchase_id, user_id) and users(user_id, username, chatgpt, dall_e, stable_diffusion). 
+This project requires PostgreSQL database with two tables: orders(invoice_id, user_id, product) and users(user_id, username, chatgpt, dall_e, stable_diffusion). 
 
-Users and information about them will be added to the "users" table, orders would be added to the "orders" table.
+Users and information about them will be added to the "users" table, orders will be added to the "orders" table.
 
 ```DATABASE_URL``` - url to database.
 
@@ -126,7 +128,7 @@ After that click "add variables".
 
 ![image](https://user-images.githubusercontent.com/60838512/232328415-5d10a920-a8a6-4c11-8675-9ad5ce6fb30a.png)
 
-Add your ptoject's variables. For example, for this project you need to add here 4 variables: OPENAI_API_KEY, CRYPTOPAY_KEY, DATABASE_URL, STABLE_DIFFUSION_API_KEY and TELEGRAM_BOT_TOKEN.
+Add your project's variables. For example, for this project you need to add here 4 variables: CRYPTOPAY_KEY, OPENAI_API_KEY, STABLE_DIFFUSION_API_KEY and TELEGRAM_BOT_TOKEN.
 
 ![image](https://user-images.githubusercontent.com/60838512/232328573-8cbb0eca-aca9-4fc0-8656-e303b4af90e8.png)
 
@@ -150,7 +152,7 @@ For example, tables for this project:
 
 Return to variables and add DATABASE_URL. All variables:
 
-![image](https://user-images.githubusercontent.com/60838512/232329016-5961b459-e1ca-4e73-90af-7c6dddf9d24d.png)
+![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/70759227-5126-4508-9cc1-ce338abbc224)
 
 ## License <a name = "license"></a>
 
