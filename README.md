@@ -90,7 +90,7 @@ If the user wants to see account information or buy tokens and generations, he p
 
 These project needs these API tokens: 
 
-```CHAT_GPT3_API_KEY``` - OpenAI API key which you can get here: [OpenAI API key](https://platform.openai.com/account/api-keys)
+```OPENAI_API_KEY``` - OpenAI API key which you can get here: [OpenAI API key](https://platform.openai.com/account/api-keys)
 
 ```STABLE_DIFFUSION_API_KEY``` - Stable Diffusion API key which you can get here: [Stable Diffusion API key](https://beta.dreamstudio.ai/account)
 
@@ -126,7 +126,7 @@ After that click "add variables".
 
 ![image](https://user-images.githubusercontent.com/60838512/232328415-5d10a920-a8a6-4c11-8675-9ad5ce6fb30a.png)
 
-Add your ptoject's variables. For example, for this project you need to add here 4 variables: CHAT_GPT3_API_KEY, CRYPTOPAY_KEY, DATABASE_URL, STABLE_DIFFUSION_API_KEY and TELEGRAM_BOT_TOKEN.
+Add your ptoject's variables. For example, for this project you need to add here 4 variables: OPENAI_API_KEY, CRYPTOPAY_KEY, DATABASE_URL, STABLE_DIFFUSION_API_KEY and TELEGRAM_BOT_TOKEN.
 
 ![image](https://user-images.githubusercontent.com/60838512/232328573-8cbb0eca-aca9-4fc0-8656-e303b4af90e8.png)
 
