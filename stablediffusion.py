@@ -13,8 +13,6 @@ stability_api = client.StabilityInference(
     engine="stable-diffusion-xl-1024-v1-0",
 )
 
-PATH_TO_IMAGES = "images/"
-
 class StableDiffusion:
     def get_stable(prompt: str):
 
@@ -35,7 +33,7 @@ class StableDiffusion:
                     return
                 if artifact.type == generation.ARTIFACT_IMAGE:
                     img = Image.open(BytesIO(artifact.binary))
-                    img_path = PATH_TO_IMAGES + str(artifact.seed)+ ".png"
+                    img_path = str(artifact.seed)+ ".png"
                     img.save(img_path)
 
                     return img_path

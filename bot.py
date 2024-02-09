@@ -51,12 +51,12 @@ async def start(update: Update, context: ContextTypes):
     if not result:
         DataBase.insert_user(user_id, username)
         await update.message.reply_text(
-            "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
+            text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
     else:
         await update.message.reply_text(
-            "Choose an option: 👇🏻 \n If buttons don't work, enter /start command",
+            text = "Choose an option: 👇🏻 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
     return ENTRY_STATE
@@ -69,7 +69,7 @@ async def pre_chatgpt_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        "Enter your text: 👇🏻",
+        text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
     return CHATGPT_STATE
@@ -82,7 +82,7 @@ async def pre_stable_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        "Enter your text: 👇🏻",
+        text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
     return STABLE_STATE
@@ -95,7 +95,7 @@ async def pre_dall_e_handler(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        "Enter your text: 👇🏻",
+        text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
     return DALL_E_STATE
@@ -118,7 +118,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
 
         if answer:
             await update.message.reply_text(
-                answer,
+                text = answer,
                 reply_markup=reply_markup,
             )
             result -= len(encoding.encode(question)) + len(encoding.encode(answer))
@@ -128,13 +128,13 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
                 DataBase.set_chatgpt(user_id, 0)
         else:
             await update.message.reply_text(
-                "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
+                text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
 
     else:
         await update.message.reply_text(
-            "❎You have 0 ChatGPT tokens. You need to buy them to use ChatGPT.",
+            text = "❎You have 0 ChatGPT tokens. You need to buy them to use ChatGPT.",
             reply_markup=reply_markup,
         )
     return CHATGPT_STATE
@@ -167,12 +167,12 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
             DataBase.set_dalle(user_id, result)
         else:
             await update.message.reply_text(
-                "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
+                text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
         await update.message.reply_text(
-            "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
+            text = "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
             reply_markup=reply_markup,
         )
     return DALL_E_STATE
@@ -206,12 +206,12 @@ async def pre_stable_answer_handler(update: Update, context: ContextTypes):
             DataBase.set_stable(user_id, result)
         else:
             await update.message.reply_text(
-                "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
+                text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
         await update.message.reply_text(
-            "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",
+            text = "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",
             reply_markup=reply_markup,
         )
     return STABLE_STATE
@@ -227,7 +227,7 @@ async def display_info(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
+        text = f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
         reply_markup=reply_markup,
     )
     return INFO_STATE
@@ -242,7 +242,7 @@ async def purchase(update: Update, context: ContextTypes):
         button, resize_keyboard=True
     )
     await update.message.reply_text(
-        "Choose product: 👇",
+        text = "Choose product: 👇",
         reply_markup=reply_markup,
     )
     return PURCHASE_STATE
@@ -261,7 +261,7 @@ async def currencies(update: Update, context: ContextTypes):
         resize_keyboard=True
     )
     await update.message.reply_text(
-        "Choose currency: 👇",
+        text = "Choose currency: 👇",
         reply_markup=keyboard,
     )
     product = update.message.text
@@ -285,7 +285,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
@@ -303,7 +303,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
@@ -321,7 +321,7 @@ async def buy_stable(update: Update, context: ContextTypes):
         ]
     )
     await update.message.reply_text(
-        "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
+        text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
