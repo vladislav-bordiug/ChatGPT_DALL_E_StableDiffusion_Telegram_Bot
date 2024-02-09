@@ -37,6 +37,7 @@ class OpenAiTools:
                 size="1024x1024",
                 n=1,
             )
+            print(response.data[0].url)
             return response.data[0].url
         except:
             return
