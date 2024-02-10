@@ -2,6 +2,7 @@ from deep_translator import GoogleTranslator
 
 from os import remove, getenv
 from tiktoken import encoding_for_model
+from asyncio import run
 
 from db import DataBase
 from openaitools import OpenAiTools
@@ -356,7 +357,7 @@ if __name__ == '__main__':
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
     translator = GoogleTranslator(source='auto', target='en')
     encoding = encoding_for_model("gpt-3.5-turbo")
-    DataBase.open_pool()
+    run(DataBase.open_pool())
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
         states={
