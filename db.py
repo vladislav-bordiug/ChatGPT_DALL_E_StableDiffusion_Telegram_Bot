@@ -3,7 +3,8 @@ from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
-pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"))
+conninfo = f'host={getenv("PGHOST")} port={getenv("PGPORT")} dbname={getenv("PGDATABASE")} user={getenv("PGUSER")} password={getenv("PGPASSWORD")}'
+pool = AsyncConnectionPool(conninfo=conninfo)
 pool.wait()
 
 class DataBase:
