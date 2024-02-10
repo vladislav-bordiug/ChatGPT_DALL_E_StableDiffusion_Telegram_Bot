@@ -31,7 +31,6 @@ class DataBase:
             with conn.cursor() as cursor:
                 cursor.execute(f"UPDATE users SET chatgpt = {result} WHERE user_id = '{user_id}'")
                 conn.commit()
-                return result
 
     def get_dalle(user_id: int):
         with pool.connection() as conn:
@@ -45,7 +44,6 @@ class DataBase:
             with conn.cursor() as cursor:
                 cursor.execute(f"UPDATE users SET dall_e = {result} WHERE user_id = '{user_id}'")
                 conn.commit()
-                return result
 
     def get_stable(user_id: int):
         with pool.connection() as conn:
@@ -59,7 +57,6 @@ class DataBase:
             with conn.cursor() as cursor:
                 cursor.execute(f"UPDATE users SET stable_diffusion = {result} WHERE user_id = '{user_id}'")
                 conn.commit()
-                return result
 
     def get_userinfo(user_id: int):
         with pool.connection() as conn:
