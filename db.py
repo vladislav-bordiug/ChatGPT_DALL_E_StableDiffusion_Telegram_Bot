@@ -68,7 +68,7 @@ class DataBase:
     def new_order(invoice_id: int, user_id: int, product: str):
         with pool.connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(f"INSERT INTO orders(invoice_id, user_id, product) VALUES (%s, %s, %s)", (invoice_id, user_id, product))
+                cursor.execute("INSERT INTO orders(invoice_id, user_id, product) VALUES (%s, %s, %s)", (invoice_id, user_id, product))
                 conn.commit()
 
     def get_orderdata(invoice_id: int):
