@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"))
+pool.wait()
 
 class DataBase:
 
