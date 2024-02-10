@@ -16,7 +16,7 @@ class DataBase:
     def insert_user(user_id: int, username: str):
         with pool.connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(f"INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES ({user_id}, {username}, {3000}, {3}, {3})")
+                cursor.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id,username,3000,3,3))
                 conn.commit()
 
     def get_chatgpt(user_id: int):
@@ -68,7 +68,7 @@ class DataBase:
     def new_order(invoice_id: int, user_id: int, product: str):
         with pool.connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(f"INSERT INTO orders(invoice_id, user_id, product) VALUES ({invoice_id}, {user_id}, {product})")
+                cursor.execute(f"INSERT INTO orders(invoice_id, user_id, product) VALUES (%s, %s, %s)", (invoice_id, user_id, product))
                 conn.commit()
 
     def get_orderdata(invoice_id: int):
