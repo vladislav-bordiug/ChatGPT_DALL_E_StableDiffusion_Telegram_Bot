@@ -356,6 +356,7 @@ if __name__ == '__main__':
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
     translator = GoogleTranslator(source='auto', target='en')
     encoding = encoding_for_model("gpt-3.5-turbo")
+    DataBase.open_pool()
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
         states={
