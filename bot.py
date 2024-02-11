@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes):
     username = update.message.from_user.username
     result = DataBase.is_user(user_id)
 
-    button = [[KeyboardButton(text="💭Chatting — ChatGPT 3.5 Turbo")],
+    button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
               [KeyboardButton(text="🌅Image generation — Stable Diffusion")],
               [KeyboardButton(text="👤My account | 💰Buy")]]
@@ -72,7 +72,7 @@ async def pre_handler(update: Update, context: ContextTypes):
         reply_markup=reply_markup,
     )
     option = update.message.text
-    if option == "💭Chatting — ChatGPT 3.5 Turbo":
+    if option == "💭Chatting — ChatGPT":
         return CHATGPT_STATE
     elif option == "🌄Image generation — DALL·E":
         return DALL_E_STATE
@@ -339,7 +339,7 @@ if __name__ == '__main__':
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^💭Chatting — ChatGPT 3.5 Turbo$'), pre_handler),
+                MessageHandler(filters.Regex('^💭Chatting — ChatGPT$'), pre_handler),
                 MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), pre_handler),
                 MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), pre_handler),
                 MessageHandler(filters.Regex('^👤My account | 💰Buy$'), display_info),
