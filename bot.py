@@ -75,9 +75,9 @@ async def pre_handler(update: Update, context: ContextTypes):
     if option == "💭Chatting — ChatGPT 3.5 Turbo":
         return CHATGPT_STATE
     elif option == "🌄Image generation — DALL·E":
-        return STABLE_STATE
-    elif option == "🌅Image generation — Stable Diffusion":
         return DALL_E_STATE
+    elif option == "🌅Image generation — Stable Diffusion":
+        return STABLE_STATE
 
 # Answer Handling
 async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
