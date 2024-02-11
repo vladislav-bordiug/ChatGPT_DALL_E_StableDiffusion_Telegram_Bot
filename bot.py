@@ -61,9 +61,8 @@ async def start(update: Update, context: ContextTypes):
         )
     return ENTRY_STATE
 
-
 # Question Handling
-async def pre_chatgpt_handler(update: Update, context: ContextTypes):
+async def pre_handler(update: Update, context: ContextTypes):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -72,34 +71,13 @@ async def pre_chatgpt_handler(update: Update, context: ContextTypes):
         text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
-    return CHATGPT_STATE
-
-
-# Question Handling
-async def pre_stable_handler(update: Update, context: ContextTypes):
-    button = [[KeyboardButton(text="🔙Back")]]
-    reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
-    )
-    await update.message.reply_text(
-        text = "Enter your text: 👇🏻",
-        reply_markup=reply_markup,
-    )
-    return STABLE_STATE
-
-
-# Question Handling
-async def pre_dall_e_handler(update: Update, context: ContextTypes):
-    button = [[KeyboardButton(text="🔙Back")]]
-    reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
-    )
-    await update.message.reply_text(
-        text = "Enter your text: 👇🏻",
-        reply_markup=reply_markup,
-    )
-    return DALL_E_STATE
-
+    option = update.message.text
+    if option == "💭Chatting — ChatGPT 3.5 Turbo":
+        return CHATGPT_STATE
+    elif option == "🌄Image generation — DALL·E":
+        return STABLE_STATE
+    elif option == "🌅Image generation — Stable Diffusion":
+        return DALL_E_STATE
 
 # Answer Handling
 async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
@@ -361,9 +339,9 @@ if __name__ == '__main__':
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^💭Chatting — ChatGPT 3.5 Turbo$'), pre_chatgpt_handler),
-                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), pre_dall_e_handler),
-                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), pre_stable_handler),
+                MessageHandler(filters.Regex('^💭Chatting — ChatGPT 3.5 Turbo$'), pre_handler),
+                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), pre_handler),
+                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), pre_handler),
                 MessageHandler(filters.Regex('^👤My account | 💰Buy$'), display_info),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
             ],
