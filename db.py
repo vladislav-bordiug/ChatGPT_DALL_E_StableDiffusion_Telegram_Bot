@@ -3,7 +3,7 @@ from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
-pool = ConnectionPool(conninfo=getenv("DATABASE_URL"))
+pool = ConnectionPool(conninfo=getenv("DATABASE_URL"), timeout = 10, max_lifetime=600)
 
 class DataBase:
     def is_user(user_id: int):
