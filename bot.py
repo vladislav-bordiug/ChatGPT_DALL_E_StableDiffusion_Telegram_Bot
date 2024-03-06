@@ -62,7 +62,7 @@ async def start(update: Update, context: ContextTypes):
     return ENTRY_STATE
 
 # Question Handling
-async def pre_handler(update: Update, context: ContextTypes):
+async def question_handler(update: Update, context: ContextTypes):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -80,7 +80,7 @@ async def pre_handler(update: Update, context: ContextTypes):
         return STABLE_STATE
 
 # Answer Handling
-async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
+async def chatgpt_answer_handler(update: Update, context: ContextTypes):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -119,7 +119,7 @@ async def pre_chatgpt_answer_handler(update: Update, context: ContextTypes):
 
 
 # Answer Handling
-async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
+async def dall_e_answer_handler(update: Update, context: ContextTypes):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -157,7 +157,7 @@ async def pre_dall_e_answer_handler(update: Update, context: ContextTypes):
 
 
 # Answer Handling
-async def pre_stable_answer_handler(update: Update, context: ContextTypes):
+async def stable_answer_handler(update: Update, context: ContextTypes):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -339,26 +339,26 @@ if __name__ == '__main__':
         states={
             ENTRY_STATE: [
                 CommandHandler('start', start),
-                MessageHandler(filters.Regex('^💭Chatting — ChatGPT$'), pre_handler),
-                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), pre_handler),
-                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), pre_handler),
+                MessageHandler(filters.Regex('^💭Chatting — ChatGPT$'), question_handler),
+                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), question_handler),
+                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), question_handler),
                 MessageHandler(filters.Regex('^👤My account | 💰Buy$'), display_info),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
             ],
             CHATGPT_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, pre_chatgpt_answer_handler),
+                MessageHandler(filters.TEXT, chatgpt_answer_handler),
             ],
             DALL_E_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, pre_dall_e_answer_handler),
+                MessageHandler(filters.TEXT, dall_e_answer_handler),
             ],
             STABLE_STATE: [
                 CommandHandler('start', start),
                 MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, pre_stable_answer_handler),
+                MessageHandler(filters.TEXT, stable_answer_handler),
             ],
             INFO_STATE: [
                 CommandHandler('start', start),
