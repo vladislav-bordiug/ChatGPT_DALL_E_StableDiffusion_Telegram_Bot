@@ -6,6 +6,7 @@ load_dotenv()
 
 class DataBase:
 
+    @staticmethod
     async def create_async_pool():
         pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"), timeout = 10, max_lifetime=600, check=AsyncConnectionPool.check_connection)
         return pool
