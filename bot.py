@@ -332,12 +332,17 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     else:
         await query.answer("❎Payment has expired, create a new payment")
 
-async def main():
+async def create_pool():
     p = await DataBase.create_async_pool()
+    return p
+
+if __name__ == '__main__':
+    pool = run(create_pool())
     load_dotenv()
-    application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(10).build()
-    t = GoogleTranslator(source='auto', target='en')
-    e = encoding_for_model("gpt-3.5-turbo")
+    application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
+        10).build()
+    translator = GoogleTranslator(source='auto', target='en')
+    encoding = encoding_for_model("gpt-3.5-turbo")
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
         states={
@@ -407,8 +412,3 @@ async def main():
     application.add_handler(conv_handler)
     application.add_handler(CallbackQueryHandler(keyboard_callback))
     application.run_polling()
-
-    return p, t, e
-
-if __name__ == '__main__':
-    pool, translator, encoding = run(main())
