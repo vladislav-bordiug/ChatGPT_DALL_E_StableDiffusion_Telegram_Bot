@@ -4,9 +4,6 @@ Pillow==10.2.0
 python-dotenv==1.0.1
 python-telegram-bot==20.7
 stability-sdk==0.8.5
-psycopg-binary==3.1.18
-psycopg==3.1.18
-psycopg-pool==3.2.1
 asyncpg==0.29.0
 aiocryptopay==0.3.5
 tiktoken==0.5.2
