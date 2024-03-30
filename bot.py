@@ -49,7 +49,7 @@ from telegram.ext import (
 async def start(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    result = await to_thread(DataBase.is_user(user_id))
+    result = await to_thread(DataBase.is_user,user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
@@ -60,7 +60,7 @@ async def start(update: Update, context: ContextTypes):
     )
 
     if not result:
-        await to_thread(DataBase.insert_user(user_id, username))
+        await to_thread(DataBase.insert_user,user_id, username)
         await update.message.reply_text(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
