@@ -11,7 +11,7 @@ from cryptopay import CryptoPay
 from dotenv import load_dotenv
 from aiofiles.os import remove
 
-from asyncio import get_running_loop, new_event_loop
+from asyncio import get_running_loop, new_event_loop, set_event_loop
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -337,7 +337,10 @@ async def create_pool():
     return p
 
 if __name__ == '__main__':
-    pool = new_event_loop().run_until_complete(create_pool())
+    loop = new_event_loop()
+    set_event_loop(loop)
+    pool = loop.run_until_complete(create_pool())
+    loop.close()
     load_dotenv()
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
         10).build()
