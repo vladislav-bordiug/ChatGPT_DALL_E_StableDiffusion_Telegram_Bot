@@ -11,7 +11,7 @@ from cryptopay import CryptoPay
 from dotenv import load_dotenv
 from aiofiles.os import remove
 
-from asyncio import get_running_loop, new_event_loop, set_event_loop
+from asyncio import get_running_loop, run
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -332,15 +332,8 @@ async def keyboard_callback(update: Update, context: ContextTypes):
     else:
         await query.answer("❎Payment has expired, create a new payment")
 
-async def create_pool():
-    p = await DataBase.create_async_pool()
-    return p
-
 if __name__ == '__main__':
-    loop = new_event_loop()
-    set_event_loop(loop)
-    pool = loop.run_until_complete(create_pool())
-    loop.close()
+    pool = run(DataBase.create_async_pool())
     load_dotenv()
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
         10).build()
