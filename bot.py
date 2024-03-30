@@ -333,7 +333,7 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         await query.answer("❎Payment has expired, create a new payment")
 
 if __name__ == '__main__':
-    #run(DataBase.open_async_pool())
+    run(DataBase.open_async_pool())
     load_dotenv()
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
         10).build()

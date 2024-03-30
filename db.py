@@ -3,7 +3,7 @@ from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
-pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"), timeout = 10, max_lifetime=600, check=AsyncConnectionPool.check_connection)
+pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"), timeout = 10, max_lifetime=600, check=AsyncConnectionPool.check_connection, open = False)
 
 class DataBase:
 
