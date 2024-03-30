@@ -9,8 +9,17 @@ from stablediffusion import StableDiffusion
 from cryptopay import CryptoPay
 
 from dotenv import load_dotenv
-from asyncio import to_thread
 from aiofiles.os import remove
+
+from asyncio import get_running_loop
+from contextvars import copy_context
+from functools import partial
+
+async def to_thread(func, /, *args, **kwargs):
+    loop = get_running_loop()
+    ctx = copy_context()
+    func_call = partial(ctx.run, func, *args, **kwargs)
+    return await loop.run_in_executor(None, func_call)
 
 from telegram import (
     InlineKeyboardMarkup,
