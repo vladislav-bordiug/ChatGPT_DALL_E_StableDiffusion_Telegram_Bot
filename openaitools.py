@@ -2,6 +2,8 @@ from os import getenv
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from asyncio import get_running_loop
+
 load_dotenv()
 
 client = OpenAI(
