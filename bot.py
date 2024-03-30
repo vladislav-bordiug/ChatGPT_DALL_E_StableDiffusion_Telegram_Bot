@@ -169,6 +169,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
     result = await to_thread(DataBase.get_stable(user_id))
 
     if result > 0:
+
         question = update.message.text
 
         prompt = await to_thread(translator.translate(question))
