@@ -11,15 +11,7 @@ from cryptopay import CryptoPay
 from dotenv import load_dotenv
 from aiofiles.os import remove
 
-from asyncio import get_running_loop
-from contextvars import copy_context
-from functools import partial
-
-async def to_thread(func, /, *args, **kwargs):
-    loop = get_running_loop()
-    ctx = copy_context()
-    func_call = partial(ctx.run, func, *args, **kwargs)
-    return await loop.run_in_executor(None, func_call)
+from asyncio import get_event_loop
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -49,7 +41,7 @@ from telegram.ext import (
 async def start(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     username = update.message.from_user.username
-    result = await to_thread(DataBase.is_user,user_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.is_user,user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
@@ -60,7 +52,7 @@ async def start(update: Update, context: ContextTypes):
     )
 
     if not result:
-        await to_thread(DataBase.insert_user,user_id, username)
+        await get_event_loop().run_in_executor(None, DataBase.insert_user,user_id, username)
         await update.message.reply_text(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
@@ -98,23 +90,23 @@ async def chatgpt_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = await to_thread(DataBase.get_chatgpt,user_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.get_chatgpt,user_id)
 
     if result > 0:
         question = update.message.text
 
-        answer = await to_thread(OpenAiTools.get_chatgpt,question)
+        answer = await get_event_loop().run_in_executor(None, OpenAiTools.get_chatgpt,question)
 
         if answer:
             await update.message.reply_text(
                 text = answer,
                 reply_markup=reply_markup,
             )
-            result -= len(await to_thread(encoding.encode,question)) + len(await to_thread(encoding.encode,answer))
+            result -= len(await get_event_loop().run_in_executor(None, encoding.encode,question)) + len(await get_event_loop().run_in_executor(None, encoding.encode,answer))
             if result > 0:
-                await to_thread(DataBase.set_chatgpt,user_id, result)
+                await get_event_loop().run_in_executor(None, DataBase.set_chatgpt,user_id, result)
             else:
-                await to_thread(DataBase.set_chatgpt,user_id, 0)
+                await get_event_loop().run_in_executor(None, DataBase.set_chatgpt,user_id, 0)
         else:
             await update.message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -137,14 +129,14 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = await to_thread(DataBase.get_dalle,user_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.get_dalle,user_id)
 
     if result > 0:
         question = update.message.text
 
-        prompt = await to_thread(translator.translate,question)
+        prompt = await get_event_loop().run_in_executor(None, translator.translate,question)
 
-        answer = await to_thread(OpenAiTools.get_dalle,prompt)
+        answer = await get_event_loop().run_in_executor(None, OpenAiTools.get_dalle,prompt)
 
         if answer:
             await update.message.reply_photo(
@@ -153,7 +145,7 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
                 caption=question,
             )
             result -= 1
-            await to_thread(DataBase.set_dalle,user_id, result)
+            await get_event_loop().run_in_executor(None, DataBase.set_dalle,user_id, result)
         else:
             await update.message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -175,15 +167,15 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
     )
 
     user_id = update.message.from_user.id
-    result = await to_thread(DataBase.get_stable,user_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.get_stable,user_id)
 
     if result > 0:
 
         question = update.message.text
 
-        prompt = await to_thread(translator.translate,question)
+        prompt = await get_event_loop().run_in_executor(None, translator.translate,question)
 
-        path = await to_thread(StableDiffusion.get_stable,prompt)
+        path = await get_event_loop().run_in_executor(None, StableDiffusion.get_stable,prompt)
 
         if path:
             await update.message.reply_photo(
@@ -193,7 +185,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
             )
             await remove(path)
             result -= 1
-            await to_thread(DataBase.set_stable,user_id, result)
+            await get_event_loop().run_in_executor(None, DataBase.set_stable,user_id, result)
         else:
             await update.message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -210,7 +202,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
 # Displays information about user
 async def display_info(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
-    result = await to_thread(DataBase.get_userinfo,user_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.get_userinfo,user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -267,7 +259,7 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await to_thread(DataBase.new_order,invoice_id, user_id, 'chatgpt')
+    await get_event_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -285,7 +277,7 @@ async def buy_dall_e(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await to_thread(DataBase.new_order,invoice_id, user_id, 'dall_e')
+    await get_event_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -303,7 +295,7 @@ async def buy_stable(update: Update, context: ContextTypes):
     user_id = update.message.from_user.id
     currency = update.message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await to_thread(DataBase.new_order,invoice_id, user_id, 'stable')
+    await get_event_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -320,20 +312,20 @@ async def buy_stable(update: Update, context: ContextTypes):
 async def keyboard_callback(update: Update, context: ContextTypes):
     query = update.callback_query
     invoice_id = int(query.data)
-    result = await to_thread(DataBase.get_orderdata,invoice_id)
+    result = await get_event_loop().run_in_executor(None, DataBase.get_orderdata,invoice_id)
     if result:
         status = await CryptoPay.get_status(invoice_id)
         if status == "active":
             await query.answer("⌚️We have not received payment yet")
         elif status == "paid":
             if result[1] == 'chatgpt':
-                await to_thread(DataBase.update_chatgpt,result[0], invoice_id)
+                await get_event_loop().run_in_executor(None, DataBase.update_chatgpt,result[0], invoice_id)
                 await query.answer("✅Successful payment, tokens were added to your account")
             elif result[1] == 'dall_e':
-                await to_thread(DataBase.update_dalle,result[0], invoice_id)
+                await get_event_loop().run_in_executor(None, DataBase.update_dalle,result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
             elif result[1] == 'stable':
-                await to_thread(DataBase.update_stable,result[0], invoice_id)
+                await get_event_loop().run_in_executor(None, DataBase.update_stable,result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
         elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
