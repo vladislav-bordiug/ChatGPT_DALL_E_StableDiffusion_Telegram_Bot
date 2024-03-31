@@ -348,7 +348,7 @@ async def buy_stable(message: types.Message):
 async def keyboard_callback(callback_query: types.CallbackQuery):
     query = callback_query
     invoice_id = int(query.data)
-    result = DataBase.get_orderdata(invoice_id)
+    result = await DataBase.get_orderdata(invoice_id)
     if result:
         status = await CryptoPay.get_status(invoice_id)
         if status == "active":
