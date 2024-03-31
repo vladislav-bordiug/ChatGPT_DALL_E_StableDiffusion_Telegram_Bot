@@ -70,7 +70,7 @@ async def start(message: types.Message, state: FSMContext):
     await state.set_state(States.ENTRY_STATE)
 
 # Question Handling
-@dp.message(States.ENTRY_STATE, F.text=='💭Chatting — ChatGPT$')
+@dp.message(States.ENTRY_STATE)
 @dp.message(States.ENTRY_STATE, F.text=='🌄Image generation — DALL·E$')
 @dp.message(States.ENTRY_STATE, F.text=='🌅Image generation — Stable Diffusion$')
 async def question_handler(message: types.Message, state: FSMContext):
