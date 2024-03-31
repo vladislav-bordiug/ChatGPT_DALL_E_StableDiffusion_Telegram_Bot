@@ -1,12 +1,10 @@
 from os import getenv
 from dotenv import load_dotenv
-from openai import OpenAI
-
-from asyncio import get_running_loop
+from openai import AsyncOpenAI
 
 load_dotenv()
 
-client = OpenAI(
+client = AsyncOpenAI(
     api_key=getenv("OPENAI_API_KEY"),
 )
 
@@ -15,16 +13,16 @@ class OpenAiTools:
         prompt = question
 
         try:
-            response = await get_running_loop().run_in_executor(None, client.chat.completions.create,
-                [
+            response = await client.chat.completions.create(
+                messages=[
                     {
                         "role": "user",
                         "content": prompt,
                     }
                 ],
-                "gpt-3.5-turbo",
-                3000,
-                1,
+                model="gpt-3.5-turbo",
+                max_tokens=3000,
+                temperature=1,
             )
 
             return response.choices[0].message.content
@@ -33,11 +31,11 @@ class OpenAiTools:
 
     async def get_dalle(prompt: str):
         try:
-            response = await get_running_loop().run_in_executor(None, client.images.generate,
-                "dall-e-2",
-                prompt,
-                "1024x1024",
-                1,
+            response = await client.images.generate(
+                model="dall-e-2",
+                prompt=prompt,
+                size="1024x1024",
+                n=1,
             )
 
             return response.data[0].url

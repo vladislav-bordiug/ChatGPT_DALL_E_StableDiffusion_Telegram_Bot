@@ -1,5 +1,5 @@
 deep-translator==1.11.4
-openai==1.11.1
+openai==1.14.3
 Pillow==10.2.0
 python-dotenv==1.0.1
 python-telegram-bot==20.7
