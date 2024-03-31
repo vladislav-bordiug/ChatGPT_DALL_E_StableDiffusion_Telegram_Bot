@@ -22,8 +22,7 @@ from aiogram import F
 load_dotenv()
 translator = Translator()
 encoding = encoding_for_model("gpt-3.5-turbo")
-bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 class States(StatesGroup):
     ENTRY_STATE = State()
@@ -358,5 +357,9 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("❎Payment has expired, create a new payment")
 
+async def main():
+    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
+    await dp.start_polling(bot)
+
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
