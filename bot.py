@@ -47,7 +47,7 @@ class States(StatesGroup):
 async def start(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     username = message.from_user.username
-    result = await DataBase.is_user(user_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.is_user,user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
               [KeyboardButton(text="🌄Image generation — DALL·E")],
@@ -58,7 +58,7 @@ async def start(message: types.Message, state: FSMContext):
     )
 
     if not result:
-        await DataBase.insert_user(user_id, username)
+        await asyncio.get_running_loop().run_in_executor(None, DataBase.insert_user,user_id, username)
         await message.answer(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
@@ -100,7 +100,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     )
 
     user_id = message.from_user.id
-    result = await DataBase.get_chatgpt(user_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.get_chatgpt,user_id)
 
     if result > 0:
         question = message.text
@@ -114,9 +114,9 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
             )
             result -= len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,question)) + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
             if result > 0:
-                await DataBase.set_chatgpt(user_id, result)
+                await asyncio.get_running_loop().run_in_executor(None, DataBase.set_chatgpt,user_id, result)
             else:
-                await DataBase.set_chatgpt(user_id, 0)
+                await asyncio.get_running_loop().run_in_executor(None, DataBase.set_chatgpt,user_id, 0)
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -140,7 +140,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
     )
 
     user_id = message.from_user.id
-    result = await DataBase.get_dalle(user_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.get_dalle,user_id)
 
     if result > 0:
         question = message.text
@@ -156,7 +156,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
                 caption=question,
             )
             result -= 1
-            await DataBase.set_dalle(user_id, result)
+            await asyncio.get_running_loop().run_in_executor(None, DataBase.set_dalle,user_id, result)
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -179,7 +179,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
     )
 
     user_id = message.from_user.id
-    result = await DataBase.get_stable(user_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.get_stable,user_id)
 
     if result > 0:
 
@@ -197,7 +197,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
             )
             await remove(path)
             result -= 1
-            await DataBase.set_stable(user_id, result)
+            await asyncio.get_running_loop().run_in_executor(None, DataBase.set_stable,user_id, result)
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -216,7 +216,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
 @dp.message(States.PURCHASE_STATE, F.text.regexp(r'^🔙Back$'))
 async def display_info(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
-    result = await DataBase.get_userinfo(user_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.get_userinfo,user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -286,7 +286,7 @@ async def buy_chatgpt(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await DataBase.new_order(invoice_id, user_id, 'chatgpt')
+    await asyncio.get_running_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
         inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -308,7 +308,7 @@ async def buy_dall_e(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await DataBase.new_order(invoice_id, user_id, 'dall_e')
+    await asyncio.get_running_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
         inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -330,7 +330,7 @@ async def buy_stable(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
-    await DataBase.new_order(invoice_id, user_id, 'stable')
+    await asyncio.get_running_loop().run_in_executor(None, DataBase.new_order,invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
@@ -348,20 +348,20 @@ async def buy_stable(message: types.Message):
 async def keyboard_callback(callback_query: types.CallbackQuery):
     query = callback_query
     invoice_id = int(query.data)
-    result = await DataBase.get_orderdata(invoice_id)
+    result = await asyncio.get_running_loop().run_in_executor(None, DataBase.get_orderdata,invoice_id)
     if result:
         status = await CryptoPay.get_status(invoice_id)
         if status == "active":
             await query.answer("⌚️We have not received payment yet")
         elif status == "paid":
             if result[1] == 'chatgpt':
-                await DataBase.update_chatgpt(result[0], invoice_id)
+                await asyncio.get_running_loop().run_in_executor(None, DataBase.update_chatgpt,result[0], invoice_id)
                 await query.answer("✅Successful payment, tokens were added to your account")
             elif result[1] == 'dall_e':
-                await DataBase.update_dalle(result[0], invoice_id)
+                await asyncio.get_running_loop().run_in_executor(None, DataBase.update_dalle,result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
             elif result[1] == 'stable':
-                await DataBase.update_stable(result[0], invoice_id)
+                await asyncio.get_running_loop().run_in_executor(None, DataBase.update_stable,result[0], invoice_id)
                 await query.answer("✅Successful payment, image generations were added to your account")
         elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
