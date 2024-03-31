@@ -146,13 +146,13 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        answer = await OpenAiTools.get_dalle(prompt.text)
+        path = await OpenAiTools.get_dalle(prompt.text)
 
-        if answer:
-            await message.answer(
-                photo=answer,
+        if path:
+            await message.answer_photo(
+                photo=open(path, 'rb'),
                 reply_markup=reply_markup,
-                text=question,
+                caption=question,
             )
             result -= 1
             await DataBase.set_dalle(user_id, result)
@@ -189,10 +189,10 @@ async def stable_answer_handler(message: types, state: FSMContext):
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
-            await message.answer(
+            await message.answer_photo(
                 photo=open(path, 'rb'),
                 reply_markup=reply_markup,
-                text=question,
+                caption=question,
             )
             await remove(path)
             result -= 1
