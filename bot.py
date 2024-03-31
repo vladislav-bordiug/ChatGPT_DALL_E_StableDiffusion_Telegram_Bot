@@ -95,7 +95,7 @@ async def chatgpt_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        answer = await get_running_loop().run_in_executor(None, OpenAiTools.get_chatgpt,question)
+        answer = await OpenAiTools.get_chatgpt(question)
 
         if answer:
             await update.message.reply_text(
@@ -136,7 +136,7 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
 
         prompt = await get_running_loop().run_in_executor(None, translator.translate,question)
 
-        answer = await get_running_loop().run_in_executor(None, OpenAiTools.get_dalle,prompt)
+        answer = await OpenAiTools.get_dalle(prompt)
 
         if answer:
             await update.message.reply_photo(

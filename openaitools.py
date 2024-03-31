@@ -11,11 +11,11 @@ client = OpenAI(
 )
 
 class OpenAiTools:
-    def get_chatgpt(question: str):
+    async def get_chatgpt(question: str):
         prompt = question
 
         try:
-            response = client.chat.completions.create(
+            response = await get_running_loop().run_in_executor(None, client.chat.completions.create,
                 messages=[
                     {
                         "role": "user",
@@ -31,9 +31,9 @@ class OpenAiTools:
         except:
             return
 
-    def get_dalle(prompt: str):
+    async def get_dalle(prompt: str):
         try:
-            response = client.images.generate(
+            response = await get_running_loop().run_in_executor(None, client.images.generate,
                 model="dall-e-2",
                 prompt=prompt,
                 size="1024x1024",
