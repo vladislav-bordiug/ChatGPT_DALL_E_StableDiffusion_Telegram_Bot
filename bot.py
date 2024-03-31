@@ -15,7 +15,7 @@ import asyncio
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.dispatcher import filters
 from aiogram import executor
 
