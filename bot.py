@@ -189,8 +189,9 @@ async def stable_answer_handler(message: types, state: FSMContext):
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
+            photo = open(path, 'rb')
             await message.answer_photo(
-                photo=open(path, 'rb'),
+                photo=photo,
                 reply_markup=reply_markup,
                 caption=question,
             )
