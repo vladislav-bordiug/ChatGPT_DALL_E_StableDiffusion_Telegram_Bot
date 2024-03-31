@@ -1,7 +1,7 @@
 from gpytranslate import Translator
 
 from os import getenv
-from tiktoken_async import encoding_for_model
+from tiktoken import encoding_for_model
 
 from db import DataBase
 from openaitools import OpenAiTools
@@ -109,7 +109,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
                 text = answer,
                 reply_markup=reply_markup,
             )
-            result -= len(await encoding.encode(question)) + len(await encoding.encode(answer))
+            result -= len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,question + answer))
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
             else:
@@ -373,5 +373,5 @@ if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
-    encoding = asyncio.run(encoding_for_model("gpt-3.5-turbo"))
+    encoding = encoding_for_model("gpt-3.5-turbo")
     asyncio.run(main())
