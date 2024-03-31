@@ -21,11 +21,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import FSInputFile
 from aiogram import F
 
-load_dotenv()
-translator = Translator()
-encoding = encoding_for_model("gpt-3.5-turbo")
-dp = Dispatcher()
-
 class States(StatesGroup):
     ENTRY_STATE = State()
     CHATGPT_STATE = State()
@@ -374,4 +369,8 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
+    load_dotenv()
+    translator = Translator()
+    encoding = encoding_for_model("gpt-3.5-turbo")
+    dp = Dispatcher()
     asyncio.run(main())
