@@ -1,7 +1,7 @@
 from gpytranslate import Translator
 
 from os import getenv
-from tiktoken import encoding_for_model
+import tiktoken_async import encoding_for_model
 
 from db import DataBase
 from openaitools import OpenAiTools
@@ -31,6 +31,8 @@ class States(StatesGroup):
     PURCHASE_CHATGPT_STATE = State()
     PURCHASE_DALL_E_STATE = State()
     PURCHASE_STABLE_STATE = State()
+
+dp = Dispatcher()
 
 # Starts a conversation
 @dp.message(Command('start'))
@@ -107,7 +109,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
                 text = answer,
                 reply_markup=reply_markup,
             )
-            result -= len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,question)) + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
+            result -= len(await encoding.encode(question)) + len(await encoding.encode(answer))
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
             else:
@@ -367,10 +369,10 @@ async def main():
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
     await DataBase.open_pool()
     await dp.start_polling(bot)
+    enc = await encoding_for_model("gpt-3.5-turbo")
+    return enc
 
 if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
-    encoding = encoding_for_model("gpt-3.5-turbo")
-    dp = Dispatcher()
-    asyncio.run(main())
+    encoding = asyncio.run(main())
