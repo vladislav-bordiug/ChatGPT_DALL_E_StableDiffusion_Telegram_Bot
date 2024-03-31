@@ -146,11 +146,11 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        path = await OpenAiTools.get_dalle(prompt.text)
+        answer = await OpenAiTools.get_dalle(prompt.text)
 
-        if path:
+        if answer:
             await message.answer_photo(
-                photo=open(path, 'rb'),
+                photo=answer,
                 reply_markup=reply_markup,
                 caption=question,
             )
