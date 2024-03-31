@@ -16,15 +16,15 @@ class OpenAiTools:
 
         try:
             response = await get_running_loop().run_in_executor(None, client.chat.completions.create,
-                messages=[
+                [
                     {
                         "role": "user",
                         "content": prompt,
                     }
                 ],
-                model="gpt-3.5-turbo",
-                max_tokens=3000,
-                temperature=1,
+                "gpt-3.5-turbo",
+                3000,
+                1,
             )
 
             return response.choices[0].message.content
@@ -34,10 +34,10 @@ class OpenAiTools:
     async def get_dalle(prompt: str):
         try:
             response = await get_running_loop().run_in_executor(None, client.images.generate,
-                model="dall-e-2",
-                prompt=prompt,
-                size="1024x1024",
-                n=1,
+                "dall-e-2",
+                prompt,
+                "1024x1024",
+                1,
             )
 
             return response.data[0].url
