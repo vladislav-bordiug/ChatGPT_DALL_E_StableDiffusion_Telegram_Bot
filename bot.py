@@ -236,7 +236,8 @@ async def display_info(message: types.Message, state: FSMContext):
 async def purchase(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
-              [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")], [KeyboardButton(text="🔙Back")]]
+              [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")],
+              [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
     )
