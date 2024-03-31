@@ -135,9 +135,8 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
         question = update.message.text
 
         prompt = await translator.translate(question, targetlang='en')
-        print(prompt)
 
-        answer = await OpenAiTools.get_dalle(prompt)
+        answer = await OpenAiTools.get_dalle(prompt.text)
 
         if answer:
             await update.message.reply_photo(
@@ -176,7 +175,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt)
+        path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
             await update.message.reply_photo(
