@@ -322,7 +322,7 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     if result:
         status = await CryptoPay.get_status(invoice_id)
         if status == "active":
-            await query.answer("⌚️We have not received payment yet")
+            await query.answer("⌚️We have not received your payment yet")
         elif status == "paid":
             if result[1] == 'chatgpt':
                 await DataBase.update_chatgpt(result[0], invoice_id)
