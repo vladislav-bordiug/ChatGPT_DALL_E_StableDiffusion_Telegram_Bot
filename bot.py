@@ -336,7 +336,7 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
         elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
     else:
-        await query.answer("❎Payment has expired, create a new payment")
+        await query.answer("✅You have already received your purchase")
 
 async def main():
     await DataBase.open_pool()
