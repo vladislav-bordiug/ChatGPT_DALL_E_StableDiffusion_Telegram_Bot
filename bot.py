@@ -152,7 +152,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
             await message.answer(
                 photo=answer,
                 reply_markup=reply_markup,
-                caption=question,
+                text=question,
             )
             result -= 1
             await DataBase.set_dalle(user_id, result)
@@ -192,7 +192,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
             await message.answer(
                 photo=open(path, 'rb'),
                 reply_markup=reply_markup,
-                caption=question,
+                text=question,
             )
             await remove(path)
             result -= 1
