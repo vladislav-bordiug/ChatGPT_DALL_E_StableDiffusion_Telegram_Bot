@@ -18,6 +18,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
 from aiogram import F
+
 load_dotenv()
 translator = Translator()
 encoding = encoding_for_model("gpt-3.5-turbo")
