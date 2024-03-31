@@ -42,7 +42,7 @@ class States(StatesGroup):
 @dp.message(States.CHATGPT_STATE, F.text.casefold() == '🔙Back')
 @dp.message(States.DALL_E_STATE, F.text.casefold() == '🔙Back')
 @dp.message(States.STABLE_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.INFO_STATE, F.text.casefold() == =='🔙Back')
+@dp.message(States.INFO_STATE, F.text.casefold() == '🔙Back')
 async def start(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     username = message.from_user.username
