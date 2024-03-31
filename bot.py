@@ -370,8 +370,8 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
 
 async def main():
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
-    await dp.start_polling(bot)
     await DataBase.open_pool()
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     asyncio.run(main())
