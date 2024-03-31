@@ -38,7 +38,7 @@ class States(StatesGroup):
 # Starts a conversation
 @dp.message_handler(Command('start'))
 @dp.message_handler(F.text=='🔙Back', state=[States.ENTRY_STATE, States.CHATGPT_STATE, States.DALL_E_STATE, States.STABLE_STATE, States.INFO_STATE])
-async def start(message: types.Message, state: FSMContext):
+async def start(message: types.Message🔙Back):
     user_id = message.from_user.id
     username = message.from_user.username
     result = await DataBase.is_user(user_id)
@@ -68,7 +68,7 @@ async def start(message: types.Message, state: FSMContext):
 @dp.message_handler(F.text=='💭Chatting — ChatGPT$', state=States.ENTRY_STATE)
 @dp.message_handler(F.text=='🌄Image generation — DALL·E$', state=States.ENTRY_STATE)
 @dp.message_handler(F.text=='🌅Image generation — Stable Diffusion$', state=States.ENTRY_STATE)
-async def question_handler(message: types.Message, state: FSMContext):
+async def question_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -87,7 +87,7 @@ async def question_handler(message: types.Message, state: FSMContext):
 
 # Answer Handling
 @dp.message_handler(F.text, state=States.CHATGPT_STATE)
-async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
+async def chatgpt_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -127,7 +127,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
 
 # Answer Handling
 @dp.message_handler(F.text, state=States.DALL_E_STATE)
-async def dall_e_answer_handler(message: types.Message, state: FSMContext):
+async def dall_e_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -166,7 +166,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
 
 # Answer Handling
 @dp.message_handler(F.text, state=States.STABLE_STATE)
-async def stable_answer_handler(message: types.Message, state: FSMContext):
+async def stable_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
@@ -208,7 +208,7 @@ async def stable_answer_handler(message: types.Message, state: FSMContext):
 # Displays information about user
 @dp.message_handler(F.text=='👤My account | 💰Buy$', state=States.ENTRY_STATE)
 @dp.message_handler(F.text=='🔙Back', state=States.PURCHASE_STATE)
-async def display_info(message: types.Message, state: FSMContext):
+async def display_info(message: types.Message):
     user_id = message.from_user.id
     result = await DataBase.get_userinfo(user_id)
 
@@ -226,7 +226,7 @@ async def display_info(message: types.Message, state: FSMContext):
 # Displays goods
 @dp.message_handler(F.text=='💰Buy tokens and generations$', state=States.INFO_STATE)
 @dp.message_handler(F.text=='🔙Back', state=[States.PURCHASE_CHATGPT_STATE,States.PURCHASE_DALL_E_STATE,States.PURCHASE_STABLE_STATE])
-async def purchase(message: types.Message, state: FSMContext):
+async def purchase(message: types.Message):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
               [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")], [KeyboardButton(text="🔙Back")]]
@@ -244,7 +244,7 @@ async def purchase(message: types.Message, state: FSMContext):
 @dp.message_handler(F.text=='100K ChatGPT tokens - 5 USD💵$', state=States.PURCHASE_STATE)
 @dp.message_handler(F.text=='100 DALL·E image generations - 5 USD💵$', state=States.PURCHASE_STATE)
 @dp.message_handler(F.text=='100 Stable Diffusion image generations - 5 USD💵$', state=States.PURCHASE_STATE)
-async def currencies(message: types.Message, state: FSMContext):
+async def currencies(message: types.Message):
     keyboard = ReplyKeyboardMarkup(
         [
             [KeyboardButton(text="💲USDT"),
@@ -272,7 +272,7 @@ async def currencies(message: types.Message, state: FSMContext):
 @dp.message_handler(F.text=='💲TON$', state=States.PURCHASE_CHATGPT_STATE)
 @dp.message_handler(F.text=='💲BTC$', state=States.PURCHASE_CHATGPT_STATE)
 @dp.message_handler(F.text=='💲ETH$', state=States.PURCHASE_CHATGPT_STATE)
-async def buy_chatgpt(message: types.Message, state: FSMContext):
+async def buy_chatgpt(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
@@ -294,7 +294,7 @@ async def buy_chatgpt(message: types.Message, state: FSMContext):
 @dp.message_handler(F.text=='💲TON$', state=States.PURCHASE_DALL_E_STATE)
 @dp.message_handler(F.text=='💲BTC$', state=States.PURCHASE_DALL_E_STATE)
 @dp.message_handler(F.text=='💲ETH$', state=States.PURCHASE_DALL_E_STATE)
-async def buy_dall_e(message: types.Message, state: FSMContext):
+async def buy_dall_e(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
@@ -316,7 +316,7 @@ async def buy_dall_e(message: types.Message, state: FSMContext):
 @dp.message_handler(F.text=='💲TON$', state=States.PURCHASE_STABLE_STATE)
 @dp.message_handler(F.text=='💲BTC$', state=States.PURCHASE_STABLE_STATE)
 @dp.message_handler(F.text=='💲ETH$', state=States.PURCHASE_STABLE_STATE)
-async def buy_stable(message: types.Message, state: FSMContext):
+async def buy_stable(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
