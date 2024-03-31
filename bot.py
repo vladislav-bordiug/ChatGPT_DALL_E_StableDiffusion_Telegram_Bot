@@ -18,6 +18,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types.input_file import FSInputFile
 from aiogram import F
 
 load_dotenv()
@@ -187,14 +188,13 @@ async def stable_answer_handler(message: types, state: FSMContext):
         prompt = await translator.translate(question, targetlang='en')
 
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
-        print(path)
+
         if path:
-            with open(path, 'rb') as photo:
-                await message.answer_photo(
-                    photo=photo,
-                    reply_markup=reply_markup,
-                    caption=question,
-                )
+            await message.answer_photo(
+                photo=FSInputFile(path),
+                reply_markup=reply_markup,
+                caption=question,
+            )
             await remove(path)
             result -= 1
             await DataBase.set_stable(user_id, result)
