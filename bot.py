@@ -53,7 +53,7 @@ async def start(message: types.Message, state: FSMContext):
               [KeyboardButton(text="🌅Image generation — Stable Diffusion")],
               [KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
 
     if not result:
