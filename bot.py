@@ -13,14 +13,11 @@ from aiofiles.os import remove
 
 import asyncio
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.filters import Command
+from aiogram.filters.command import Command
 from aiogram import F
-from aiogram.dispatcher import FSMContext
-from aiogram import executor
-
 load_dotenv()
 translator = Translator()
 encoding = encoding_for_model("gpt-3.5-turbo")
