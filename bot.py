@@ -38,11 +38,11 @@ class States(StatesGroup):
 
 # Starts a conversation
 @dp.message(Command('start'))
-@dp.message(States.ENTRY_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.CHATGPT_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.DALL_E_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.STABLE_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.INFO_STATE, F.text.casefold() == '🔙Back')
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.CHATGPT_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.DALL_E_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.STABLE_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.INFO_STATE, F.text.regexp(r'^🔙Back$'))
 async def start(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     username = message.from_user.username
@@ -71,8 +71,8 @@ async def start(message: types.Message, state: FSMContext):
 
 # Question Handling
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^💭Chatting — ChatGPT$'))
-@dp.message(States.ENTRY_STATE, F.text.casefold() == '🌄Image generation — DALL·E')
-@dp.message(States.ENTRY_STATE, F.text.casefold() == '🌅Image generation — Stable Diffusion')
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌄Image generation — DALL·E$'))
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌅Image generation — Stable Diffusion$'))
 async def question_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -211,8 +211,8 @@ async def stable_answer_handler(message: types, state: FSMContext):
 
 
 # Displays information about user
-@dp.message(States.ENTRY_STATE, F.text.casefold() == '👤My account | 💰Buy')
-@dp.message(States.PURCHASE_STATE, F.text.casefold() == '🔙Back')
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^👤My account | 💰Buy$'))
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^🔙Back$'))
 async def display_info(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     result = await DataBase.get_userinfo(user_id)
@@ -229,10 +229,10 @@ async def display_info(message: types.Message, state: FSMContext):
 
 
 # Displays goods
-@dp.message(States.INFO_STATE, F.text.casefold() == '💰Buy tokens and generations')
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.casefold() == '🔙Back')
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.casefold() == '🔙Back')
+@dp.message(States.INFO_STATE, F.text.regexp(r'^💰Buy tokens and generations$'))
+@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^🔙Back$'))
 async def purchase(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
@@ -249,9 +249,9 @@ async def purchase(message: types.Message, state: FSMContext):
 
 
 # Displays cryptocurrencies
-@dp.message(States.PURCHASE_STATE, F.text.casefold() == '100K ChatGPT tokens - 5 USD💵')
-@dp.message(States.PURCHASE_STATE, F.text.casefold() == '100 DALL·E image generations - 5 USD💵')
-@dp.message(States.PURCHASE_STATE, F.text.casefold() == '100 Stable Diffusion image generations - 5 USD💵')
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100K ChatGPT tokens - 5 USD💵$'))
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100 DALL·E image generations - 5 USD💵$'))
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100 Stable Diffusion image generations - 5 USD💵$'))
 async def currencies(message: types.Message, state: FSMContext):
     buttons = [
         [KeyboardButton(text="💲USDT"),
@@ -277,10 +277,10 @@ async def currencies(message: types.Message, state: FSMContext):
         await state.set_state(States.PURCHASE_STABLE_STATE)
 
 # Makes invoice and displays it
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.casefold() == '💲USDT')
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.casefold() == '💲TON')
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.casefold() == '💲BTC')
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.casefold() == '💲ETH')
+@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲USDT$'))
+@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲TON$'))
+@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲BTC$'))
+@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲ETH$'))
 async def buy_chatgpt(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
@@ -299,10 +299,10 @@ async def buy_chatgpt(message: types.Message):
 
 
 # Makes invoice and displays it
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.casefold() == '💲USDT')
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.casefold() == '💲TON')
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.casefold() == '💲BTC')
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.casefold() == '💲ETH')
+@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲USDT$'))
+@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲TON$'))
+@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲BTC$'))
+@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲ETH$'))
 async def buy_dall_e(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
@@ -321,10 +321,10 @@ async def buy_dall_e(message: types.Message):
 
 
 # Makes invoice and displays it
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.casefold() == '💲USDT')
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.casefold() == '💲TON')
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.casefold() == '💲BTC')
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.casefold() == '💲ETH')
+@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲USDT$'))
+@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲TON$'))
+@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲BTC$'))
+@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲ETH$'))
 async def buy_stable(message: types.Message):
     user_id = message.from_user.id
     currency = message.text
