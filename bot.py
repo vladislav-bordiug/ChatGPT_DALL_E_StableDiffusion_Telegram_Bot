@@ -326,13 +326,13 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
         elif status == "paid":
             if result[1] == 'chatgpt':
                 await DataBase.update_chatgpt(result[0], invoice_id)
-                await query.answer("✅Successful payment, tokens were added to your account")
+                await query.answer("✅Successful payment, 100K ChatGPT tokens were added to your account")
             elif result[1] == 'dall_e':
                 await DataBase.update_dalle(result[0], invoice_id)
-                await query.answer("✅Successful payment, image generations were added to your account")
+                await query.answer("✅Successful payment, 100 DALL·E image generations were added to your account")
             elif result[1] == 'stable':
                 await DataBase.update_stable(result[0], invoice_id)
-                await query.answer("✅Successful payment, image generations were added to your account")
+                await query.answer("✅Successful payment, 100 Stable Diffusion image generations were added to your account")
         elif status == "expired":
             await query.answer("❎Payment has expired, create a new payment")
     else:
