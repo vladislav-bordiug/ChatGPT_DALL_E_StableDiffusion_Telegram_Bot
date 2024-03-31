@@ -1,7 +1,7 @@
 from gpytranslate import Translator
 
 from os import getenv
-import tiktoken_async import encoding_for_model
+from tiktoken_async import encoding_for_model
 
 from db import DataBase
 from openaitools import OpenAiTools
