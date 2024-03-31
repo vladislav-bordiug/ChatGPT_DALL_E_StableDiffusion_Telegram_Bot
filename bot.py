@@ -11,7 +11,7 @@ from cryptopay import CryptoPay
 from dotenv import load_dotenv
 from aiofiles.os import remove
 
-from asyncio import get_running_loop
+import asyncio
 
 from telegram import (
     InlineKeyboardMarkup,
@@ -102,7 +102,7 @@ async def chatgpt_answer_handler(update: Update, context: ContextTypes):
                 text = answer,
                 reply_markup=reply_markup,
             )
-            result -= len(await get_running_loop().run_in_executor(None, encoding.encode,question)) + len(await get_running_loop().run_in_executor(None, encoding.encode,answer))
+            result -= len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,question)) + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
             else:
@@ -135,6 +135,7 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
         question = update.message.text
 
         prompt = await translator.translate(question, targetlang='en')
+        print(prompt)
 
         answer = await OpenAiTools.get_dalle(prompt)
 
@@ -175,7 +176,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        path = await get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt)
+        path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt)
 
         if path:
             await update.message.reply_photo(
