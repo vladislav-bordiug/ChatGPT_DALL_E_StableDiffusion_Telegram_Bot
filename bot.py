@@ -366,13 +366,12 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
         await query.answer("❎Payment has expired, create a new payment")
 
 async def main():
-    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
     await DataBase.open_pool()
     await dp.start_polling(bot)
-    enc = await encoding_for_model("gpt-3.5-turbo")
-    return enc
 
 if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
-    encoding = asyncio.run(main())
+    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
+    encoding = asyncio.run(encoding_for_model("gpt-3.5-turbo"))
+    asyncio.run(main())
