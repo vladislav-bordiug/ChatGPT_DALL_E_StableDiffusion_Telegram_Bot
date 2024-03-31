@@ -187,7 +187,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
         prompt = await translator.translate(question, targetlang='en')
 
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
-
+        print(path)
         if path:
             with open(path, 'rb') as photo:
                 await message.answer_photo(
