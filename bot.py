@@ -76,9 +76,9 @@ async def start(message: types.Message, state: FSMContext):
 async def question_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
-    await message.reply_text(
+    await message.answer(
         text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
@@ -95,7 +95,7 @@ async def question_handler(message: types.Message, state: FSMContext):
 async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
 
     user_id = message.from_user.id
@@ -107,7 +107,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
         answer = await OpenAiTools.get_chatgpt(question)
 
         if answer:
-            await message.reply_text(
+            await message.answer(
                 text = answer,
                 reply_markup=reply_markup,
             )
@@ -117,13 +117,13 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
             else:
                 await DataBase.set_chatgpt(user_id, 0)
         else:
-            await message.reply_text(
+            await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
 
     else:
-        await message.reply_text(
+        await message.answer(
             text = "❎You have 0 ChatGPT tokens. You need to buy them to use ChatGPT.",
             reply_markup=reply_markup,
         )
@@ -135,7 +135,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
 async def dall_e_answer_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
 
     user_id = message.from_user.id
@@ -149,7 +149,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
         answer = await OpenAiTools.get_dalle(prompt.text)
 
         if answer:
-            await message.reply_photo(
+            await message.answer(
                 photo=answer,
                 reply_markup=reply_markup,
                 caption=question,
@@ -157,12 +157,12 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
             result -= 1
             await DataBase.set_dalle(user_id, result)
         else:
-            await message.reply_text(
+            await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
-        await message.reply_text(
+        await message.answer(
             text = "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
             reply_markup=reply_markup,
         )
@@ -174,7 +174,7 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
 async def stable_answer_handler(message: types, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
 
     user_id = message.from_user.id
@@ -189,7 +189,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
-            await message.reply_photo(
+            await message.answer(
                 photo=open(path, 'rb'),
                 reply_markup=reply_markup,
                 caption=question,
@@ -198,12 +198,12 @@ async def stable_answer_handler(message: types, state: FSMContext):
             result -= 1
             await DataBase.set_stable(user_id, result)
         else:
-            await message.reply_text(
+            await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
-        await message.reply_text(
+        await message.answer(
             text = "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",
             reply_markup=reply_markup,
         )
@@ -219,9 +219,9 @@ async def display_info(message: types.Message, state: FSMContext):
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
-    await message.reply_text(
+    await message.answer(
         text = f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
         reply_markup=reply_markup,
     )
@@ -238,9 +238,9 @@ async def purchase(message: types.Message, state: FSMContext):
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
               [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
-        button, resize_keyboard=True
+        keyboard = button, resize_keyboard=True
     )
-    await message.reply_text(
+    await message.answer(
         text = "Choose product: 👇",
         reply_markup=reply_markup,
     )
@@ -252,17 +252,18 @@ async def purchase(message: types.Message, state: FSMContext):
 @dp.message(States.PURCHASE_STATE, F.text=='100 DALL·E image generations - 5 USD💵$')
 @dp.message(States.PURCHASE_STATE, F.text=='100 Stable Diffusion image generations - 5 USD💵$')
 async def currencies(message: types.Message, state: FSMContext):
+    buttons = [
+        [KeyboardButton(text="💲USDT"),
+        KeyboardButton(text="💲TON")],
+        [KeyboardButton(text="💲BTC"),
+        KeyboardButton(text="💲ETH")],
+        [KeyboardButton(text="🔙Back")]
+    ]
     keyboard = ReplyKeyboardMarkup(
-        [
-            [KeyboardButton(text="💲USDT"),
-             KeyboardButton(text="💲TON")],
-            [KeyboardButton(text="💲BTC"),
-             KeyboardButton(text="💲ETH")],
-            [KeyboardButton(text="🔙Back")]
-        ],
+        keyboard = buttons,
         resize_keyboard=True
     )
-    await message.reply_text(
+    await message.answer(
         text = "Choose currency: 👇",
         reply_markup=keyboard,
     )
@@ -290,7 +291,7 @@ async def buy_chatgpt(message: types.Message):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await message.reply_text(
+    await message.answer(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
@@ -312,7 +313,7 @@ async def buy_dall_e(message: types.Message):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await message.reply_text(
+    await message.answer(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
@@ -334,7 +335,7 @@ async def buy_stable(message: types.Message):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await message.reply_text(
+    await message.answer(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
