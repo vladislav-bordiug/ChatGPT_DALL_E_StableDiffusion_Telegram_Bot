@@ -287,7 +287,7 @@ async def buy_chatgpt(message: types.Message):
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
-        [
+        inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
@@ -309,7 +309,7 @@ async def buy_dall_e(message: types.Message):
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
-        [
+        inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
@@ -331,7 +331,7 @@ async def buy_stable(message: types.Message):
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
-        [
+        inline_keyboard = [
             [InlineKeyboardButton(text="💰Buy", url=invoice_url),
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
