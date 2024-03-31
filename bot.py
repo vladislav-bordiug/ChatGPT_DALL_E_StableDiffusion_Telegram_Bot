@@ -31,6 +31,7 @@ class States(StatesGroup):
     DALL_E_STATE = State()
     STABLE_STATE = State()
     INFO_STATE = State()
+    PURCHASE_STATE = State()
     PURCHASE_CHATGPT_STATE = State()
     PURCHASE_DALL_E_STATE = State()
     PURCHASE_STABLE_STATE = State()
