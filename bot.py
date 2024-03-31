@@ -39,7 +39,7 @@ class States(StatesGroup):
 
 # Starts a conversation
 @dp.message_handler(Command('start'))
-@dp.message_handler(F.text=='🔙Back$', state=[States.ENTRY_STATE, States.CHATGPT_STATE, States.DALL_E_STATE, States.STABLE_STATE, States.INFO_STATE])
+@dp.message_handler(F.text=='🔙Back', state=[States.ENTRY_STATE, States.CHATGPT_STATE, States.DALL_E_STATE, States.STABLE_STATE, States.INFO_STATE])
 async def start(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     username = message.from_user.username
@@ -209,7 +209,7 @@ async def stable_answer_handler(message: types.Message, state: FSMContext):
 
 # Displays information about user
 @dp.message_handler(F.text=='👤My account | 💰Buy$', state=States.ENTRY_STATE)
-@dp.message_handler(F.text=='🔙Back$', state=States.PURCHASE_STATE)
+@dp.message_handler(F.text=='🔙Back', state=States.PURCHASE_STATE)
 async def display_info(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     result = await DataBase.get_userinfo(user_id)
@@ -227,7 +227,7 @@ async def display_info(message: types.Message, state: FSMContext):
 
 # Displays goods
 @dp.message_handler(F.text=='💰Buy tokens and generations$', state=States.INFO_STATE)
-@dp.message_handler(F.text=='🔙Back$', state=[States.PURCHASE_CHATGPT_STATE,States.PURCHASE_DALL_E_STATE,States.PURCHASE_STABLE_STATE])
+@dp.message_handler(F.text=='🔙Back', state=[States.PURCHASE_CHATGPT_STATE,States.PURCHASE_DALL_E_STATE,States.PURCHASE_STABLE_STATE])
 async def purchase(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
