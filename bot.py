@@ -1,4 +1,4 @@
-from deep_translator import GoogleTranslator
+from gpytranslate import Translator
 
 from os import getenv
 from tiktoken import encoding_for_model
@@ -134,7 +134,7 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
     if result > 0:
         question = update.message.text
 
-        prompt = await get_running_loop().run_in_executor(None, translator.translate,question)
+        prompt = await translator.translate(question, targetlang='en')
 
         answer = await OpenAiTools.get_dalle(prompt)
 
@@ -173,7 +173,7 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
 
         question = update.message.text
 
-        prompt = await get_running_loop().run_in_executor(None, translator.translate,question)
+        prompt = await translator.translate(question, targetlang='en')
 
         path = await get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt)
 
@@ -336,7 +336,7 @@ if __name__ == '__main__':
     load_dotenv()
     application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
         10).build()
-    translator = GoogleTranslator(source='auto', target='en')
+    translator = Translator()
     encoding = encoding_for_model("gpt-3.5-turbo")
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
