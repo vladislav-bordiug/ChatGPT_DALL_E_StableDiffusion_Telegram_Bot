@@ -70,7 +70,7 @@ async def start(message: types.Message, state: FSMContext):
     await state.set_state(States.ENTRY_STATE)
 
 # Question Handling
-@dp.message(States.ENTRY_STATE, F.text.casefold() == '💭Chatting — ChatGPT')
+@dp.message(States.ENTRY_STATE, F.text.casefold() == "💭Chatting — ChatGPT")
 @dp.message(States.ENTRY_STATE, F.text.casefold() == '🌄Image generation — DALL·E')
 @dp.message(States.ENTRY_STATE, F.text.casefold() == '🌅Image generation — Stable Diffusion')
 async def question_handler(message: types.Message, state: FSMContext):
