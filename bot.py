@@ -38,7 +38,7 @@ class States(StatesGroup):
 # Starts a conversation
 @dp.message_handler(Command('start'))
 @dp.message_handler(F.text=='🔙Back', state=[States.ENTRY_STATE, States.CHATGPT_STATE, States.DALL_E_STATE, States.STABLE_STATE, States.INFO_STATE])
-async def start(message: types.Message🔙Back):
+async def start(message: types.Message):
     user_id = message.from_user.id
     username = message.from_user.username
     result = await DataBase.is_user(user_id)
