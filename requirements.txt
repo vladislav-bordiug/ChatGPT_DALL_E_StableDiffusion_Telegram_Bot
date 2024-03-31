@@ -2,7 +2,7 @@ gpytranslate==1.5.1
 openai==1.14.3
 Pillow==10.2.0
 python-dotenv==1.0.1
-python-telegram-bot==20.7
+aiogram==3.4.1
 stability-sdk==0.8.5
 asyncpg==0.29.0
 aiocryptopay==0.3.5

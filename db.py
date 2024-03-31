@@ -2,8 +2,6 @@ import asyncpg
 from os import getenv
 from dotenv import load_dotenv
 
-import asyncio
-
 load_dotenv()
 
 class DataBase:

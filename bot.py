@@ -13,34 +13,34 @@ from aiofiles.os import remove
 
 import asyncio
 
-from telegram import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ReplyKeyboardMarkup,
-    Update,
-    Message,
-    KeyboardButton,
-)
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    ContextTypes,
-    ConversationHandler,
-    MessageHandler,
-    filters,
-    CallbackQueryHandler,
-)
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.dispatcher import filters
+from aiogram import executor
 
-(ENTRY_STATE, CHATGPT_STATE,
- DALL_E_STATE, STABLE_STATE,
- INFO_STATE, PURCHASE_STATE,
- PURCHASE_CHATGPT_STATE,
- PURCHASE_DALL_E_STATE, PURCHASE_STABLE_STATE) = range(9)
+load_dotenv()
+translator = Translator()
+encoding = encoding_for_model("gpt-3.5-turbo")
+bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
+dp = Dispatcher(bot)
+
+class States(StatesGroup):
+    ENTRY_STATE = State()
+    CHATGPT_STATE = State()
+    DALL_E_STATE = State()
+    STABLE_STATE = State()
+    INFO_STATE = State()
+    PURCHASE_CHATGPT_STATE = State()
+    PURCHASE_DALL_E_STATE = State()
+    PURCHASE_STABLE_STATE = State()
 
 # Starts a conversation
-async def start(update: Update, context: ContextTypes):
-    user_id = update.message.from_user.id
-    username = update.message.from_user.username
+@dp.message_handler(commands=['start'])
+@dp.message_handler(filters.Regex('^🔙Back$'), state=[States.ENTRY_STATE, States.CHATGPT_STATE, States.DALL_E_STATE, States.STABLE_STATE, States.INFO_STATE])
+async def start(message: types.Message):
+    user_id = message.from_user.id
+    username = message.from_user.username
     result = await DataBase.is_user(user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
@@ -53,52 +53,56 @@ async def start(update: Update, context: ContextTypes):
 
     if not result:
         await DataBase.insert_user(user_id, username)
-        await update.message.reply_text(
+        await message.reply_text(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
     else:
-        await update.message.reply_text(
+        await message.reply_text(
             text = "Choose an option: 👇🏻 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
         )
-    return ENTRY_STATE
+    await States.ENTRY_STATE.set()
 
 # Question Handling
-async def question_handler(update: Update, context: ContextTypes):
+@dp.message_handler(filters.Regex('^💭Chatting — ChatGPT$'), state=States.ENTRY_STATE)
+@dp.message_handler(filters.Regex('^🌄Image generation — DALL·E$'), state=States.ENTRY_STATE)
+@dp.message_handler(filters.Regex('^🌅Image generation — Stable Diffusion$'), state=States.ENTRY_STATE)
+async def question_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "Enter your text: 👇🏻",
         reply_markup=reply_markup,
     )
-    option = update.message.text
+    option = message.text
     if option == "💭Chatting — ChatGPT":
-        return CHATGPT_STATE
+        await States.CHATGPT_STATE.set()
     elif option == "🌄Image generation — DALL·E":
-        return DALL_E_STATE
+        await States.DALL_E_STATE.set()
     elif option == "🌅Image generation — Stable Diffusion":
-        return STABLE_STATE
+        await States.STABLE_STATE.set()
 
 # Answer Handling
-async def chatgpt_answer_handler(update: Update, context: ContextTypes):
+@dp.message_handler(filters.TEXT, state=States.CHATGPT_STATE)
+async def chatgpt_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
 
-    user_id = update.message.from_user.id
+    user_id = message.from_user.id
     result = await DataBase.get_chatgpt(user_id)
 
     if result > 0:
-        question = update.message.text
+        question = message.text
 
         answer = await OpenAiTools.get_chatgpt(question)
 
         if answer:
-            await update.message.reply_text(
+            await message.reply_text(
                 text = answer,
                 reply_markup=reply_markup,
             )
@@ -108,38 +112,39 @@ async def chatgpt_answer_handler(update: Update, context: ContextTypes):
             else:
                 await DataBase.set_chatgpt(user_id, 0)
         else:
-            await update.message.reply_text(
+            await message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
 
     else:
-        await update.message.reply_text(
+        await message.reply_text(
             text = "❎You have 0 ChatGPT tokens. You need to buy them to use ChatGPT.",
             reply_markup=reply_markup,
         )
-    return CHATGPT_STATE
+    await States.CHATGPT_STATE.set()
 
 
 # Answer Handling
-async def dall_e_answer_handler(update: Update, context: ContextTypes):
+@dp.message_handler(filters.TEXT, state=States.DALL_E_STATE)
+async def dall_e_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
 
-    user_id = update.message.from_user.id
+    user_id = message.from_user.id
     result = await DataBase.get_dalle(user_id)
 
     if result > 0:
-        question = update.message.text
+        question = message.text
 
         prompt = await translator.translate(question, targetlang='en')
 
         answer = await OpenAiTools.get_dalle(prompt.text)
 
         if answer:
-            await update.message.reply_photo(
+            await message.reply_photo(
                 photo=answer,
                 reply_markup=reply_markup,
                 caption=question,
@@ -147,38 +152,39 @@ async def dall_e_answer_handler(update: Update, context: ContextTypes):
             result -= 1
             await DataBase.set_dalle(user_id, result)
         else:
-            await update.message.reply_text(
+            await message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
-        await update.message.reply_text(
+        await message.reply_text(
             text = "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
             reply_markup=reply_markup,
         )
-    return DALL_E_STATE
+    await States.DALL_E_STATE.set()
 
 
 # Answer Handling
-async def stable_answer_handler(update: Update, context: ContextTypes):
+@dp.message_handler(filters.TEXT, state=States.STABLE_STATE)
+async def stable_answer_handler(message: types.Message):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
 
-    user_id = update.message.from_user.id
+    user_id = message.from_user.id
     result = await DataBase.get_stable(user_id)
 
     if result > 0:
 
-        question = update.message.text
+        question = message.text
 
         prompt = await translator.translate(question, targetlang='en')
 
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
-            await update.message.reply_photo(
+            await message.reply_photo(
                 photo=open(path, 'rb'),
                 reply_markup=reply_markup,
                 caption=question,
@@ -187,51 +193,58 @@ async def stable_answer_handler(update: Update, context: ContextTypes):
             result -= 1
             await DataBase.set_stable(user_id, result)
         else:
-            await update.message.reply_text(
+            await message.reply_text(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
             )
     else:
-        await update.message.reply_text(
+        await message.reply_text(
             text = "❎You have 0 Stable Diffusion image generations. You need to buy them to use Stable Diffusion.",
             reply_markup=reply_markup,
         )
-    return STABLE_STATE
+    await States.STABLE_STATE.set()
 
 
 # Displays information about user
-async def display_info(update: Update, context: ContextTypes):
-    user_id = update.message.from_user.id
+@dp.message_handler(filters.Regex('^👤My account | 💰Buy$'), state=States.ENTRY_STATE)
+@dp.message_handler(filters.Regex('^🔙Back$'), state=States.PURCHASE_STATE)
+async def display_info(message: types.Message):
+    user_id = message.from_user.id
     result = await DataBase.get_userinfo(user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
         reply_markup=reply_markup,
     )
-    return INFO_STATE
+    await States.INFO_STATE.set()
 
 
 # Displays goods
-async def purchase(update: Update, context: ContextTypes):
+@dp.message_handler(filters.Regex('^💰Buy tokens and generations$'), state=States.INFO_STATE)
+@dp.message_handler(filters.Regex('^🔙Back$'), state=[States.PURCHASE_CHATGPT_STATE,States.PURCHASE_DALL_E_STATE,States.PURCHASE_STABLE_STATE])
+async def purchase(message: types.Message):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
               [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         button, resize_keyboard=True
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "Choose product: 👇",
         reply_markup=reply_markup,
     )
-    return PURCHASE_STATE
+    await States.PURCHASE_STATE.set()
 
 
 # Displays cryptocurrencies
-async def currencies(update: Update, context: ContextTypes):
+@dp.message_handler(filters.Regex('^100K ChatGPT tokens - 5 USD💵$'), state=States.PURCHASE_STATE)
+@dp.message_handler(filters.Regex('^100 DALL·E image generations - 5 USD💵$'), state=States.PURCHASE_STATE)
+@dp.message_handler(filters.Regex('^100 Stable Diffusion image generations - 5 USD💵$'), state=States.PURCHASE_STATE)
+async def currencies(message: types.Message):
     keyboard = ReplyKeyboardMarkup(
         [
             [KeyboardButton(text="💲USDT"),
@@ -242,22 +255,26 @@ async def currencies(update: Update, context: ContextTypes):
         ],
         resize_keyboard=True
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "Choose currency: 👇",
         reply_markup=keyboard,
     )
-    product = update.message.text
+    product = message.text
     if product == "100K ChatGPT tokens - 5 USD💵":
-        return PURCHASE_CHATGPT_STATE
+        await States.PURCHASE_CHATGPT_STATE.set()
     elif product == "100 DALL·E image generations - 5 USD💵":
-        return PURCHASE_DALL_E_STATE
+        await States.PURCHASE_DALL_E_STATE.set()
     elif product == "100 Stable Diffusion image generations - 5 USD💵":
-        return PURCHASE_STABLE_STATE
+        await States.PURCHASE_STABLE_STATE.set()
 
 # Makes invoice and displays it
-async def buy_chatgpt(update: Update, context: ContextTypes):
-    user_id = update.message.from_user.id
-    currency = update.message.text
+@dp.message_handler(filters.Regex('^💲USDT$'), state=States.PURCHASE_CHATGPT_STATE)
+@dp.message_handler(filters.Regex('^💲TON$'), state=States.PURCHASE_CHATGPT_STATE)
+@dp.message_handler(filters.Regex('^💲BTC$'), state=States.PURCHASE_CHATGPT_STATE)
+@dp.message_handler(filters.Regex('^💲ETH$'), state=States.PURCHASE_CHATGPT_STATE)
+async def buy_chatgpt(message: types.Message):
+    user_id = message.from_user.id
+    currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'chatgpt')
     keyboard = InlineKeyboardMarkup(
@@ -266,16 +283,20 @@ async def buy_chatgpt(update: Update, context: ContextTypes):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
 
 # Makes invoice and displays it
-async def buy_dall_e(update: Update, context: ContextTypes):
-    user_id = update.message.from_user.id
-    currency = update.message.text
+@dp.message_handler(filters.Regex('^💲USDT$'), state=States.PURCHASE_DALL_E_STATE)
+@dp.message_handler(filters.Regex('^💲TON$'), state=States.PURCHASE_DALL_E_STATE)
+@dp.message_handler(filters.Regex('^💲BTC$'), state=States.PURCHASE_DALL_E_STATE)
+@dp.message_handler(filters.Regex('^💲ETH$'), state=States.PURCHASE_DALL_E_STATE)
+async def buy_dall_e(message: types.Message):
+    user_id = message.from_user.id
+    currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'dall_e')
     keyboard = InlineKeyboardMarkup(
@@ -284,16 +305,20 @@ async def buy_dall_e(update: Update, context: ContextTypes):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
 
 # Makes invoice and displays it
-async def buy_stable(update: Update, context: ContextTypes):
-    user_id = update.message.from_user.id
-    currency = update.message.text
+@dp.message_handler(filters.Regex('^💲USDT$'), state=States.PURCHASE_STABLE_STATE)
+@dp.message_handler(filters.Regex('^💲TON$'), state=States.PURCHASE_STABLE_STATE)
+@dp.message_handler(filters.Regex('^💲BTC$'), state=States.PURCHASE_STABLE_STATE)
+@dp.message_handler(filters.Regex('^💲ETH$'), state=States.PURCHASE_STABLE_STATE)
+async def buy_stable(message: types.Message):
+    user_id = message.from_user.id
+    currency = message.text
     invoice_url, invoice_id = await CryptoPay.create_invoice(5, currency[1:])
     await DataBase.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
@@ -302,15 +327,16 @@ async def buy_stable(update: Update, context: ContextTypes):
              InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
         ]
     )
-    await update.message.reply_text(
+    await message.reply_text(
         text = "💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗️Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
         reply_markup=keyboard,
     )
 
 
 # Checks payment
-async def keyboard_callback(update: Update, context: ContextTypes):
-    query = update.callback_query
+@dp.callback_query_handler()
+async def keyboard_callback(callback_query: types.CallbackQuery):
+    query = callback_query
     invoice_id = int(query.data)
     result = await DataBase.get_orderdata(invoice_id)
     if result:
@@ -333,77 +359,4 @@ async def keyboard_callback(update: Update, context: ContextTypes):
         await query.answer("❎Payment has expired, create a new payment")
 
 if __name__ == '__main__':
-    load_dotenv()
-    application = Application.builder().token(getenv("TELEGRAM_BOT_TOKEN")).read_timeout(10).get_updates_read_timeout(
-        10).build()
-    translator = Translator()
-    encoding = encoding_for_model("gpt-3.5-turbo")
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start), MessageHandler(filters.Regex('^🔙Back$'), start)],
-        states={
-            ENTRY_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^💭Chatting — ChatGPT$'), question_handler),
-                MessageHandler(filters.Regex('^🌄Image generation — DALL·E$'), question_handler),
-                MessageHandler(filters.Regex('^🌅Image generation — Stable Diffusion$'), question_handler),
-                MessageHandler(filters.Regex('^👤My account | 💰Buy$'), display_info),
-                MessageHandler(filters.Regex('^🔙Back$'), start),
-            ],
-            CHATGPT_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, chatgpt_answer_handler),
-            ],
-            DALL_E_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, dall_e_answer_handler),
-            ],
-            STABLE_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.TEXT, stable_answer_handler),
-            ],
-            INFO_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), start),
-                MessageHandler(filters.Regex('^💰Buy tokens and generations$'), purchase),
-            ],
-            PURCHASE_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), display_info),
-                MessageHandler(filters.Regex('^100K ChatGPT tokens - 5 USD💵$'), currencies),
-                MessageHandler(filters.Regex('^100 DALL·E image generations - 5 USD💵$'), currencies),
-                MessageHandler(filters.Regex('^100 Stable Diffusion image generations - 5 USD💵$'), currencies),
-            ],
-            PURCHASE_CHATGPT_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), purchase),
-                MessageHandler(filters.Regex('^💲USDT$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^💲TON$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^💲BTC$'), buy_chatgpt),
-                MessageHandler(filters.Regex('^💲ETH$'), buy_chatgpt),
-            ],
-            PURCHASE_DALL_E_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), purchase),
-                MessageHandler(filters.Regex('^💲USDT$'), buy_dall_e),
-                MessageHandler(filters.Regex('^💲TON$'), buy_dall_e),
-                MessageHandler(filters.Regex('^💲BTC$'), buy_dall_e),
-                MessageHandler(filters.Regex('^💲ETH$'), buy_dall_e),
-            ],
-            PURCHASE_STABLE_STATE: [
-                CommandHandler('start', start),
-                MessageHandler(filters.Regex('^🔙Back$'), purchase),
-                MessageHandler(filters.Regex('^💲USDT$'), buy_stable),
-                MessageHandler(filters.Regex('^💲TON$'), buy_stable),
-                MessageHandler(filters.Regex('^💲BTC$'), buy_stable),
-                MessageHandler(filters.Regex('^💲ETH$'), buy_stable),
-            ],
-        },
-        fallbacks=[],
-    )
-
-    application.add_handler(conv_handler)
-    application.add_handler(CallbackQueryHandler(keyboard_callback))
-    application.run_polling()
+    executor.start_polling(dp, skip_updates=True)

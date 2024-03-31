@@ -2,8 +2,6 @@ from os import getenv
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
-import asyncio
-
 load_dotenv()
 
 client = AsyncOpenAI(
