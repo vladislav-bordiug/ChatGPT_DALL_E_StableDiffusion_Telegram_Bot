@@ -189,12 +189,12 @@ async def stable_answer_handler(message: types, state: FSMContext):
         path = await asyncio.get_running_loop().run_in_executor(None, StableDiffusion.get_stable,prompt.text)
 
         if path:
-            photo = open(path, 'rb')
-            await message.answer_photo(
-                photo=photo,
-                reply_markup=reply_markup,
-                caption=question,
-            )
+            with open(path, 'rb') as photo:
+                await message.answer_photo(
+                    photo=photo,
+                    reply_markup=reply_markup,
+                    caption=question,
+                )
             await remove(path)
             result -= 1
             await DataBase.set_stable(user_id, result)
