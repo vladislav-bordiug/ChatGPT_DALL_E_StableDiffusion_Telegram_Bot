@@ -21,8 +21,8 @@ class StableDiffusion:
             seed=0,
             steps=30,
             cfg_scale=7.0,
-            width=512,
-            height=512,
+            width=1024,
+            height=1024,
             samples=1,
             sampler=generation.SAMPLER_K_DPMPP_2M
         )
