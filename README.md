@@ -14,7 +14,7 @@
 + [License](#license)
 
 ## About <a name = "about"></a>
-Nowadays neural networks are able to conduct a dialogue, quickly search for the information we need, answer questions and draw pictures from words. This is a Telegram bot written in Python that allows you to chat with ChatGPT and generate images using DALL·E and Stable Diffusion. I think it is very comfortable to unite these neural networks in one Telegram bot.
+Nowadays neural networks are able to conduct a dialogue, quickly search for the information we need, answer questions and draw pictures from words. This is a Telegram bot written in Python that allows you to chat with ChatGPT and generate images using DALL·E and Stable Diffusion, payments are implemented using Crypto Bot. I think it is very comfortable to unite these neural networks in one Telegram bot.
 
 You can look on this bot in Telegram: [@ChatGpt_Dall_E_Bot](https://t.me/ChatGPT_Dall_E_Bot)
 
