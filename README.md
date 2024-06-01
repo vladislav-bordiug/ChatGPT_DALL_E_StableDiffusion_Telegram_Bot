@@ -19,7 +19,7 @@ Nowadays neural networks are able to conduct a dialogue, quickly search for the 
 You can look on this bot in Telegram: [@ChatGpt_Dall_E_Bot](https://t.me/ChatGPT_Dall_E_Bot)
  
 ## Start <a name = "start"></a>
-When the user enters the start command, the bot sends him a welcome message stating that the user has free 3000 ChatGPT tokens, 3 DALL·E image generations and 3 Stable Diffusion image generations and displays 4 buttons: "💭Chatting — ChatGPT", "🌄Image generation — DALL·E", "🌅Image generation — Stable Diffusion" and "👤My account | 💰Buy". If the user is already registered, the bot only displays buttons.
+When the user enters the start command, the bot sends him a welcome message stating that the user has free 3000 ChatGPT tokens, 1 DALL·E image generation and 3 Stable Diffusion image generations and displays 4 buttons: "💭Chatting — ChatGPT", "🌄Image generation — DALL·E", "🌅Image generation — Stable Diffusion" and "👤My account | 💰Buy". If the user is already registered, the bot only displays buttons.
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-14-35 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232325199-508eb8c5-4bfc-44ad-afde-d87b820fc4bb.gif)
 
