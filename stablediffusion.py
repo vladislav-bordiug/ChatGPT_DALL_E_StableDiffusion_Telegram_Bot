@@ -19,6 +19,7 @@ class StableDiffusion:
             data={
                 "prompt": prompt,
                 "output_format": "jpeg",
+                "model": "sd3-large-turbo",
             },
         )
 

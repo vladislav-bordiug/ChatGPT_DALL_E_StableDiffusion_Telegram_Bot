@@ -64,23 +64,7 @@ Generated image:
 
 In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there is one parameter:
 
-```engine``` - Set the engine to use for generation. Available engines: stable-diffusion-xl-1024-v0-9, stable-diffusion-xl-1024-v1-0, esrgan-v1-x2plus.
-
-Also in the StableDiffusion class there are seven parameters in the get_stable function:
-
-```seed``` - If a seed is provided, the resulting generated image will be deterministic. What this means is that as long as all generation parameters remain the same, you can always recall the same image simply by generating it again.
-
-```steps``` - Amount of inference steps performed on image generation. Defaults to 30.
-
-```cfg_scale``` - Influences how strongly your generation is guided to match your prompt. Setting this value higher increases the strength in which it tries to match your prompt. Defaults to 7.0 if not specified.
-
-```width``` - Generation width, defaults to 512 if not included.
-
-```height``` - Generation height, defaults to 512 if not included.
-
-```samples``` - Number of images to generate, defaults to 1 if not included.
-
-```sampler``` - Choose which sampler we want to denoise our generation with. Defaults to k_dpmpp_2m if not specified. Clip Guidance only supports ancestral samplers. (Available Samplers: ddim, plms, k_euler, k_euler_ancestral, k_heun, k_dpm_2, k_dpm_2_ancestral, k_dpmpp_2s_ancestral, k_lms, k_dpmpp_2m)
+```model``` - The model to use for generation: sd3-medium requires 3.5 credits per generation, sd3-large requires 6.5 credits per generation, sd3-large-turbo requires 4 credits per generation.
 
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If the user wants to buy tokens and generations, he presses the "💰Buy tokens and generations" button, selects the product and currency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
