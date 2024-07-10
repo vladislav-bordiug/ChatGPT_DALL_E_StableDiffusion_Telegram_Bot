@@ -46,8 +46,8 @@ async def start(message: types.Message, state: FSMContext):
     username = message.from_user.username
     result = await DataBase.is_user(user_id)
 
-    button = [[KeyboardButton(text="💭Chatting — ChatGPT")],
-              [KeyboardButton(text="🌄Image generation — DALL·E")],
+    button = [[KeyboardButton(text="💭Chatting — ChatGPT-4o")],
+              [KeyboardButton(text="🌄Image generation — DALL·E 3")],
               [KeyboardButton(text="🌅Image generation — Stable Diffusion")],
               [KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -68,8 +68,8 @@ async def start(message: types.Message, state: FSMContext):
     await state.set_state(States.ENTRY_STATE)
 
 # Question Handling
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^💭Chatting — ChatGPT$'))
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌄Image generation — DALL·E$'))
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^💭Chatting — ChatGPT-4o$'))
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌄Image generation — DALL·E 3$'))
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌅Image generation — Stable Diffusion$'))
 async def question_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
@@ -81,9 +81,9 @@ async def question_handler(message: types.Message, state: FSMContext):
         reply_markup=reply_markup,
     )
     option = message.text
-    if option == "💭Chatting — ChatGPT":
+    if option == "💭Chatting — ChatGPT-4o":
         await state.set_state(States.CHATGPT_STATE)
-    elif option == "🌄Image generation — DALL·E":
+    elif option == "🌄Image generation — DALL·E 3":
         await state.set_state(States.DALL_E_STATE)
     elif option == "🌅Image generation — Stable Diffusion":
         await state.set_state(States.STABLE_STATE)
@@ -233,7 +233,7 @@ async def display_info(message: types.Message, state: FSMContext):
 @dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^🔙Back$'))
 async def purchase(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
-              [KeyboardButton(text="100 DALL·E image generations - 5 USD💵")],
+              [KeyboardButton(text="50 DALL·E image generations - 5 USD💵")],
               [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")],
               [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -248,7 +248,7 @@ async def purchase(message: types.Message, state: FSMContext):
 
 # Displays cryptocurrencies
 @dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100K ChatGPT tokens - 5 USD💵$'))
-@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100 DALL·E image generations - 5 USD💵$'))
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^50 DALL·E image generations - 5 USD💵$'))
 @dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100 Stable Diffusion image generations - 5 USD💵$'))
 async def currencies(message: types.Message, state: FSMContext):
     buttons = [
@@ -269,7 +269,7 @@ async def currencies(message: types.Message, state: FSMContext):
     product = message.text
     if product == "100K ChatGPT tokens - 5 USD💵":
         await state.set_state(States.PURCHASE_CHATGPT_STATE)
-    elif product == "100 DALL·E image generations - 5 USD💵":
+    elif product == "50 DALL·E image generations - 5 USD💵":
         await state.set_state(States.PURCHASE_DALL_E_STATE)
     elif product == "100 Stable Diffusion image generations - 5 USD💵":
         await state.set_state(States.PURCHASE_STABLE_STATE)
@@ -297,7 +297,7 @@ async def buy(message: types.Message, state: FSMContext):
         product = '100K ChatGPT tokens - 5 USD💵'
         await DataBase.new_order(invoice_id, user_id, 'chatgpt')
     elif current_state == States.PURCHASE_DALL_E_STATE:
-        product = '100 DALL·E image generations - 5 USD💵'
+        product = '50 DALL·E image generations - 5 USD💵'
         await DataBase.new_order(invoice_id, user_id, 'dall_e')
     elif current_state == States.PURCHASE_STABLE_STATE:
         product = '100 Stable Diffusion image generations - 5 USD💵'

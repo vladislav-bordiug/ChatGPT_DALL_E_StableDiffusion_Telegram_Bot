@@ -9,8 +9,7 @@ class CryptoPay:
     async def getprice(cost: int, currency: str):
         rates = await crypto.get_exchange_rates()
         if currency == "USDT":
-            exchange = float((utils.exchange.get_rate('USDT', 'USD', rates)).rate)
-            cost = cost / exchange
+            pass
         elif currency == "TON":
             exchange = float((utils.exchange.get_rate('TON', 'USD', rates)).rate)
             cost = cost / exchange

@@ -20,7 +20,7 @@ class OpenAiTools:
                         "content": prompt,
                     }
                 ],
-                model="gpt-3.5-turbo",
+                model="gpt-4o",
                 max_tokens=3000,
                 temperature=1,
             )
@@ -32,7 +32,7 @@ class OpenAiTools:
     async def get_dalle(prompt: str):
         try:
             response = await client.images.generate(
-                model="dall-e-2",
+                model="dall-e-3",
                 prompt=prompt,
                 size="1024x1024",
                 n=1,

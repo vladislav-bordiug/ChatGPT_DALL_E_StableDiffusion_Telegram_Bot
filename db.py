@@ -79,7 +79,7 @@ class DataBase:
     async def update_dalle(user_id: int, invoice_id: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"UPDATE users SET dall_e = dall_e + 100 WHERE user_id = '{user_id}'")
+                await cursor.execute(f"UPDATE users SET dall_e = dall_e + 50 WHERE user_id = '{user_id}'")
                 await cursor.execute(f"DELETE FROM orders WHERE invoice_id = {invoice_id}")
                 await conn.commit()
     async def update_stable(user_id: int, invoice_id: int):
