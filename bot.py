@@ -48,7 +48,7 @@ async def start(message: types.Message, state: FSMContext):
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT-4o")],
               [KeyboardButton(text="🌄Image generation — DALL·E 3")],
-              [KeyboardButton(text="🌅Image generation — Stable Diffusion")],
+              [KeyboardButton(text="🌅Image generation — Stable Diffusion 3")],
               [KeyboardButton(text="👤My account | 💰Buy")]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
@@ -234,7 +234,7 @@ async def display_info(message: types.Message, state: FSMContext):
 async def purchase(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="100K ChatGPT tokens - 5 USD💵")],
               [KeyboardButton(text="50 DALL·E image generations - 5 USD💵")],
-              [KeyboardButton(text="100 Stable Diffusion image generations - 5 USD💵")],
+              [KeyboardButton(text="50 Stable Diffusion image generations - 5 USD💵")],
               [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
@@ -249,7 +249,7 @@ async def purchase(message: types.Message, state: FSMContext):
 # Displays cryptocurrencies
 @dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100K ChatGPT tokens - 5 USD💵$'))
 @dp.message(States.PURCHASE_STATE, F.text.regexp(r'^50 DALL·E image generations - 5 USD💵$'))
-@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^100 Stable Diffusion image generations - 5 USD💵$'))
+@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^50 Stable Diffusion image generations - 5 USD💵$'))
 async def currencies(message: types.Message, state: FSMContext):
     buttons = [
         [KeyboardButton(text="💲USDT"),
@@ -271,7 +271,7 @@ async def currencies(message: types.Message, state: FSMContext):
         await state.set_state(States.PURCHASE_CHATGPT_STATE)
     elif product == "50 DALL·E image generations - 5 USD💵":
         await state.set_state(States.PURCHASE_DALL_E_STATE)
-    elif product == "100 Stable Diffusion image generations - 5 USD💵":
+    elif product == "50 Stable Diffusion image generations - 5 USD💵":
         await state.set_state(States.PURCHASE_STABLE_STATE)
 
 # Makes invoice and displays it
@@ -300,7 +300,7 @@ async def buy(message: types.Message, state: FSMContext):
         product = '50 DALL·E image generations - 5 USD💵'
         await DataBase.new_order(invoice_id, user_id, 'dall_e')
     elif current_state == States.PURCHASE_STABLE_STATE:
-        product = '100 Stable Diffusion image generations - 5 USD💵'
+        product = '50 Stable Diffusion image generations - 5 USD💵'
         await DataBase.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
         inline_keyboard = [

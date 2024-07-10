@@ -2,8 +2,8 @@ gpytranslate==1.5.1
 openai==1.35.13
 Pillow==10.2.0
 python-dotenv==1.0.1
+requests==2.32.3
 aiogram==3.4.1
-stability-sdk==0.8.5
 psycopg-binary==3.1.18
 psycopg==3.1.18
 psycopg-pool==3.2.1
