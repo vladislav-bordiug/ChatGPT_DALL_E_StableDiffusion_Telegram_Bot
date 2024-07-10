@@ -70,7 +70,7 @@ async def start(message: types.Message, state: FSMContext):
 # Question Handling
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^💭Chatting — ChatGPT-4o$'))
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌄Image generation — DALL·E 3$'))
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌅Image generation — Stable Diffusion$'))
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌅Image generation — Stable Diffusion 3$'))
 async def question_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
@@ -85,7 +85,7 @@ async def question_handler(message: types.Message, state: FSMContext):
         await state.set_state(States.CHATGPT_STATE)
     elif option == "🌄Image generation — DALL·E 3":
         await state.set_state(States.DALL_E_STATE)
-    elif option == "🌅Image generation — Stable Diffusion":
+    elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
 # Answer Handling
