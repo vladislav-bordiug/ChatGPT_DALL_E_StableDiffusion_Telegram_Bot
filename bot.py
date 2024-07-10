@@ -346,5 +346,5 @@ if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
-    encoding = encoding_for_model("gpt-3.5-turbo")
+    encoding = encoding_for_model("gpt-4o")
     asyncio.run(main())
