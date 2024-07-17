@@ -9,7 +9,6 @@ from stablediffusion import StableDiffusion
 from cryptopay import CryptoPay
 
 from dotenv import load_dotenv
-from aiofiles.os import remove
 
 import asyncio
 

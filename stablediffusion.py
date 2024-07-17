@@ -1,6 +1,4 @@
 from os import getenv
-from io import BytesIO
-from PIL import Image
 import requests
 from dotenv import load_dotenv
 from functools import partial
