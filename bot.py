@@ -188,7 +188,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
 
         if photo:
             await message.answer_photo(
-                photo=BufferedInputFile(photo),
+                photo=BufferedInputFile(photo, 'image.jpeg'),
                 reply_markup=reply_markup,
                 caption=question,
             )
