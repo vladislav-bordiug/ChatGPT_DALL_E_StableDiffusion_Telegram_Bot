@@ -184,15 +184,14 @@ async def stable_answer_handler(message: types, state: FSMContext):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        path = await StableDiffusion.get_stable(prompt.text)
+        photo = await StableDiffusion.get_stable(prompt.text)
 
-        if path:
+        if photo:
             await message.answer_photo(
-                photo=FSInputFile(path),
+                photo=photo,
                 reply_markup=reply_markup,
                 caption=question,
             )
-            await remove(path)
             result -= 1
             await DataBase.set_stable(user_id, result)
         else:

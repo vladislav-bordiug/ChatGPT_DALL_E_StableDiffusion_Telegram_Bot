@@ -26,10 +26,6 @@ class StableDiffusion:
         )
 
         if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            img_path = str(response.headers['seed']) + ".png"
-            img.save(img_path)
-
-            return img_path
+            return response.content
         else:
             return
