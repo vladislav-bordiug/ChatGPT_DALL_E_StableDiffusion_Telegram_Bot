@@ -18,7 +18,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types.input_file import FSInputFile
+from aiogram.types.input_file import BufferedInputFile
 from aiogram import F
 
 class States(StatesGroup):
@@ -188,7 +188,7 @@ async def stable_answer_handler(message: types, state: FSMContext):
 
         if photo:
             await message.answer_photo(
-                photo=photo,
+                photo=BufferedInputFile(photo),
                 reply_markup=reply_markup,
                 caption=question,
             )
