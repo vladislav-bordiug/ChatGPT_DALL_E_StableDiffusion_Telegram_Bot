@@ -20,7 +20,7 @@ class OpenAiTools:
                         "content": prompt,
                     }
                 ],
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 max_tokens=3000,
                 temperature=1,
             )
