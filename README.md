@@ -22,7 +22,6 @@ When the user enters the start command, the bot sends him a welcome message stat
 
 ![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-14-35 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232325199-508eb8c5-4bfc-44ad-afde-d87b820fc4bb.gif)
 
-
 ## ChatGPT <a name = "chatgpt"></a>
 If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT" button and chats.
 
