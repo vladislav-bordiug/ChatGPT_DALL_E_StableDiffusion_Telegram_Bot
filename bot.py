@@ -125,7 +125,6 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
 
         if answer:
             messages.append(("assistant", answer))
-            messages, _ = await reduce_messages(messages)
             for role, content in messages:
                 await DataBase.save_message(user_id, role, content)
             result -= question_tokens*0.25 + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, answer))
