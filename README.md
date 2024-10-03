@@ -130,9 +130,17 @@ Here you need to press create tables.
 
 For example, tables for this project:
 
+Table for storing users:
+
 ![imm](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/5ee426a1-5f36-4a53-b2aa-3833ad888755)
 
+Table for storing orders:
+
 ![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/6f74e04e-ee85-47eb-9f53-92b731e76b67)
+
+Table for storing context:
+
+![image_2024-10-03_22-51-05](https://github.com/user-attachments/assets/e40d54db-82a4-4d2a-8881-4a41d5b2e0f1)
 
 Return to variables and add DATABASE_URL. All variables:
 
