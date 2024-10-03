@@ -19,6 +19,7 @@ from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 from aiogram import F
+from typing import List, Tuple
 
 class States(StatesGroup):
     ENTRY_STATE = State()
@@ -52,6 +53,8 @@ async def start(message: types.Message, state: FSMContext):
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
     )
+
+    await DataBase.delete_messages(user_id)
 
     if not result:
         await DataBase.insert_user(user_id, username)
@@ -87,6 +90,20 @@ async def question_handler(message: types.Message, state: FSMContext):
     elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
+async def reduce_messages(messages: List[Tuple[str, str]]) -> Tuple[List[Tuple[str, str]], int]:
+    question_tokens = 0
+    i = len(messages) - 1
+
+    while i >= 0:
+        cur_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, messages[i][1]))
+        if question_tokens + cur_tokens < 128000:
+            question_tokens += cur_tokens
+        else:
+            break
+        i -= 1
+
+    return messages[i + 1:], question_tokens
+
 # Answer Handling
 @dp.message(States.CHATGPT_STATE, F.text)
 async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
@@ -99,20 +116,28 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     result = await DataBase.get_chatgpt(user_id)
 
     if result > 0:
-        question = message.text
+        messages = await DataBase.get_messages(user_id)
+        messages.append(("user", message.text))
 
-        answer = await OpenAiTools.get_chatgpt(question)
+        messages, question_tokens = await reduce_messages(messages)
+
+        answer = await OpenAiTools.get_chatgpt(messages)
 
         if answer:
-            await message.answer(
-                text = answer,
-                reply_markup=reply_markup,
-            )
-            result -= len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,question + answer))
+            messages.append(("assistant", answer))
+            messages, _ = await reduce_messages(messages)
+            for role, content in messages:
+                await DataBase.save_message(user_id, role, content)
+            result -= question_tokens*0.25 + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, answer))
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
             else:
                 await DataBase.set_chatgpt(user_id, 0)
+
+            await message.answer(
+                text = answer,
+                reply_markup=reply_markup,
+            )
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",

@@ -1,6 +1,7 @@
 from os import getenv
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from typing import List, Tuple
 
 load_dotenv()
 
@@ -9,19 +10,16 @@ client = AsyncOpenAI(
 )
 
 class OpenAiTools:
-    async def get_chatgpt(question: str):
-        prompt = question
+    async def get_chatgpt(messages: List[Tuple[str, str]]):
+        mess = []
+        for role, content in messages:
+            mess.append({"role": role, "content": content})
 
         try:
             response = await client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-                model="gpt-4o-mini",
-                max_tokens=3000,
+                messages=mess,
+                model="gpt-4o",
+                max_tokens=16384,
                 temperature=1,
             )
 

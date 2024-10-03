@@ -1,6 +1,7 @@
 from psycopg_pool import AsyncConnectionPool
 from os import getenv
 from dotenv import load_dotenv
+from typing import List, Tuple
 
 load_dotenv()
 pool = AsyncConnectionPool(conninfo=getenv("DATABASE_URL"), timeout = 10, max_lifetime=600, check=AsyncConnectionPool.check_connection, open = False)
@@ -88,3 +89,21 @@ class DataBase:
                 await cursor.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 50 WHERE user_id = '{user_id}'")
                 await cursor.execute(f"DELETE FROM orders WHERE invoice_id = {invoice_id}")
                 await conn.commit()
+    async def save_message(user_id: int, role: str, message: str):
+        async with pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                conn.commit()
+                await cursor.execute("INSERT INTO messages(user_id, role, content) VALUES (%s, %s, %s)", (user_id, role, message))
+                await conn.commit()
+    async def delete_messages(user_id: int):
+        async with pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f"DELETE FROM messages WHERE user_id = {user_id}")
+                await conn.commit()
+    async def get_messages(user_id: int) -> List[Tuple[str, str]]:
+        async with pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f"SELECT role, content FROM messages WHERE user_id = {user_id}")
+                result = await cursor.fetchall()
+                await DataBase.delete_messages(user_id)
+                return list(result)
