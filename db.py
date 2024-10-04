@@ -89,21 +89,25 @@ class DataBase:
                 await cursor.execute(f"UPDATE users SET stable_diffusion = stable_diffusion + 50 WHERE user_id = '{user_id}'")
                 await cursor.execute(f"DELETE FROM orders WHERE invoice_id = {invoice_id}")
                 await conn.commit()
-    async def save_message(user_id: int, role: str, message: str):
+    async def save_message(user_id: int, role: str, message: str, tokens: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
                 conn.commit()
-                await cursor.execute("INSERT INTO messages(user_id, role, content) VALUES (%s, %s, %s)", (user_id, role, message))
+                await cursor.execute("INSERT INTO messages(user_id, role, content, tokens) VALUES (%s, %s, %s, %s)", (user_id, role, message, tokens))
+                await conn.commit()
+    async def delete_message(id: int):
+        async with pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f"DELETE FROM messages WHERE id = {id}")
                 await conn.commit()
     async def delete_messages(user_id: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"DELETE FROM messages WHERE user_id = {user_id}")
                 await conn.commit()
-    async def get_messages(user_id: int) -> List[Tuple[str, str]]:
+    async def get_messages(user_id: int) -> List[Tuple[int, str, str, int]]:
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT role, content FROM messages WHERE user_id = {user_id}")
+                await cursor.execute(f"SELECT id, role, content, tokens FROM messages WHERE user_id = {user_id}")
                 result = await cursor.fetchall()
-                await DataBase.delete_messages(user_id)
                 return list(result)

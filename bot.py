@@ -90,19 +90,21 @@ async def question_handler(message: types.Message, state: FSMContext):
     elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
-async def reduce_messages(messages: List[Tuple[str, str]]) -> Tuple[List[Tuple[str, str]], int]:
+async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[int, int]:
     question_tokens = 0
     i = len(messages) - 1
 
     while i >= 0:
-        cur_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, messages[i][1]))
-        if question_tokens + cur_tokens < 128000:
-            question_tokens += cur_tokens
+        if question_tokens + messages[i][3] < 128000:
+            question_tokens += messages[i][3]
         else:
             break
         i -= 1
 
-    return messages[i + 1:], question_tokens
+    for j in range(i+1):
+        await DataBase.delete_message(messages[i][0])
+
+    return i+1, question_tokens
 
 # Answer Handling
 @dp.message(States.CHATGPT_STATE, F.text)
@@ -116,18 +118,20 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     result = await DataBase.get_chatgpt(user_id)
 
     if result > 0:
+        await DataBase.save_message(user_id, "user", message.text, len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, message.text)))
+
         messages = await DataBase.get_messages(user_id)
-        messages.append(("user", message.text))
 
-        messages, question_tokens = await reduce_messages(messages)
+        start, question_tokens = await reduce_messages(messages)
 
-        answer = await OpenAiTools.get_chatgpt(messages)
+        answer = await OpenAiTools.get_chatgpt(start, messages)
 
         if answer:
-            messages.append(("assistant", answer))
-            for role, content in messages:
-                await DataBase.save_message(user_id, role, content)
-            result -= question_tokens*0.25 + len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, answer))
+            answer_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
+            await DataBase.save_message(user_id, "assistant", answer, answer_tokens)
+
+            result -= question_tokens*0.25 + answer_tokens
+
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
             else:
@@ -138,6 +142,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
                 reply_markup=reply_markup,
             )
         else:
+            await DataBase.delete_message(messages[-1][0])
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
@@ -170,13 +175,13 @@ async def dall_e_answer_handler(message: types.Message, state: FSMContext):
         answer = await OpenAiTools.get_dalle(prompt.text)
 
         if answer:
+            result -= 1
+            await DataBase.set_dalle(user_id, result)
             await message.answer_photo(
                 photo=answer,
                 reply_markup=reply_markup,
                 caption=question,
             )
-            result -= 1
-            await DataBase.set_dalle(user_id, result)
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
@@ -210,13 +215,13 @@ async def stable_answer_handler(message: types, state: FSMContext):
         photo = await StableDiffusion.get_stable(prompt.text)
 
         if photo:
+            result -= 1
+            await DataBase.set_stable(user_id, result)
             await message.answer_photo(
                 photo=BufferedInputFile(photo, 'image.jpeg'),
                 reply_markup=reply_markup,
                 caption=question,
             )
-            result -= 1
-            await DataBase.set_stable(user_id, result)
         else:
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",

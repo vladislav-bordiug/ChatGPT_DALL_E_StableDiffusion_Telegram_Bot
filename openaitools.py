@@ -10,10 +10,10 @@ client = AsyncOpenAI(
 )
 
 class OpenAiTools:
-    async def get_chatgpt(messages: List[Tuple[str, str]]):
+    async def get_chatgpt(start: int, messages: List[Tuple[int, str, str, int]]):
         mess = []
-        for role, content in messages:
-            mess.append({"role": role, "content": content})
+        for i in range(start, len(messages)):
+            mess.append({"role": messages[i][1], "content": messages[i][2]})
 
         try:
             response = await client.chat.completions.create(
