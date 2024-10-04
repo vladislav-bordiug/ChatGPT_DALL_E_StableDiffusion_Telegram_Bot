@@ -129,7 +129,7 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
             answer_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
             await DataBase.save_message(user_id, "assistant", answer, answer_tokens)
 
-            result -= question_tokens*0.25 + answer_tokens
+            result -= int(question_tokens*0.25 + answer_tokens)
 
             if result > 0:
                 await DataBase.set_chatgpt(user_id, result)
