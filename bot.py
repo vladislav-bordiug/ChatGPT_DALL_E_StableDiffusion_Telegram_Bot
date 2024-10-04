@@ -246,7 +246,7 @@ async def display_info(message: types.Message, state: FSMContext):
         keyboard = button, resize_keyboard=True
     )
     await message.answer(
-        text = f"You have: \n 💭{result[2]} ChatGPT tokens \n 🌄{result[3]} DALL·E image generations \n 🌅{result[4]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
+        text = f"You have: \n 💭{result[0]} ChatGPT tokens \n 🌄{result[1]} DALL·E image generations \n 🌅{result[2]} Stable Diffusion image generations \n 💸 You can buy more with crypto",
         reply_markup=reply_markup,
     )
     await state.set_state(States.INFO_STATE)

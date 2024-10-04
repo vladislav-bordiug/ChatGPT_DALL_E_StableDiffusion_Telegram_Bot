@@ -57,7 +57,7 @@ class DataBase:
     async def get_userinfo(user_id: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
+                await cursor.execute(f"SELECT chatgpt, dall_e, stable_diffusion FROM users WHERE user_id = '{user_id}'")
                 result = await cursor.fetchone()
                 return result
     async def new_order(invoice_id: int, user_id: int, product: str):
