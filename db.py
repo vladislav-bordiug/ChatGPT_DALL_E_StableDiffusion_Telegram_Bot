@@ -110,4 +110,4 @@ class DataBase:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT id, role, content, tokens FROM messages WHERE user_id = {user_id}")
                 result = await cursor.fetchall()
-                return list(result)
+                return result
