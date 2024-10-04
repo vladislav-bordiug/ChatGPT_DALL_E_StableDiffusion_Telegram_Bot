@@ -16,10 +16,10 @@ class DataBase:
                 await cursor.execute(f"SELECT user_id FROM users WHERE user_id = '{user_id}'")
                 result = await cursor.fetchone()
                 return result
-    async def insert_user(user_id: int, username: str):
+    async def insert_user(user_id: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("INSERT INTO users(user_id, username, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id,username,0,0,0))
+                await cursor.execute("INSERT INTO users(user_id, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s, %s)", (user_id,username,0,0,0))
                 await conn.commit()
     async def get_chatgpt(user_id: int):
         async with pool.connection() as conn:

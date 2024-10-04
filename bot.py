@@ -43,7 +43,6 @@ dp = Dispatcher()
 @dp.message(States.INFO_STATE, F.text.regexp(r'^🔙Back$'))
 async def start(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
-    username = message.from_user.username
     result = await DataBase.is_user(user_id)
 
     button = [[KeyboardButton(text="💭Chatting — ChatGPT-4o")],
@@ -57,7 +56,7 @@ async def start(message: types.Message, state: FSMContext):
     await DataBase.delete_messages(user_id)
 
     if not result:
-        await DataBase.insert_user(user_id, username)
+        await DataBase.insert_user(user_id)
         await message.answer(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image Generation \n🌅3 Stable Diffusion Image generation\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,
