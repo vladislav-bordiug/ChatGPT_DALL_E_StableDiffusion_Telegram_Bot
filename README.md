@@ -40,7 +40,7 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## DALL·E <a name = "dalle"></a>
 If the user wants to generate image with DALL·E, he presses the "🌄Image generation — DALL·E" button and generates.
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot – _1_ 2023-04-16 18-47-44 _online-video-cutter com_ (1)](https://user-images.githubusercontent.com/60838512/232324731-81761500-1a5c-4bd3-a728-b8917c8dd1eb.gif)
+![Видео без названия — сделано в Clipchamp (1)](https://github.com/user-attachments/assets/52e18bf1-ded4-406e-94f4-8fa5d5de6ffe)
 
 Generated image:
 
