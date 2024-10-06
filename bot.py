@@ -372,6 +372,14 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
+@dp.message()
+async def echo_handler(message: types.Message) -> None:
+    try:
+        print(message.text)
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.answer("Nice try!")
+
 async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
     url = getenv("BASE_WEBHOOK_URL")
@@ -379,8 +387,6 @@ async def on_startup(bot: Bot) -> None:
     await bot.set_webhook(f"{url}{path}")
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-
     load_dotenv()
     translator = Translator()
     encoding = encoding_for_model("gpt-4o")
