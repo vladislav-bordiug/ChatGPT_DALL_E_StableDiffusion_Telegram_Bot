@@ -9,5 +9,3 @@ psycopg-pool==3.2.1
 aiocryptopay==0.3.6
 tiktoken==0.7.0
 aiofiles==23.2.1
-fastapi==0.115.0
-uvicorn==0.31.0
