@@ -27,7 +27,7 @@ If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT
 
 This bot saves the context of the dialogue!
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-34-00 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232324085-8998d1e4-c075-4b72-818f-e516838c199a.gif)
+![Видео без названия — сделано в Clipchamp](https://github.com/user-attachments/assets/aa116f40-60ec-40dd-a137-94767b895666)
 
 In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_chatgpt function:
 
