@@ -88,9 +88,9 @@ These project needs these API tokens:
 
 ## Database <a name = "database"></a>
 
-This project requires PostgreSQL database with two tables: orders(invoice_id, user_id, product) and users(user_id, username, chatgpt, dall_e, stable_diffusion). 
+This project requires PostgreSQL database with two tables: users(user_id, username, chatgpt, dall_e, stable_diffusion), orders(invoice_id, user_id, product) and messages(id, user_id, role, content, messages). 
 
-Users and information about them will be added to the "users" table, orders will be added to the "orders" table.
+Users and information about them will be added to the "users" table, orders will be added to the "orders" table and ChatGPT context window messages will be added to the "messages" table.
 
 ```DATABASE_URL``` - url to database.
 
