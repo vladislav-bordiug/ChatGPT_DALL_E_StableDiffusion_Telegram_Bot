@@ -18,6 +18,7 @@ from aiohttp import web
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
+from aiogram.client.bot import DefaultBotProperties
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
@@ -390,7 +391,7 @@ if __name__ == '__main__':
     translator = Translator()
     encoding = encoding_for_model("gpt-4o")
 
-    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), parse_mode=ParseMode.HTML)
+    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     app.add_event_handler("startup", on_startup)
 
