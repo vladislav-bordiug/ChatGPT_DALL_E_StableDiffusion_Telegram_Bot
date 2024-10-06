@@ -142,9 +142,13 @@ Table for storing context:
 
 ![image_2024-10-04_12-17-50](https://github.com/user-attachments/assets/c803dca2-4086-4e40-a990-ce90e7866f58)
 
-Return to variables and add DATABASE_URL. All variables:
+Go back to the variables and add DATABASE_URL via "Add reference". 
 
-![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/70759227-5126-4508-9cc1-ce338abbc224)
+Also go to ther worker - Settings - Public Networking and add tap "Generate Domain". Copy this domain and add variable "BASE_WEBHOOK_URL". It needs to be something like "https://<Your unique part>.up.railway.app/". After that got to the Crypto Bot - Crypto Pay - My Apps - <Your app> - Webhooks, tap "Enable Webhooks" and send URL "https://<Your unique part>.up.railway.app/<CRYPTO BOT API TOKEN>".
+
+All variables:
+
+![image](https://github.com/user-attachments/assets/b68b26a9-fce8-4666-a33c-aaac12ef861e)
 
 ## License <a name = "license"></a>
 
