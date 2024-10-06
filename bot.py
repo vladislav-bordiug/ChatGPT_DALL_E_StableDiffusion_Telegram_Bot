@@ -347,14 +347,14 @@ async def buy(message: types.Message, state: FSMContext):
         reply_markup=keyboard,
     )
 
-@app.post(getenv("/" + getenv("TELEGRAM_BOT_TOKEN")))
+@app.post(getenv("/" + str(getenv("TELEGRAM_BOT_TOKEN"))))
 async def bot_webhook(request: Request):
     update = types.Update(**await request.json())
     await dp.feed_webhook_update(bot, update)
     return web.Response()
 
 # Checks payment
-@app.post(getenv("/" + getenv("CRYPTOPAY_KEY")))
+@app.post(getenv("/" + str(getenv("CRYPTOPAY_KEY"))))
 async def payments_webhook(request: Request):
     data = await request.json()
     update_type = data['update_type']
