@@ -37,6 +37,8 @@ class States(StatesGroup):
     PURCHASE_DALL_E_STATE = State()
     PURCHASE_STABLE_STATE = State()
 
+dp = Dispatcher()
+
 # Starts a conversation
 @dp.message(Command('start'))
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^🔙Back$'))
@@ -367,13 +369,6 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
-@dp.message()
-async def echo_handler(message: types.Message) -> None:
-    try:
-        await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.answer("Nice try!")
-
 async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
     url = getenv("BASE_WEBHOOK_URL")
@@ -384,8 +379,6 @@ if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
     encoding = encoding_for_model("gpt-4o")
-
-    dp = Dispatcher()
 
     dp.startup.register(on_startup)
 
