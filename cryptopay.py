@@ -25,7 +25,3 @@ class CryptoPay:
         price = await CryptoPay.getprice(cost, currency)
         invoice = await crypto.create_invoice(asset=currency, amount=price)
         return invoice.bot_invoice_url, invoice.invoice_id
-
-    async def get_status(invoice_id: int):
-        invoices = await crypto.get_invoices(invoice_ids=invoice_id)
-        return invoices.status
