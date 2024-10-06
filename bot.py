@@ -371,7 +371,7 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
-@app.post()
+@app.post("/")
 async def bot_webhook(request: Request):
     url = str(request.url)
     print(url)
