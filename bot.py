@@ -376,7 +376,7 @@ async def echo_handler(message: types.Message) -> None:
 
 async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
-    await bot.set_webhook(f"{getenv("BASE_WEBHOOK_URL")}{getenv("WEBHOOK_PATH")}", secret_token=getenv("WEBHOOK_SECRET"))
+    await bot.set_webhook(f"{getenv("BASE_WEBHOOK_URL")}{getenv("WEBHOOK_PATH")}")
 
 if __name__ == '__main__':
     load_dotenv()
@@ -394,7 +394,6 @@ if __name__ == '__main__':
     webhook_requests_handler = SimpleRequestHandler(
         dispatcher=dp,
         bot=bot,
-        secret_token=getenv("WEBHOOK_SECRET"),
     )
     webhook_requests_handler.register(app, path=getenv("WEBHOOK_PATH"))
 
