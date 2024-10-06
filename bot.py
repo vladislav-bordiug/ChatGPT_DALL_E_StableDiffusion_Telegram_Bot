@@ -385,6 +385,8 @@ async def on_startup() -> None:
     await bot.set_webhook(
         url=url_webhook
     )
+    webhook_info = await bot.get_webhook_info()
+    print(webhook_info)
 
 if __name__ == '__main__':
     load_dotenv()
