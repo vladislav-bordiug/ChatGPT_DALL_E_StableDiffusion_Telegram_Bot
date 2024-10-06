@@ -14,6 +14,7 @@ import asyncio
 
 from fastapi import FastAPI, Request
 import uvicorn
+from aiohttp import web
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
@@ -370,12 +371,15 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
 
 @app.post(getenv("WEBHOOK_PATH"))
 async def bot_webhook(request: Request):
+    url = str(request.url)
+    print(url)
     update = types.Update(**await request.json())
     await dp.feed_webhook_update(bot, update)
+    return web.Response()
 
 async def on_startup() -> None:
     await DataBase.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("WEBHOOK_PATH")
+    url_webhook = getenv("BASE_WEBHOOK_URL")
     await bot.set_webhook(
         url=url_webhook
     )
