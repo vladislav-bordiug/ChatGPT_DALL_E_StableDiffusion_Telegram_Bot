@@ -11,6 +11,7 @@ from cryptopay import CryptoPay
 from dotenv import load_dotenv
 
 import asyncio
+import os
 
 from fastapi import FastAPI, Request
 import uvicorn
@@ -385,8 +386,6 @@ async def on_startup() -> None:
     await bot.set_webhook(
         url=url_webhook
     )
-    webhook_info = await bot.get_webhook_info()
-    print(webhook_info)
 
 if __name__ == '__main__':
     load_dotenv()
@@ -397,4 +396,4 @@ if __name__ == '__main__':
 
     app.add_event_handler("startup", on_startup)
 
-    uvicorn.run(app, host=getenv("WEB_SERVER_HOST"), port=int(getenv("WEB_SERVER_PORT")))
+    uvicorn.run(app, host=getenv("WEB_SERVER_HOST"), port=int(os.environ.get("PORT", 8080)))
