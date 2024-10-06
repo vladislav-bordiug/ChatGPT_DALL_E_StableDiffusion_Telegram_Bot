@@ -146,7 +146,7 @@ Table for storing context:
 
 Go back to the variables and add DATABASE_URL via "Add reference". 
 
-Also go to ther worker - Settings - Public Networking and add tap "Generate Domain". Copy this domain and add variable "BASE_WEBHOOK_URL". It needs to be something like "https://<Your unique part>.up.railway.app/". After that got to the Crypto Bot - Crypto Pay - My Apps - <Your app> - Webhooks, tap "Enable Webhooks" and send URL "https://<Your unique part>.up.railway.app/<CRYPTO BOT API TOKEN>".
+Also go to worker – Settings – Public network and click “Generate Domain”. Copy this domain and add it to the "BASE_WEBHOOK_URL" variable. It should be something like “https://<Your unique part>.up.railway.app/”. After that, go to Crypto Bot - Crypto Pay - My Applications - <Your Application> - Webhooks, click "Enable Webhooks" and send the URL "https://<Your unique part>.up.railway.app/<CRYPTO BOT API TOKEN>".
 
 All variables:
 
