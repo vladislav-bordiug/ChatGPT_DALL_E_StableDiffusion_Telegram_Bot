@@ -368,7 +368,7 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
-async def on_startup(bot: Bot) -> None:
+async def on_startup() -> None:
     await DataBase.open_pool()
     url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("WEBHOOK_PATH")
     await bot.set_webhook(
