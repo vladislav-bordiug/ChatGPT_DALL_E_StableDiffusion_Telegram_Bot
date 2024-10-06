@@ -20,7 +20,7 @@ Nowadays neural networks are able to conduct a dialogue, quickly search for the 
 ## Start <a name = "start"></a>
 When the user enters the start command, the bot sends him a welcome message stating that the user has free 3000 ChatGPT tokens, 3 DALL·E image generation and 3 Stable Diffusion image generation and displays 4 buttons: "💭Chatting — ChatGPT-4o", "🌄Image generation — DALL·E 3", "🌅Image generation — Stable Diffusion 3" and "👤My account | 💰Buy". If the user is already registered, the bot only displays buttons.
 
-![Clipchamp-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/0668ce2c-3096-4406-90d4-50427074fece)
+![Видео без названия — сделано в Clipchamp (2)](https://github.com/user-attachments/assets/eab468d2-337d-4680-ad88-ce21196ed62d)
 
 ## ChatGPT <a name = "chatgpt"></a>
 If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT" button and chats.
