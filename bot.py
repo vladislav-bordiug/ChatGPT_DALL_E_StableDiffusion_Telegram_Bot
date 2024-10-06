@@ -376,7 +376,9 @@ async def echo_handler(message: types.Message) -> None:
 
 async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
-    await bot.set_webhook(f"{getenv("BASE_WEBHOOK_URL")}{getenv("WEBHOOK_PATH")}")
+    url = getenv("BASE_WEBHOOK_URL")
+    path = getenv("WEBHOOK_PATH")
+    await bot.set_webhook(f"{url}{path}")
 
 if __name__ == '__main__':
     load_dotenv()
