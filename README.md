@@ -44,7 +44,7 @@ If the user wants to generate image with DALL·E, he presses the "🌄Image gene
 
 Generated image:
 
-![photo_2023-04-16_18-47-57](https://user-images.githubusercontent.com/60838512/232333088-8cca3d7c-81b8-4f99-81b1-f621a2759452.jpg)
+![image](https://github.com/user-attachments/assets/5fe18110-5fb3-4a73-b66c-0a34b3a1f8fc)
 
 In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_dalle function:
 
@@ -61,7 +61,7 @@ If the user wants to generate image with Stable Diffusion, he presses the "🌅I
 
 Generated image:
 
-![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
+![image](https://github.com/user-attachments/assets/965fe6d3-ef9d-48e6-a096-209ec470694d)
 
 In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there is one parameter:
 
@@ -70,7 +70,7 @@ In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_Stab
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If the user wants to buy tokens and generations, he presses the "💰Buy tokens and generations" button, selects the product and currency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2024-02-05 21-52-10 (8)](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/5a7dbbd6-41f4-4efa-89a8-53f0c900aafd)
+![Видео без названия — сделано в Clipchamp (3)](https://github.com/user-attachments/assets/bbf94c99-5f60-4698-b22c-b10e9fd709bd)
 
 ## API tokens <a name = "apitokens"></a>
 
