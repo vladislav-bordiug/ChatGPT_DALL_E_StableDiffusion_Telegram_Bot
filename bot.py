@@ -12,6 +12,9 @@ from dotenv import load_dotenv
 
 import asyncio
 
+import logging
+import sys
+
 from aiohttp import web
 
 from aiogram import Bot, Dispatcher, types
@@ -376,6 +379,8 @@ async def on_startup(bot: Bot) -> None:
     await bot.set_webhook(f"{url}{path}")
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+
     load_dotenv()
     translator = Translator()
     encoding = encoding_for_model("gpt-4o")
