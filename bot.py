@@ -357,7 +357,8 @@ async def payments_webhook(request: Request):
     update_type = data['update_type']
     if update_type == "invoice_paid":
         invoice = data['payload']
-        invoice_id = invoice.invoice_id
+        print(invoice)
+        invoice_id = invoice['invoice_id']
         result = await DataBase.get_orderdata(invoice_id)
         if result[1] == 'chatgpt':
             await DataBase.update_chatgpt(result[0], invoice_id)
