@@ -388,4 +388,4 @@ if __name__ == '__main__':
     )
     webhook_requests_handler.register(app, path=getenv("WEBHOOK_PATH"))
     setup_application(app, dp, bot=bot)
-    web.run_app(app, host=getenv("WEB_SERVER_HOST"), port=getenv("WEB_SERVER_PORT"))
+    web.run_app(app, host=getenv("WEB_SERVER_HOST"), port=int(getenv("WEB_SERVER_PORT")))
