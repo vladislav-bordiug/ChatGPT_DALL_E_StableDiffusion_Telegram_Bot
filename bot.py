@@ -12,12 +12,10 @@ from dotenv import load_dotenv
 
 import asyncio
 
-from aiohttp import web
+from fastapi import FastAPI
+import uvicorn
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
@@ -38,6 +36,7 @@ class States(StatesGroup):
     PURCHASE_STABLE_STATE = State()
 
 dp = Dispatcher()
+app = FastAPI()
 
 # Starts a conversation
 @dp.message(Command('start'))
@@ -372,20 +371,18 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
 async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
     url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("WEBHOOK_PATH")
-    await bot.set_webhook(url=url_webhook)
+    await bot.set_webhook(
+        url=url_webhook
+    )
+
 
 if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
     encoding = encoding_for_model("gpt-4o")
 
-    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    dp.startup.register(on_startup)
-    app = web.Application()
-    webhook_requests_handler = SimpleRequestHandler(
-        dispatcher=dp,
-        bot=bot,
-    )
-    webhook_requests_handler.register(app, path=getenv("WEBHOOK_PATH"))
-    setup_application(app, dp, bot=bot)
-    web.run_app(app, host=getenv("WEB_SERVER_HOST"), port=int(getenv("WEB_SERVER_PORT")))
+    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
+
+    app.add_event_handler("startup", on_startup)
+
+    uvicorn.run(app, host=getenv("WEB_SERVER_HOST"), port=int(getenv("WEB_SERVER_PORT")))
