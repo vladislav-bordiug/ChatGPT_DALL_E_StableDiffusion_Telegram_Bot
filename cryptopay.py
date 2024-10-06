@@ -3,7 +3,7 @@ from aiocryptopay import AioCryptoPay, Networks, utils
 from os import getenv
 
 load_dotenv()
-crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
+crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.TEST_NET)
 
 class CryptoPay:
     async def getprice(cost: int, currency: str):
