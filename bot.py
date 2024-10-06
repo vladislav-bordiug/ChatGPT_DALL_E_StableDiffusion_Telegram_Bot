@@ -337,10 +337,7 @@ async def buy(message: types.Message, state: FSMContext):
         product = '50 Stable Diffusion image generations - 5 USD💵'
         await DataBase.new_order(invoice_id, user_id, 'stable')
     keyboard = InlineKeyboardMarkup(
-        inline_keyboard = [
-            [InlineKeyboardButton(text="💰Buy", url=invoice_url),
-             InlineKeyboardButton(text="☑️Check", callback_data=str(invoice_id))],
-        ]
+        inline_keyboard = [[InlineKeyboardButton(text="💰Buy", url=invoice_url)]]
     )
     await message.answer(
         text = f"🪙Product: {product} \n 💳If you want to pay click the button 'Buy', click button 'Start' in Crypto Bot and follow the instructions \n ❗Consider the network commission \n ☑️After payment you should tap 'Check' button to check payment \n If you don't want to pay tap the 'Back' button: 👇",
@@ -376,9 +373,7 @@ async def payments_webhook(request: Request):
 async def on_startup() -> None:
     await DataBase.open_pool()
     url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
-    await bot.set_webhook(
-        url=url_webhook
-    )
+    await bot.set_webhook(url=url_webhook)
 
 if __name__ == '__main__':
     load_dotenv()
