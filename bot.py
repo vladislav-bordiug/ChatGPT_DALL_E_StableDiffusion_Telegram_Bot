@@ -12,7 +12,12 @@ from dotenv import load_dotenv
 
 import asyncio
 
+from aiohttp import web
+
 from aiogram import Bot, Dispatcher, types
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
@@ -31,8 +36,6 @@ class States(StatesGroup):
     PURCHASE_CHATGPT_STATE = State()
     PURCHASE_DALL_E_STATE = State()
     PURCHASE_STABLE_STATE = State()
-
-dp = Dispatcher()
 
 # Starts a conversation
 @dp.message(Command('start'))
@@ -364,13 +367,37 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
-async def main():
+@dp.message()
+async def echo_handler(message: types.Message) -> None:
+    try:
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.answer("Nice try!")
+
+async def on_startup(bot: Bot) -> None:
     await DataBase.open_pool()
-    await dp.start_polling(bot)
+    await bot.set_webhook(f"{getenv("BASE_WEBHOOK_URL")}{getenv("WEBHOOK_PATH")}", secret_token=getenv("WEBHOOK_SECRET"))
 
 if __name__ == '__main__':
     load_dotenv()
     translator = Translator()
-    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"))
     encoding = encoding_for_model("gpt-4o")
-    asyncio.run(main())
+
+    dp = Dispatcher()
+
+    dp.startup.register(on_startup)
+
+    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    app = web.Application()
+
+    webhook_requests_handler = SimpleRequestHandler(
+        dispatcher=dp,
+        bot=bot,
+        secret_token=getenv("WEBHOOK_SECRET"),
+    )
+    webhook_requests_handler.register(app, path=getenv("WEBHOOK_PATH"))
+
+    setup_application(app, dp, bot=bot)
+
+    web.run_app(app, host=getenv("WEB_SERVER_HOST"), port=path=getenv("WEB_SERVER_PORT"))
