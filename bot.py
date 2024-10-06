@@ -372,7 +372,7 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
-@app.post("/")
+@app.post(getenv("WEBHOOK_PATH"))
 async def bot_webhook(request: Request):
     url = str(request.url)
     print(url)
@@ -382,7 +382,7 @@ async def bot_webhook(request: Request):
 
 async def on_startup() -> None:
     await DataBase.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL")
+    url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("WEBHOOK_PATH")
     await bot.set_webhook(
         url=url_webhook
     )
@@ -396,4 +396,4 @@ if __name__ == '__main__':
 
     app.add_event_handler("startup", on_startup)
 
-    uvicorn.run(app, host=getenv("WEB_SERVER_HOST"), port=int(os.environ.get("PORT", 8080)))
+    uvicorn.run(app, host=getenv("0.0.0.0"), port=int(os.environ.get("PORT", 8080)))
