@@ -368,7 +368,7 @@ async def payments_webhook(request: Request):
         elif result[1] == 'stable':
             await DataBase.update_stable(result[0], invoice_id)
             await bot.send_message(result[0], "✅You have received 50 Stable Diffusion image generations!")
-    return "OK"
+    return 'OK', 200
 
 async def on_startup() -> None:
     await DataBase.open_pool()
