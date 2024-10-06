@@ -368,13 +368,19 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
     else:
         await query.answer("✅You have already received your purchase")
 
+@app.post(getenv("WEBHOOK_PATH"))
+async def bot_webhook(update: dict):
+    telegram_update = types.Update(**update)
+    Dispatcher.set_current(dp)
+    Bot.set_current(bot)
+    await dp.process_update(telegram_update)
+
 async def on_startup() -> None:
     await DataBase.open_pool()
     url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("WEBHOOK_PATH")
     await bot.set_webhook(
         url=url_webhook
     )
-
 
 if __name__ == '__main__':
     load_dotenv()
