@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 
 import asyncio
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import uvicorn
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
@@ -369,11 +369,9 @@ async def keyboard_callback(callback_query: types.CallbackQuery):
         await query.answer("✅You have already received your purchase")
 
 @app.post(getenv("WEBHOOK_PATH"))
-async def bot_webhook(update: dict):
-    telegram_update = types.Update(**update)
-    Dispatcher.set_current(dp)
-    Bot.set_current(bot)
-    await dp.process_update(telegram_update)
+async def bot_webhook(request: Request):
+    update = types.Update(**await request.json())
+    await dp.feed_webhook_update(bot, update)
 
 async def on_startup() -> None:
     await DataBase.open_pool()
