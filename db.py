@@ -19,7 +19,7 @@ class DataBase:
     async def insert_user(user_id: int):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("INSERT INTO users(user_id, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s)", (user_id,0,0,0))
+                await cursor.execute("INSERT INTO users(user_id, chatgpt, dall_e, stable_diffusion) VALUES (%s, %s, %s, %s)", (user_id,3000,3,3))
                 await conn.commit()
     async def get_chatgpt(user_id: int):
         async with pool.connection() as conn:

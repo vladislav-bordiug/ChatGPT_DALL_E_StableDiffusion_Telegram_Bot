@@ -344,6 +344,7 @@ async def buy(message: types.Message, state: FSMContext):
         reply_markup=keyboard,
     )
 
+# Processes message
 @app.post("/" + getenv("TELEGRAM_BOT_TOKEN"))
 async def bot_webhook(request: Request):
     update = types.Update(**await request.json())
