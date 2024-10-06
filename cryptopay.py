@@ -1,11 +1,18 @@
 from dotenv import load_dotenv
 from aiocryptopay import AioCryptoPay, Networks, utils
+from aiocryptopay.models.update import Update
+from aiohttp import web
 from os import getenv
 
 load_dotenv()
+web_app = web.Application()
 crypto = AioCryptoPay(token=getenv("CRYPTOPAY_KEY"), network=Networks.MAIN_NET)
 
 class CryptoPay:
+    @crypto.pay_handler()
+    async def invoice_paid(update: Update, app) -> None:
+        print(update)
+
     async def getprice(cost: int, currency: str):
         rates = await crypto.get_exchange_rates()
         if currency == "USDT":
@@ -29,3 +36,6 @@ class CryptoPay:
     async def get_status(invoice_id: int):
         invoices = await crypto.get_invoices(invoice_ids=invoice_id)
         return invoices.status
+
+web_app.add_routes([web.post('/crypto-secret-path', crypto.get_updates)])
+web.run_app(app=web_app, host='localhost', port=3001)
