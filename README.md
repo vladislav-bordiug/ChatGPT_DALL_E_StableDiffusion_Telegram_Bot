@@ -57,7 +57,7 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## Stable Diffusion <a name = "stablediffusion"></a>
 If the user wants to generate image with Stable Diffusion, he presses the "🌅Image generation — Stable Diffusion" button and generates.
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 19-06-33 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232325734-ac97a733-91ef-490e-a30f-e970358ad585.gif)
+![Видео без названия — сделано в Clipchamp (2)](https://github.com/user-attachments/assets/216214b7-7c0e-4baf-b399-fa6081e86142)
 
 Generated image:
 
