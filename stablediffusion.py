@@ -22,7 +22,6 @@ class StableDiffusion:
                 "model": "sd3-large-turbo",
             })
         )
-
         if response.status_code == 200:
             return response.content
         else:
