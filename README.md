@@ -20,14 +20,14 @@ Nowadays neural networks are able to conduct a dialogue, quickly search for the 
 ## Start <a name = "start"></a>
 When the user enters the start command, the bot sends him a welcome message stating that the user has free 3000 ChatGPT tokens, 3 DALL·E image generation and 3 Stable Diffusion image generation and displays 4 buttons: "💭Chatting — ChatGPT-4o", "🌄Image generation — DALL·E 3", "🌅Image generation — Stable Diffusion 3" and "👤My account | 💰Buy". If the user is already registered, the bot only displays buttons.
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-14-35 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232325199-508eb8c5-4bfc-44ad-afde-d87b820fc4bb.gif)
+![Видео без названия — сделано в Clipchamp (4)](https://github.com/user-attachments/assets/a238e932-cdbc-42e1-8274-583222ce4316)
 
 ## ChatGPT <a name = "chatgpt"></a>
 If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT" button and chats.
 
 This bot saves the context of the dialogue!
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 18-34-00 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232324085-8998d1e4-c075-4b72-818f-e516838c199a.gif)
+![Видео без названия — сделано в Clipchamp](https://github.com/user-attachments/assets/aa116f40-60ec-40dd-a137-94767b895666)
 
 In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_chatgpt function:
 
@@ -40,11 +40,11 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## DALL·E <a name = "dalle"></a>
 If the user wants to generate image with DALL·E, he presses the "🌄Image generation — DALL·E" button and generates.
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot – _1_ 2023-04-16 18-47-44 _online-video-cutter com_ (1)](https://user-images.githubusercontent.com/60838512/232324731-81761500-1a5c-4bd3-a728-b8917c8dd1eb.gif)
+![Видео без названия — сделано в Clipchamp (1)](https://github.com/user-attachments/assets/52e18bf1-ded4-406e-94f4-8fa5d5de6ffe)
 
 Generated image:
 
-![photo_2023-04-16_18-47-57](https://user-images.githubusercontent.com/60838512/232333088-8cca3d7c-81b8-4f99-81b1-f621a2759452.jpg)
+![image](https://github.com/user-attachments/assets/5fe18110-5fb3-4a73-b66c-0a34b3a1f8fc)
 
 In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_dalle function:
 
@@ -57,11 +57,11 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## Stable Diffusion <a name = "stablediffusion"></a>
 If the user wants to generate image with Stable Diffusion, he presses the "🌅Image generation — Stable Diffusion" button and generates.
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2023-04-16 19-06-33 _online-video-cutter com_](https://user-images.githubusercontent.com/60838512/232325734-ac97a733-91ef-490e-a30f-e970358ad585.gif)
+![Видео без названия — сделано в Clipchamp (2)](https://github.com/user-attachments/assets/216214b7-7c0e-4baf-b399-fa6081e86142)
 
 Generated image:
 
-![image](https://user-images.githubusercontent.com/60838512/232325586-649bb911-aa0a-4a7b-9fa1-4ea544f93485.png)
+![image](https://github.com/user-attachments/assets/965fe6d3-ef9d-48e6-a096-209ec470694d)
 
 In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there is one parameter:
 
@@ -70,7 +70,9 @@ In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_Stab
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If the user wants to buy tokens and generations, he presses the "💰Buy tokens and generations" button, selects the product and currency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
 
-![ChatGPT, DALL·E, Stable Diffusion _ Telegram bot 2024-02-05 21-52-10 (8)](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/5a7dbbd6-41f4-4efa-89a8-53f0c900aafd)
+Payments are processed via webhooks.
+
+![Видео без названия — сделано в Clipchamp (3)](https://github.com/user-attachments/assets/bbf94c99-5f60-4698-b22c-b10e9fd709bd)
 
 ## API tokens <a name = "apitokens"></a>
 
@@ -86,9 +88,9 @@ These project needs these API tokens:
 
 ## Database <a name = "database"></a>
 
-This project requires PostgreSQL database with two tables: orders(invoice_id, user_id, product) and users(user_id, username, chatgpt, dall_e, stable_diffusion). 
+This project requires PostgreSQL database with two tables: users(user_id, username, chatgpt, dall_e, stable_diffusion), orders(invoice_id, user_id, product) and messages(id, user_id, role, content, messages). 
 
-Users and information about them will be added to the "users" table, orders will be added to the "orders" table.
+Users and information about them will be added to the "users" table, orders will be added to the "orders" table and ChatGPT context window messages will be added to the "messages" table.
 
 ```DATABASE_URL``` - url to database.
 
@@ -142,9 +144,13 @@ Table for storing context:
 
 ![image_2024-10-04_12-17-50](https://github.com/user-attachments/assets/c803dca2-4086-4e40-a990-ce90e7866f58)
 
-Return to variables and add DATABASE_URL. All variables:
+Go back to the variables and add DATABASE_URL via "Add reference". 
 
-![image](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/assets/60838512/70759227-5126-4508-9cc1-ce338abbc224)
+Also go to worker – Settings – Public network and click “Generate Domain”. Copy this domain and add it to the "BASE_WEBHOOK_URL" variable. It should be something like “https://<Your unique part>.up.railway.app/”. After that, go to Crypto Bot - Crypto Pay - My Applications - <Your Application> - Webhooks, click "Enable Webhooks" and send the URL "https://<Your unique part>.up.railway.app/<CRYPTO BOT API TOKEN>".
+
+All variables:
+
+![image](https://github.com/user-attachments/assets/b68b26a9-fce8-4666-a33c-aaac12ef861e)
 
 ## License <a name = "license"></a>
 
