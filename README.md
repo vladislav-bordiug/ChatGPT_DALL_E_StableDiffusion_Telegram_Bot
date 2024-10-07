@@ -72,7 +72,7 @@ If the user wants to see account information or buy tokens and generations, he p
 
 Payments are processed via webhooks.
 
-![Видео без названия — сделано в Clipchamp (3)](https://github.com/user-attachments/assets/bbf94c99-5f60-4698-b22c-b10e9fd709bd)
+![Видео без названия — сделано в Clipchamp (4)](https://github.com/user-attachments/assets/24980ebf-cde4-4603-9d47-6a57f43e189a)
 
 ## API tokens <a name = "apitokens"></a>
 
