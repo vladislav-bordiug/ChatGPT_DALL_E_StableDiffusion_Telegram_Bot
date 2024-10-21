@@ -104,7 +104,7 @@ async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[in
             break
         i -= 1
     for j in range(i+1):
-        await DataBase.delete_message(messages[i][0])
+        await DataBase.delete_message(messages[j][0])
     return i+1, question_tokens
 
 # Answer Handling
