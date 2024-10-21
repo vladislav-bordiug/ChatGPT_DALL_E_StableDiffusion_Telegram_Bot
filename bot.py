@@ -94,7 +94,7 @@ async def question_handler(message: types.Message, state: FSMContext):
     elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
-async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[int, int]:
+async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[List[Tuple[str, str]], int]:
     question_tokens = 0
     i = len(messages) - 1
     while i >= 0:
@@ -103,9 +103,9 @@ async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[in
         else:
             break
         i -= 1
-    for j in range(i+1):
-        await DataBase.delete_message(messages[j][0])
-    return i+1, question_tokens
+    if i > -1:
+        await DataBase.delete_message([messages[j][0] for j in range(i+1)])
+    return [(messages[j][1], messages[j][2]) for j in range(i+1,len(messages))], question_tokens
 
 # Answer Handling
 @dp.message(States.CHATGPT_STATE, F.text)
@@ -123,9 +123,9 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
 
         messages = await DataBase.get_messages(user_id)
 
-        start, question_tokens = await reduce_messages(messages)
+        messages, question_tokens = await reduce_messages(messages)
 
-        answer = await OpenAiTools.get_chatgpt(start, messages)
+        answer = await OpenAiTools.get_chatgpt(messages)
 
         if answer:
             answer_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
@@ -143,7 +143,6 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
                 reply_markup=reply_markup,
             )
         else:
-            await DataBase.delete_message(messages[-1][0])
             await message.answer(
                 text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
                 reply_markup=reply_markup,
@@ -155,7 +154,6 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
             reply_markup=reply_markup,
         )
     await state.set_state(States.CHATGPT_STATE)
-
 
 # Answer Handling
 @dp.message(States.DALL_E_STATE, F.text)
