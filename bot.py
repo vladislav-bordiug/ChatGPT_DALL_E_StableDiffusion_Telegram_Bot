@@ -94,7 +94,7 @@ async def question_handler(message: types.Message, state: FSMContext):
     elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
-async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[List[Tuple[str, str]], int]:
+async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[List[Dict[str, str]], int]:
     question_tokens = 0
     i = len(messages) - 1
     while i >= 0:
@@ -105,7 +105,7 @@ async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[Li
         i -= 1
     if i > -1:
         await DataBase.delete_message([messages[j][0] for j in range(i+1)])
-    return [(messages[j][1], messages[j][2]) for j in range(i+1,len(messages))], question_tokens
+    return [{"role": messages[j][1], "content": messages[j][2]} for j in range(i+1,len(messages))], question_tokens
 
 # Answer Handling
 @dp.message(States.CHATGPT_STATE, F.text)
