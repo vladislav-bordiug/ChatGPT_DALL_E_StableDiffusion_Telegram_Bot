@@ -95,10 +95,10 @@ class DataBase:
                 conn.commit()
                 await cursor.execute("INSERT INTO messages(user_id, role, content, tokens) VALUES (%s, %s, %s, %s)", (user_id, role, message, tokens))
                 await conn.commit()
-    async def delete_message(id: int):
+    async def delete_message(message_ids: List[int]):
         async with pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"DELETE FROM messages WHERE id = {id}")
+                await cursor.execute(f"DELETE FROM messages WHERE id IN ({', '.join(map(str, message_ids))})")
                 await conn.commit()
     async def delete_messages(user_id: int):
         async with pool.connection() as conn:
