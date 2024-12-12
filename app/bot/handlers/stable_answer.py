@@ -9,7 +9,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 from aiogram import F
 
-from bot import dp
 from db import DataBase
 
 @dp.message(States.STABLE_STATE, F.text)

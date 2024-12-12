@@ -7,7 +7,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram import F
 from aiogram.filters.command import Command
 
-from bot import dp
 from db import DataBase
 
 @dp.message(Command('start'))

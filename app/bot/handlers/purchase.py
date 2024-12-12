@@ -6,8 +6,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.context import FSMContext
 from aiogram import F
 
-from bot import dp
-
 @dp.message(States.INFO_STATE, F.text.regexp(r'^💰Buy tokens and generations$'))
 @dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^🔙Back$'))
 @dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^🔙Back$'))

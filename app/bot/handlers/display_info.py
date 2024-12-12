@@ -6,7 +6,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.context import FSMContext
 from aiogram import F
 
-from bot import dp
 from db import DataBase
 
 @dp.message(States.ENTRY_STATE, F.text.regexp(r'^👤My account | 💰Buy$'))

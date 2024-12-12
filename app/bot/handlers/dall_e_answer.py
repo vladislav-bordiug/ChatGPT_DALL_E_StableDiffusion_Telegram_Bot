@@ -8,7 +8,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.context import FSMContext
 from aiogram import F
 
-from bot import dp
 from db import DataBase
 
 @dp.message(States.DALL_E_STATE, F.text)
