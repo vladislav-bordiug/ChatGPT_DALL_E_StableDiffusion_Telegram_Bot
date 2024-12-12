@@ -4,12 +4,9 @@ from aiogram import types
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
-from aiogram import F
 
 from db import DataBase
 
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^👤My account | 💰Buy$'))
-@dp.message(States.PURCHASE_STATE, F.text.regexp(r'^🔙Back$'))
 async def display_info_handler(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     result = await DataBase.get_userinfo(user_id)

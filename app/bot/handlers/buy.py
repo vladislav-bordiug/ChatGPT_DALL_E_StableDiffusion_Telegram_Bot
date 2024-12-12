@@ -6,22 +6,9 @@ from aiogram import types
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
-from aiogram import F
 
 from db import DataBase
 
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲USDT$'))
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲TON$'))
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲BTC$'))
-@dp.message(States.PURCHASE_CHATGPT_STATE, F.text.regexp(r'^💲ETH$'))
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲USDT$'))
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲TON$'))
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲BTC$'))
-@dp.message(States.PURCHASE_DALL_E_STATE, F.text.regexp(r'^💲ETH$'))
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲USDT$'))
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲TON$'))
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲BTC$'))
-@dp.message(States.PURCHASE_STABLE_STATE, F.text.regexp(r'^💲ETH$'))
 async def buy_handler(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     currency = message.text

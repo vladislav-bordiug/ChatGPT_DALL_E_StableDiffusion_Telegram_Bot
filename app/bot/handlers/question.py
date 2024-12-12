@@ -4,11 +4,7 @@ from aiogram import types
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
-from aiogram import F
 
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^💭Chatting — ChatGPT-4o$'))
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌄Image generation — DALL·E 3$'))
-@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🌅Image generation — Stable Diffusion 3$'))
 async def question_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(

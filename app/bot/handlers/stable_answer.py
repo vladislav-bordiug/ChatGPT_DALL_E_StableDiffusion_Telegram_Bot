@@ -7,11 +7,9 @@ from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
-from aiogram import F
 
 from db import DataBase
 
-@dp.message(States.STABLE_STATE, F.text)
 async def stable_answer_handler(message: types, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
