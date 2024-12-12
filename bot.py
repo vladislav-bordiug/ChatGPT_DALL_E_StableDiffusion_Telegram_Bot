@@ -2,8 +2,6 @@ from os import getenv
 
 from db import DataBase
 
-from app.bot.setup import register_handlers
-
 from dotenv import load_dotenv
 
 import os
@@ -54,8 +52,6 @@ async def on_startup() -> None:
 
 if __name__ == '__main__':
     load_dotenv()
-
-    register_handlers(dp)
 
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
