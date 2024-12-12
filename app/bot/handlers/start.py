@@ -4,9 +4,18 @@ from aiogram import types
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
+from aiogram import F
+from aiogram.filters.command import Command
 
+from bot import dp
 from db import DataBase
 
+@dp.message(Command('start'))
+@dp.message(States.ENTRY_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.CHATGPT_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.DALL_E_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.STABLE_STATE, F.text.regexp(r'^🔙Back$'))
+@dp.message(States.INFO_STATE, F.text.regexp(r'^🔙Back$'))
 async def start_handler(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     result = await DataBase.is_user(user_id)

@@ -6,9 +6,12 @@ from aiogram import types
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
 from aiogram.fsm.context import FSMContext
+from aiogram import F
 
+from bot import dp
 from db import DataBase
 
+@dp.message(States.CHATGPT_STATE, F.text)
 async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
