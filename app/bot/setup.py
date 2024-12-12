@@ -6,9 +6,9 @@ from app.bot.handlers.dall_e_answer import dall_e_answer_handler
 from app.bot.handlers.display_info import display_info_handler
 from app.bot.handlers.question import question_handler
 from app.bot.handlers.stable_answer import stable_answer_handler
-from handlers.purchase import purchase_handler
-from handlers.start import start_handler
-from handlers.buy import buy_handler
+from app.bot.handlers.purchase import purchase_handler
+from app.bot.handlers.start import start_handler
+from app.bot.handlers.buy import buy_handler
 
 from aiogram.filters.command import Command
 from bot.utils import States
