@@ -14,8 +14,8 @@ import asyncio
 import os
 
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, PlainTextResponse
 import uvicorn
-from aiohttp import web
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
@@ -94,19 +94,6 @@ async def question_handler(message: types.Message, state: FSMContext):
     elif option == "🌅Image generation — Stable Diffusion 3":
         await state.set_state(States.STABLE_STATE)
 
-async def reduce_messages(messages: List[Tuple[int, str, str, int]]) -> Tuple[List[Dict[str, str]], int]:
-    question_tokens = 0
-    i = len(messages) - 1
-    while i >= 0:
-        if question_tokens + messages[i][3] < 128000:
-            question_tokens += messages[i][3]
-        else:
-            break
-        i -= 1
-    if i > -1:
-        await DataBase.delete_message([messages[j][0] for j in range(i+1)])
-    return [{"role": messages[j][1], "content": messages[j][2]} for j in range(i+1,len(messages))], question_tokens
-
 # Answer Handling
 @dp.message(States.CHATGPT_STATE, F.text)
 async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
@@ -119,16 +106,15 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     result = await DataBase.get_chatgpt(user_id)
 
     if result > 0:
-        await DataBase.save_message(user_id, "user", message.text, len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode, message.text)))
+        await DataBase.save_message(user_id, "user", message.text, len(encoding.encode(message.text)))
 
-        messages = await DataBase.get_messages(user_id)
-
-        messages, question_tokens = await reduce_messages(messages)
+        messages, question_tokens = await DataBase.get_messages(user_id)
+        print(messages, question_tokens)
 
         answer = await OpenAiTools.get_chatgpt(messages)
 
         if answer:
-            answer_tokens = len(await asyncio.get_running_loop().run_in_executor(None, encoding.encode,answer))
+            answer_tokens = len(encoding.encode(answer))
             await DataBase.save_message(user_id, "assistant", answer, answer_tokens)
 
             result -= int(question_tokens*0.25 + answer_tokens)
@@ -338,14 +324,14 @@ async def buy(message: types.Message, state: FSMContext):
 
 # Processes message
 @app.post("/" + getenv("TELEGRAM_BOT_TOKEN"))
-async def bot_webhook(request: Request):
+async def bot_webhook(request: Request) -> JSONResponse:
     update = types.Update(**await request.json())
     await dp.feed_webhook_update(bot, update)
-    return web.Response()
+    return JSONResponse(content={"status": "ok"})
 
 # Checks payment
 @app.post("/" + getenv("CRYPTOPAY_KEY"))
-async def payments_webhook(request: Request):
+async def payments_webhook(request: Request) -> PlainTextResponse:
     data = await request.json()
     update_type = data['update_type']
     if update_type == "invoice_paid":
@@ -361,7 +347,7 @@ async def payments_webhook(request: Request):
         elif result[1] == 'stable':
             await DataBase.update_stable(result[0], invoice_id)
             await bot.send_message(result[0], "✅You have received 50 Stable Diffusion image generations!")
-    return 'OK', 200
+    return PlainTextResponse('OK', status_code=200)
 
 async def on_startup() -> None:
     await DataBase.open_pool()
