@@ -1,4 +1,4 @@
-from ..utils import States
+from ..utils import States, translator
 
 from openaitools import OpenAiTools
 
@@ -8,8 +8,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.context import FSMContext
 
 from db import DataBase
-
-from bot import translator
 
 async def dall_e_answer_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]

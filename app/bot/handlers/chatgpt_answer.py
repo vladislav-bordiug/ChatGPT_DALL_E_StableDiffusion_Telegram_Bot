@@ -1,4 +1,4 @@
-from ..utils import States
+from ..utils import States, encoding
 
 from openaitools import OpenAiTools
 
@@ -8,8 +8,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.fsm.context import FSMContext
 
 from db import DataBase
-
-from bot import encoding
 
 async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]

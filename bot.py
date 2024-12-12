@@ -1,7 +1,4 @@
-from gpytranslate import Translator
-
 from os import getenv
-from tiktoken import encoding_for_model
 
 from db import DataBase
 
@@ -22,10 +19,6 @@ from aiogram.client.bot import DefaultBotProperties
 
 dp = Dispatcher()
 app = FastAPI()
-
-encoding = encoding_for_model("gpt-4o")
-
-translator = Translator()
 
 # Processes message
 @app.post("/" + getenv("TELEGRAM_BOT_TOKEN"))

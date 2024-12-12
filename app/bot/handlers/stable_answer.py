@@ -1,4 +1,4 @@
-from ..utils import States
+from ..utils import States, translator
 
 from stablediffusion import StableDiffusion
 
@@ -9,8 +9,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 
 from db import DataBase
-
-from bot import translator
 
 async def stable_answer_handler(message: types, state: FSMContext):
     button = [[KeyboardButton(text="🔙Back")]]
