@@ -11,7 +11,7 @@ from app.bot.handlers.start import start_handler
 from app.bot.handlers.buy import buy_handler
 
 from aiogram.filters.command import Command
-from utils import States
+from app.bot.utils import States
 from aiogram import F
 
 def register_handlers(dp: Dispatcher):
