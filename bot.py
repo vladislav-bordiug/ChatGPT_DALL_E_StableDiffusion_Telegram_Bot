@@ -10,7 +10,6 @@ from cryptopay import CryptoPay
 
 from dotenv import load_dotenv
 
-import asyncio
 import os
 
 from fastapi import FastAPI, Request
