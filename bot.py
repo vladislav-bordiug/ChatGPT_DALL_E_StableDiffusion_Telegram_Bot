@@ -25,7 +25,6 @@ from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 from aiogram import F
-from typing import List, Tuple, Dict
 
 class States(StatesGroup):
     ENTRY_STATE = State()
