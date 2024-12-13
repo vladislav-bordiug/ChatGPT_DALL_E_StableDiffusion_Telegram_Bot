@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from os import getenv
 
-def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot):
+def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot, telegram_token: str, cryptopay_token: str):
     async def telegram_webhook(request):
         return await bot_webhook(request, dp, bot)
 
@@ -14,5 +14,7 @@ def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot):
 
     load_dotenv()
 
-    router.add_api_route("/" + getenv("TELEGRAM_BOT_TOKEN"), telegram_webhook, methods=["POST"])
-    router.add_api_route("/" + getenv("CRYPTOPAY_KEY"), cryptopay_webhook, methods=["POST"])
+    print(telegram_token)
+
+    router.add_api_route("/" + telegram_token, telegram_webhook, methods=["POST"])
+    router.add_api_route("/" + cryptopay_token, cryptopay_webhook, methods=["POST"])

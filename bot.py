@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     router = APIRouter()
 
-    register_routes(router, dp, bot)
+    register_routes(router, dp, bot, getenv("TELEGRAM_BOT_TOKEN"), getenv("CRYPTOPAY_KEY"))
 
     app.include_router(router)
 

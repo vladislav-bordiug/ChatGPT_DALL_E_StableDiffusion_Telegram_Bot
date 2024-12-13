@@ -22,7 +22,6 @@ async def chatgpt_answer_handler(message: types.Message, state: FSMContext):
         await DataBase.save_message(user_id, "user", message.text, len(encoding.encode(message.text)))
 
         messages, question_tokens = await DataBase.get_messages(user_id)
-        print(messages, question_tokens)
 
         answer = await OpenAiTools.get_chatgpt(messages)
 
