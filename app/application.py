@@ -25,7 +25,7 @@ from app.core.database import DataBaseCore
 dp = Dispatcher()
 app = FastAPI()
 
-if __name__ == '__main__':
+def run():
     load_dotenv()
 
     cryptopay = CryptoPay(getenv("CRYPTOPAY_KEY"))
