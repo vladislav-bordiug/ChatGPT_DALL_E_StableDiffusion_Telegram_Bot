@@ -22,7 +22,7 @@ app = FastAPI()
 
 async def on_startup() -> None:
     await DataBase.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL") + "botwebhook"
+    url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
     await bot.set_webhook(url=url_webhook)
 
 if __name__ == '__main__':
