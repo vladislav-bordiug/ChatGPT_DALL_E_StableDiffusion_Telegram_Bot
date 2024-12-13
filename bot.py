@@ -9,8 +9,6 @@ import os
 from fastapi import FastAPI, Request, APIRouter
 import uvicorn
 
-from urllib.parse import quote
-
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.client.bot import DefaultBotProperties
@@ -24,7 +22,7 @@ app = FastAPI()
 
 async def on_startup() -> None:
     await DataBase.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL") + quote(getenv("TELEGRAM_BOT_TOKEN"))
+    url_webhook = getenv("BASE_WEBHOOK_URL") + "botwebhook"
     await bot.set_webhook(url=url_webhook)
 
 if __name__ == '__main__':

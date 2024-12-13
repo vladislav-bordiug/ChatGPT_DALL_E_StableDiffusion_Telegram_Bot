@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from app.api.routes.telegram import bot_webhook
 from app.api.routes.cryptopay import payments_webhook
 from aiogram import Bot, Dispatcher
-from urllib.parse import quote
 
 def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot, telegram_token: str, cryptopay_token: str):
     async def telegram_webhook(request):
@@ -12,5 +11,5 @@ def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot, telegram_token:
     async def cryptopay_webhook(request):
         return await payments_webhook(request, bot)
 
-    router.add_api_route("/" + quote(telegram_token), telegram_webhook, methods=["POST"])
-    router.add_api_route("/" + quote(cryptopay_token), cryptopay_webhook, methods=["POST"])
+    router.add_api_route("/botwebhook", telegram_webhook, methods=["POST"])
+    router.add_api_route("/" + cryptopay_token, cryptopay_webhook, methods=["POST"])
