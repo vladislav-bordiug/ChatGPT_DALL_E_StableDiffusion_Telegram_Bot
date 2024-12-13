@@ -16,5 +16,5 @@ def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot, telegram_token:
     async def cryptopay_webhook(request):
         return await payments_webhook(request, bot)
 
-    router.add_api_route("/" + telegram_token, telegram_webhook, methods=["POST"])
-    router.add_api_route("/" + cryptopay_token, cryptopay_webhook, methods=["POST"])
+    router.add_route("/" + telegram_token, telegram_webhook, methods=["POST"])
+    router.add_route("/" + cryptopay_token, cryptopay_webhook, methods=["POST"])
