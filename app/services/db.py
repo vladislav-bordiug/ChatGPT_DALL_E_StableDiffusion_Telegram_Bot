@@ -1,16 +1,12 @@
 from psycopg_pool import AsyncConnectionPool
-from os import getenv
 from dotenv import load_dotenv
 from typing import List, Tuple, Dict
 
 load_dotenv()
 
 class DataBase:
-    def __init__(self, conninfo: str):
-        self.pool = AsyncConnectionPool(conninfo=conninfo, timeout = 10, max_lifetime=600, check=AsyncConnectionPool.check_connection, open = False)
-    async def open_pool(self):
-        await self.pool.open()
-        await self.pool.wait()
+    def __init__(self, pool: AsyncConnectionPool):
+        self.pool = pool
     async def is_user(self, user_id: int):
         async with self.pool.connection() as conn:
             async with conn.cursor() as cursor:

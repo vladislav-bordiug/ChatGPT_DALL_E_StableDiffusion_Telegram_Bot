@@ -1,14 +1,14 @@
 from ..utils import States, translator
 
-from stablediffusion import StableDiffusion
+from app.services.stablediffusion import StableDiffusion
 
 from aiogram import types
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.types.input_file import BufferedInputFile
 
-from db import DataBase
+from app.services.db import DataBase
 
 async def stable_answer_handler(message: types, state: FSMContext, database: DataBase, stable: StableDiffusion):
     button = [[KeyboardButton(text="🔙Back")]]

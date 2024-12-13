@@ -1,13 +1,13 @@
 from ..utils import States
 
-from cryptopay import CryptoPay
+from app.services.cryptopay import CryptoPay
 
 from aiogram import types
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
-from db import DataBase
+from app.services.db import DataBase
 
 async def buy_handler(message: types.Message, state: FSMContext, database: DataBase, crypto: CryptoPay):
     user_id = message.from_user.id

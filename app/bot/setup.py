@@ -1,24 +1,24 @@
 from aiogram import Dispatcher
-from app.bot.handlers.chatgpt_answer import chatgpt_answer_handler
-from app.bot.handlers.currencies import currencies_handler
-from app.bot.handlers.dall_e_answer import dall_e_answer_handler
-from app.bot.handlers.display_info import display_info_handler
-from app.bot.handlers.question import question_handler
-from app.bot.handlers.stable_answer import stable_answer_handler
-from app.bot.handlers.purchase import purchase_handler
-from app.bot.handlers.start import start_handler
-from app.bot.handlers.buy import buy_handler
+from app.main.handlers.chatgpt_answer import chatgpt_answer_handler
+from app.main.handlers.currencies import currencies_handler
+from app.main.handlers.dall_e_answer import dall_e_answer_handler
+from app.main.handlers.display_info import display_info_handler
+from app.main.handlers.question import question_handler
+from app.main.handlers.stable_answer import stable_answer_handler
+from app.main.handlers.purchase import purchase_handler
+from app.main.handlers.start import start_handler
+from app.main.handlers.buy import buy_handler
 
 from aiogram.filters.command import Command
-from app.bot.utils import States
+from app.main.utils import States
 from aiogram import F
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 
-from openaitools import OpenAiTools
-from db import DataBase
-from stablediffusion import StableDiffusion
-from cryptopay import CryptoPay
+from app.services.openaitools import OpenAiTools
+from app.services.db import DataBase
+from app.services.stablediffusion import StableDiffusion
+from app.services.cryptopay import CryptoPay
 
 def register_handlers(dp: Dispatcher, database: DataBase, openai: OpenAiTools, stable: StableDiffusion, crypto: CryptoPay):
     register_purchase_handlers(dp, database, crypto)
