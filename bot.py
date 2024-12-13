@@ -42,6 +42,9 @@ if __name__ == '__main__':
 
     app.include_router(router)
 
+    for route in app.routes:
+        print(f"Path: {route.path}, Methods: {route.methods}")
+
     app.add_event_handler("startup", on_startup)
 
     uvicorn.run(app, host=getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))
