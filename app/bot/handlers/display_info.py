@@ -7,9 +7,9 @@ from aiogram.fsm.context import FSMContext
 
 from db import DataBase
 
-async def display_info_handler(message: types.Message, state: FSMContext):
+async def display_info_handler(message: types.Message, state: FSMContext, database: DataBase):
     user_id = message.from_user.id
-    result = await DataBase.get_userinfo(user_id)
+    result = await database.get_userinfo(user_id)
 
     button = [[KeyboardButton(text="💰Buy tokens and generations")], [KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(

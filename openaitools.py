@@ -5,14 +5,16 @@ from typing import List, Dict
 
 load_dotenv()
 
-client = AsyncOpenAI(
-    api_key=getenv("OPENAI_API_KEY"),
-)
 
 class OpenAiTools:
-    async def get_chatgpt(messages: List[Dict[str, str]]):
+    def __init__(self, token: str):
+        self.client = AsyncOpenAI(
+            api_key=token,
+        )
+
+    async def get_chatgpt(self, messages: List[Dict[str, str]]):
         try:
-            response = await client.chat.completions.create(
+            response = await self.client.chat.completions.create(
                 messages=messages,
                 model="gpt-4o",
                 max_tokens=16384,
@@ -23,9 +25,9 @@ class OpenAiTools:
         except:
             return
 
-    async def get_dalle(prompt: str):
+    async def get_dalle(self, prompt: str):
         try:
-            response = await client.images.generate(
+            response = await self.client.images.generate(
                 model="dall-e-3",
                 prompt=prompt,
                 size="1024x1024",

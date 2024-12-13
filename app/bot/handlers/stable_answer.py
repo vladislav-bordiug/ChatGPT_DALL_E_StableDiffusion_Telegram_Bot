@@ -10,14 +10,14 @@ from aiogram.types.input_file import BufferedInputFile
 
 from db import DataBase
 
-async def stable_answer_handler(message: types, state: FSMContext):
+async def stable_answer_handler(message: types, state: FSMContext, database: DataBase, stable: StableDiffusion):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
     )
 
     user_id = message.from_user.id
-    result = await DataBase.get_stable(user_id)
+    result = await database.get_stable(user_id)
 
     if result > 0:
 
@@ -25,11 +25,11 @@ async def stable_answer_handler(message: types, state: FSMContext):
 
         prompt = await translator.translate(question, targetlang='en')
 
-        photo = await StableDiffusion.get_stable(prompt.text)
+        photo = await stable.get_stable(prompt.text)
 
         if photo:
             result -= 1
-            await DataBase.set_stable(user_id, result)
+            await database.set_stable(user_id, result)
             await message.answer_photo(
                 photo=BufferedInputFile(photo, 'image.jpeg'),
                 reply_markup=reply_markup,

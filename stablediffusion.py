@@ -1,18 +1,16 @@
-from os import getenv
 import requests
-from dotenv import load_dotenv
 from functools import partial
 import asyncio
 
-load_dotenv()
-key = getenv("STABLE_DIFFUSION_API_KEY")
-
 class StableDiffusion:
-    async def get_stable(prompt: str):
+    def __init__(self, key: str):
+        self.key = key
+
+    async def get_stable(self, prompt: str):
         response = await asyncio.get_running_loop().run_in_executor(None,
             partial(requests.post,f"https://api.stability.ai/v2beta/stable-image/generate/sd3",
             headers={
-                "authorization": f"Bearer {key}",
+                "authorization": f"Bearer {self.key}",
                 "accept": "image/*"
             },
             files={"none": ''},

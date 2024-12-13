@@ -7,9 +7,9 @@ from aiogram.fsm.context import FSMContext
 
 from db import DataBase
 
-async def start_handler(message: types.Message, state: FSMContext):
+async def start_handler(message: types.Message, state: FSMContext, database: DataBase):
     user_id = message.from_user.id
-    result = await DataBase.is_user(user_id)
+    result = await database.is_user(user_id)
     button = [[KeyboardButton(text="💭Chatting — ChatGPT-4o")],
               [KeyboardButton(text="🌄Image generation — DALL·E 3")],
               [KeyboardButton(text="🌅Image generation — Stable Diffusion 3")],
@@ -17,9 +17,9 @@ async def start_handler(message: types.Message, state: FSMContext):
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
     )
-    await DataBase.delete_messages(user_id)
+    await database.delete_messages(user_id)
     if not result:
-        await DataBase.insert_user(user_id)
+        await database.insert_user(user_id)
         await message.answer(
             text = "👋You have: \n💭3000 ChatGPT tokens \n🌄3 DALL·E Image generations \n🌅3 Stable Diffusion Image generations\n Choose an option: 👇 \n If buttons don't work, enter /start command",
             reply_markup=reply_markup,

@@ -9,25 +9,25 @@ from aiogram.fsm.context import FSMContext
 
 from db import DataBase
 
-async def dall_e_answer_handler(message: types.Message, state: FSMContext):
+async def dall_e_answer_handler(message: types.Message, state: FSMContext, database: DataBase, openai: OpenAiTools):
     button = [[KeyboardButton(text="🔙Back")]]
     reply_markup = ReplyKeyboardMarkup(
         keyboard = button, resize_keyboard=True
     )
 
     user_id = message.from_user.id
-    result = await DataBase.get_dalle(user_id)
+    result = await database.get_dalle(user_id)
 
     if result > 0:
         question = message.text
 
         prompt = await translator.translate(question, targetlang='en')
 
-        answer = await OpenAiTools.get_dalle(prompt.text)
+        answer = await openai.get_dalle(prompt.text)
 
         if answer:
             result -= 1
-            await DataBase.set_dalle(user_id, result)
+            await database.set_dalle(user_id, result)
             await message.answer_photo(
                 photo=answer,
                 reply_markup=reply_markup,
