@@ -5,12 +5,6 @@ from aiogram import Bot, Dispatcher
 
 def register_routes(router: APIRouter, dp: Dispatcher, bot: Bot, telegram_token: str, cryptopay_token: str):
     async def telegram_webhook(request):
-        raw_body = await request.body()
-
-        body_text = raw_body.decode("utf-8")
-
-        print("Request body:", body_text)
-
         return await bot_webhook(request, dp, bot)
 
     async def cryptopay_webhook(request):
