@@ -23,11 +23,6 @@ from app.api.setup import register_routes
 dp = Dispatcher()
 app = FastAPI()
 
-async def on_startup(database: DataBase) -> None:
-    await database.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
-    await bot.set_webhook(url=url_webhook)
-
 if __name__ == '__main__':
     load_dotenv()
 
@@ -49,6 +44,15 @@ if __name__ == '__main__':
 
     app.include_router(router)
 
-    app.add_event_handler("startup", lambda: on_startup(database))
+
+    def on_startup_handler(database: DataBase):
+        async def on_startup() -> None:
+            await database.open_pool()
+            url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
+            await bot.set_webhook(url=url_webhook)
+
+        return on_startup
+
+    app.add_event_handler("startup", on_startup_handler(database))
 
     uvicorn.run(app, host=getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))
