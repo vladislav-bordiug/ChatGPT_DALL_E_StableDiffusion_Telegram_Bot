@@ -1,5 +1,3 @@
-from os import getenv
-
 from app.services.db import DataBase
 from app.services.cryptopay import CryptoPay
 from app.services.openaitools import OpenAiTools
@@ -22,29 +20,30 @@ from app.api.setup import register_routes
 
 from app.core.database import DataBaseCore
 
-dp = Dispatcher()
-app = FastAPI()
-
 def run():
     load_dotenv()
 
-    cryptopay = CryptoPay(getenv("CRYPTOPAY_KEY"))
+    dp = Dispatcher()
 
-    database_core = DataBaseCore(getenv("DATABASE_URL"))
+    app = FastAPI()
+
+    cryptopay = CryptoPay(os.getenv("CRYPTOPAY_KEY"))
+
+    database_core = DataBaseCore(os.getenv("DATABASE_URL"))
 
     database = DataBase(database_core.pool)
 
-    openai = OpenAiTools(getenv("OPENAI_API_KEY"))
+    openai = OpenAiTools(os.getenv("OPENAI_API_KEY"))
 
-    stable = StableDiffusion(getenv("STABLE_DIFFUSION_API_KEY"))
+    stable = StableDiffusion(os.getenv("STABLE_DIFFUSION_API_KEY"))
 
     register_handlers(dp, database, openai, stable, cryptopay)
 
-    bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     router = APIRouter()
 
-    register_routes(router, database, dp, bot, getenv("TELEGRAM_BOT_TOKEN"), getenv("CRYPTOPAY_KEY"))
+    register_routes(router, database, dp, bot, os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("CRYPTOPAY_KEY"))
 
     app.include_router(router)
 
@@ -52,11 +51,11 @@ def run():
         async def on_startup() -> None:
             await database_core.open_pool()
             await database.create_tables()
-            url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
+            url_webhook = os.getenv("BASE_WEBHOOK_URL") + os.getenv("TELEGRAM_BOT_TOKEN")
             await bot.set_webhook(url=url_webhook)
 
         return on_startup
 
     app.add_event_handler("startup", on_startup_handler(database_core, database))
 
-    uvicorn.run(app, host=getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))
+    uvicorn.run(app, host=os.getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))
