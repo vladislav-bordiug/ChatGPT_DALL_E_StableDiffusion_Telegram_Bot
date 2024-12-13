@@ -48,15 +48,15 @@ def run():
 
     app.include_router(router)
 
-
-    def on_startup_handler(database_core: DataBaseCore):
+    def on_startup_handler(database_core: DataBaseCore, database: DataBase):
         async def on_startup() -> None:
             await database_core.open_pool()
+            await database.create_tables()
             url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
             await bot.set_webhook(url=url_webhook)
 
         return on_startup
 
-    app.add_event_handler("startup", on_startup_handler(database_core))
+    app.add_event_handler("startup", on_startup_handler(database_core, database))
 
     uvicorn.run(app, host=getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))

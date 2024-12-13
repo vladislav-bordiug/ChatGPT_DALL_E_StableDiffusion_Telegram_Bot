@@ -1,8 +1,4 @@
-from dotenv import load_dotenv
 from aiocryptopay import AioCryptoPay, Networks, utils
-from os import getenv
-
-load_dotenv()
 
 class CryptoPay:
     def __init__(self, token: str):

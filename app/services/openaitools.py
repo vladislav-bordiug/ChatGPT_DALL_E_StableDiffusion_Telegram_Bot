@@ -1,10 +1,5 @@
-from os import getenv
-from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from typing import List, Dict
-
-load_dotenv()
-
 
 class OpenAiTools:
     def __init__(self, token: str):

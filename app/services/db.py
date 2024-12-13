@@ -1,12 +1,16 @@
 from psycopg_pool import AsyncConnectionPool
-from dotenv import load_dotenv
 from typing import List, Tuple, Dict
-
-load_dotenv()
 
 class DataBase:
     def __init__(self, pool: AsyncConnectionPool):
         self.pool = pool
+    async def create_tables(self):
+        async with self.pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id BIGINT PRIMARY KEY, chatgpt INT, dall_e INT, stable_diffusion INT)")
+                await cursor.execute("CREATE TABLE IF NOT EXISTS orders (invoice_id INT PRIMARY KEY, user_id BIGINT, product TEXT, FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE)")
+                await cursor.execute("CREATE TABLE IF NOT EXISTS messages (id SERIAL PRIMARY KEY, user_id BIGINT, role TEXT, content TEXT, tokens INT, FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE)")
+                await conn.commit()
     async def is_user(self, user_id: int):
         async with self.pool.connection() as conn:
             async with conn.cursor() as cursor:
