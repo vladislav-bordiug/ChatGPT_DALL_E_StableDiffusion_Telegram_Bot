@@ -1,6 +1,7 @@
 from aiogram.fsm.state import State, StatesGroup
 from tiktoken import encoding_for_model
 from gpytranslate import Translator
+import logging
 
 class States(StatesGroup):
     ENTRY_STATE = State()
@@ -16,3 +17,9 @@ class States(StatesGroup):
 encoding = encoding_for_model("gpt-4o")
 
 translator = Translator()
+
+class TelegramError(Exception):
+    def __init__(self, msg: str):
+        self.msg=msg
+    def output(self):
+        logging.error("Telegram error:", self.msg)

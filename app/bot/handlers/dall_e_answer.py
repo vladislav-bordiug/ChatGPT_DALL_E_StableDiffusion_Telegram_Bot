@@ -1,4 +1,4 @@
-from ..utils import States, translator
+from ..utils import States, translator, TelegramError
 
 from app.services.openaitools import OpenAiTools
 
@@ -7,40 +7,47 @@ from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 
-from app.services.db import DataBase
+from app.services.db import DataBase, DatabaseError
 
 async def dall_e_answer_handler(message: types.Message, state: FSMContext, database: DataBase, openai: OpenAiTools):
-    button = [[KeyboardButton(text="🔙Back")]]
-    reply_markup = ReplyKeyboardMarkup(
-        keyboard = button, resize_keyboard=True
-    )
+    try:
+        button = [[KeyboardButton(text="🔙Back")]]
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard = button, resize_keyboard=True
+        )
 
-    user_id = message.from_user.id
-    result = await database.get_dalle(user_id)
+        user_id = message.from_user.id
+        result = await database.get_dalle(user_id)
 
-    if result > 0:
-        question = message.text
+        if result > 0:
+            question = message.text
 
-        prompt = await translator.translate(question, targetlang='en')
+            prompt = await translator.translate(question, targetlang='en')
 
-        answer = await openai.get_dalle(prompt.text)
+            answer = await openai.get_dalle(prompt.text)
 
-        if answer:
-            result -= 1
-            await database.set_dalle(user_id, result)
-            await message.answer_photo(
-                photo=answer,
-                reply_markup=reply_markup,
-                caption=question,
-            )
+            if answer:
+                result -= 1
+                await database.set_dalle(user_id, result)
+                await message.answer_photo(
+                    photo=answer,
+                    reply_markup=reply_markup,
+                    caption=question,
+                )
+            else:
+                await message.answer(
+                    text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
+                    reply_markup=reply_markup,
+                )
         else:
             await message.answer(
-                text = "❌Your request activated the API's safety filters and could not be processed. Please modify the prompt and try again.",
+                text = "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
                 reply_markup=reply_markup,
             )
-    else:
-        await message.answer(
-            text = "❎You have 0 DALL·E image generations. You need to buy them to use DALL·E.",
-            reply_markup=reply_markup,
-        )
-    await state.set_state(States.DALL_E_STATE)
+        await state.set_state(States.DALL_E_STATE)
+    except DatabaseError:
+        raise DatabaseError
+    except Exception as e:
+        err = TelegramError(str(e))
+        err.output()
+        raise err
