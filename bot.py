@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 
 import os
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, PlainTextResponse
+from fastapi import FastAPI, Request, APIRouter
 import uvicorn
 
 from aiogram import Bot, Dispatcher, types
@@ -16,35 +15,10 @@ from aiogram.client.bot import DefaultBotProperties
 
 from app.bot.setup import register_handlers
 
+from app.api.setup import register_routes
+
 dp = Dispatcher()
 app = FastAPI()
-
-# Processes message
-@app.post("/" + getenv("TELEGRAM_BOT_TOKEN"))
-async def bot_webhook(request: Request) -> JSONResponse:
-    update = types.Update(**await request.json())
-    await dp.feed_webhook_update(bot, update)
-    return JSONResponse(content={"status": "ok"})
-
-# Checks payment
-@app.post("/" + getenv("CRYPTOPAY_KEY"))
-async def payments_webhook(request: Request) -> PlainTextResponse:
-    data = await request.json()
-    update_type = data['update_type']
-    if update_type == "invoice_paid":
-        invoice = data['payload']
-        invoice_id = invoice['invoice_id']
-        result = await DataBase.get_orderdata(invoice_id)
-        if result[1] == 'chatgpt':
-            await DataBase.update_chatgpt(result[0], invoice_id)
-            await bot.send_message(result[0], "✅You have received 100000 ChatGPT tokens!")
-        elif result[1] == 'dall_e':
-            await DataBase.update_dalle(result[0], invoice_id)
-            await bot.send_message(result[0], "✅You have received 50 DALL·E image generations!")
-        elif result[1] == 'stable':
-            await DataBase.update_stable(result[0], invoice_id)
-            await bot.send_message(result[0], "✅You have received 50 Stable Diffusion image generations!")
-    return PlainTextResponse('OK', status_code=200)
 
 async def on_startup() -> None:
     await DataBase.open_pool()
@@ -57,6 +31,12 @@ if __name__ == '__main__':
     register_handlers(dp)
 
     bot = Bot(token=getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    router = APIRouter()
+
+    register_routes(router, dp, bot)
+
+    app.include_router(router)
 
     app.add_event_handler("startup", on_startup)
 
