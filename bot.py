@@ -4,6 +4,8 @@ from db import DataBase
 
 from dotenv import load_dotenv
 
+import logging
+
 import os
 
 from fastapi import FastAPI, Request, APIRouter
@@ -18,6 +20,8 @@ from app.bot.setup import register_handlers
 from app.api.setup import register_routes
 
 dp = Dispatcher()
+
+logging.basicConfig(level=logging.DEBUG)
 app = FastAPI()
 
 async def on_startup() -> None:
