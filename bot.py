@@ -4,12 +4,12 @@ from db import DataBase
 
 from dotenv import load_dotenv
 
-import logging
-
 import os
 
 from fastapi import FastAPI, Request, APIRouter
 import uvicorn
+
+from urllib.parse import quote
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
@@ -20,13 +20,11 @@ from app.bot.setup import register_handlers
 from app.api.setup import register_routes
 
 dp = Dispatcher()
-
-logging.basicConfig(level=logging.DEBUG)
 app = FastAPI()
 
 async def on_startup() -> None:
     await DataBase.open_pool()
-    url_webhook = getenv("BASE_WEBHOOK_URL") + getenv("TELEGRAM_BOT_TOKEN")
+    url_webhook = getenv("BASE_WEBHOOK_URL") + quote(getenv("TELEGRAM_BOT_TOKEN"))
     await bot.set_webhook(url=url_webhook)
 
 if __name__ == '__main__':
