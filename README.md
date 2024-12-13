@@ -126,24 +126,6 @@ Choose PostgreSQL.
 
 ![image](https://user-images.githubusercontent.com/60838512/232328670-25835f92-57bd-4f2b-9477-075638574454.png)
 
-Here you need to press create tables.
-
-![image](https://user-images.githubusercontent.com/60838512/232328709-476b146f-42e6-44ed-826f-c10762697aeb.png)
-
-For example, tables for this project:
-
-Table for storing users:
-
-![image_2024-10-04_12-18-46](https://github.com/user-attachments/assets/e562ab58-d3ec-469d-b1ad-4cf3dc216635)
-
-Table for storing orders:
-
-![image_2024-10-04_12-19-25](https://github.com/user-attachments/assets/74133980-4aca-4460-8340-bd77f22c75d0)
-
-Table for storing context:
-
-![image_2024-10-04_12-17-50](https://github.com/user-attachments/assets/c803dca2-4086-4e40-a990-ce90e7866f58)
-
 Go back to the variables and add DATABASE_URL via "Add reference". 
 
 Also go to worker – Settings – Public network and click “Generate Domain”. Copy this domain and add it to the "BASE_WEBHOOK_URL" variable. It should be something like “https://**Your unique part**.up.railway.app/”. After that, go to Crypto Bot - Crypto Pay - My Applications - **Your Application** - Webhooks, click "Enable Webhooks" and send the URL "https://**Your unique part**.up.railway.app/**CRYPTO BOT API TOKEN**".
