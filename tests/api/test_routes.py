@@ -46,22 +46,6 @@ class TestPaymentsWebhookHandler:
         assert response.body.decode('utf-8') == "Wrong request"
         assert response.status_code == 400
 
-    @pytest.mark.asyncio
-    async def test_payments_webhook_wrong_id_error(self):
-
-        mock_request = AsyncMock(spec=Request)
-        mock_request.json.return_value = {"update_type": "invoice_paid", "payload": {"invoice_id": "dsfsfddsf"}}
-
-        mock_bot = AsyncMock()
-        mock_db = AsyncMock()
-
-        handler = Handlers(mock_db, AsyncMock(), mock_bot)
-
-        response = await handler.payments_webhook(mock_request)
-
-        assert response.body.decode('utf-8') == "Wrong invoice_id"
-        assert response.status_code == 400
-
     @patch('app.api.routes.routes.payment_success', new_callable=AsyncMock)
     @pytest.mark.asyncio
     async def test_payments_webhook_database_error(self, mock_payment_success):
@@ -142,6 +126,20 @@ class TestBotWebhookHandler:
         assert json.loads(response.body.decode('utf-8')) == {"status": "ok"}
         mock_dp.feed_webhook_update.assert_awaited_once_with(mock_bot, types.Update(update_id=12345))
 
+    @pytest.mark.asyncio
+    async def test_bot_webhook_request_error(self):
+        mock_request = AsyncMock(spec=Request)
+        mock_request.json.return_value = {}
+
+        mock_dp = AsyncMock()
+        mock_bot = AsyncMock()
+
+        handler = Handlers(AsyncMock(), mock_dp, mock_bot)
+
+        response = await handler.bot_webhook(mock_request)
+
+        assert response.status_code == 400
+        assert json.loads(response.body.decode('utf-8')) == {"message": "Wrong request"}
 
     @pytest.mark.asyncio
     async def test_bot_webhook_database_error(self):

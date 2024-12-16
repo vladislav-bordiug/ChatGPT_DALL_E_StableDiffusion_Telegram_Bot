@@ -10,3 +10,4 @@ aiocryptopay==0.4.7
 tiktoken==0.8.0
 fastapi==0.115.6
 uvicorn==0.32.1
+pydantic==2.9

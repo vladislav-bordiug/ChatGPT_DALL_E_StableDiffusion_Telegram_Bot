@@ -1,7 +1,9 @@
 from aiogram import Bot, Dispatcher, types
 from fastapi import Request
 from fastapi.responses import PlainTextResponse, JSONResponse
+from pydantic import ValidationError
 
+from app.api.models import PaymentsRequestModel
 from app.bot.utils import TelegramError
 from app.services.cryptopay import CryptoPayError
 from app.services.db import DataBase, DatabaseError
@@ -16,17 +18,11 @@ class Handlers:
 
     async def payments_webhook(self, request: Request) -> PlainTextResponse:
         try:
-            data = await request.json()
-            if 'update_type' not in data or 'payload' not in data or 'invoice_id' not in data['payload']:
-                return PlainTextResponse('Wrong request', status_code=400)
-            update_type = data['update_type']
-            invoice = data['payload']
-            try:
-                invoice_id = int(invoice['invoice_id'])
-            except ValueError:
-                return PlainTextResponse('Wrong invoice_id', status_code=400)
-            await payment_success(self.bot, self.database, update_type, invoice_id)
+            validated_data = PaymentsRequestModel(** await request.json())
+            await payment_success(self.bot, self.database, validated_data.update_type, validated_data.payload.invoice_id)
             return PlainTextResponse('OK', status_code=200)
+        except ValidationError:
+            return PlainTextResponse('Wrong request', status_code=400)
         except DatabaseError:
             return PlainTextResponse('Database Error', status_code=500)
         except TelegramError:
@@ -40,6 +36,8 @@ class Handlers:
             update = types.Update(**await request.json())
             await self.dp.feed_webhook_update(self.bot, update)
             return JSONResponse(content={"status": "ok"})
+        except ValueError:
+            return JSONResponse(content={"message": "Wrong request"}, status_code=400)
         except DatabaseError:
             return JSONResponse(content={"message": "database error"}, status_code=500)
         except CryptoPayError:
