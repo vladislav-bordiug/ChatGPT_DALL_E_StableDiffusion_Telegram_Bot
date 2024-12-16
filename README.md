@@ -104,7 +104,7 @@ Users and information about them will be added to the "users" table, orders will
 
 ## How to deploy <a name = "howtodeploy"></a>
 
-This project can be easily deployed on the [Railway](https://railway.app/).
+This project can be easily deployed on the [Railway](https://railway.app/) (if all variables are passed here and a Postgres database is created, BASE_WEBHOOK_URL is a free URL from Railway).
 
 It can be also deployed via [docker-compose.yml](docker-compose.yml) if all variables are passed into the [.env](.env) file.
 ```BASE_WEBHOOK_URL``` in this case can be obtained via ngrok.
