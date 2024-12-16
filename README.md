@@ -66,7 +66,7 @@ In [stablediffusion.py](app/services/stablediffusion.py) there is one parameter:
 ## Account and buy <a name = "accountbuy"></a>
 If the user wants to see account information or buy tokens and generations, he presses the "👤My account | 💰Buy" button. After pressing the button, the bot displays information about the rest of the user's ChatGPT tokens, DALL·E image generations and Stable Diffusion image generations. If the user wants to buy tokens and generations, he presses the "💰Buy tokens and generations" button, selects the product and currency. After that, the user needs to press the "💰Buy" button and pay in Crypto Bot if he wants to pay. If the user has paid, he should press "☑️Check" button and tokens or image generations will be added to his account. If the user hasn't paid, the bot will display the message "⌚️We have not received payment yet".
 
-Payments are processed via webhooks.
+Payments are processed via webhooks (webhook url is specified in [Crypto Bot](https://t.me/send)).
 
 ![gif](images/buy.gif)
 
@@ -88,7 +88,7 @@ All variables:
 
 ```TELEGRAM_BOT_TOKEN``` - Telegram Bot API key
 
-```CRYPTOPAY_KEY``` - Crypto Bot API key
+```CRYPTOPAY_KEY``` - [Crypto Bot](https://t.me/send) API key
 
 ```BASE_WEBHOOK_URL``` - Server URL
 
