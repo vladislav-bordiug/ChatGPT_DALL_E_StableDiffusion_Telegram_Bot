@@ -2,34 +2,30 @@
 
 ## Table of Contents
 
-+ [About](#about)
 + [Start](#start)
 + [ChatGPT](#chatgpt)
 + [DALL·E](#dalle)
 + [Stable Diffusion](#stablediffusion)
 + [Account and buy](#accountbuy)
-+ [API tokens](#apitokens)
++ [Tests](#tests)
++ [Variables](#variables)
 + [Database](#database)
 + [How to deploy](#howtodeploy)
 + [License](#license)
 
-## About <a name = "about"></a>
-
-Nowadays neural networks are able to conduct a dialogue, quickly search for the information we need, answer questions and draw pictures from words. This is a Telegram bot written in Python that allows you to chat with ChatGPT and generate images using DALL·E and Stable Diffusion, payments are implemented using Crypto Bot. I think it is very comfortable to unite these neural networks in one Telegram bot.
-
 ## Start <a name = "start"></a>
 When the user enters the start command, the bot sends him a welcome message stating that the user has free 3000 ChatGPT tokens, 3 DALL·E image generations and 3 Stable Diffusion image generations and displays 4 buttons: "💭Chatting — ChatGPT-4o", "🌄Image generation — DALL·E 3", "🌅Image generation — Stable Diffusion 3" and "👤My account | 💰Buy". If the user is already registered, the bot only displays buttons.
 
-![Видео без названия — сделано в Clipchamp (5)](https://github.com/user-attachments/assets/7797790f-81de-44be-aa6b-08b2401c85c2)
+![gif](images/start.gif)
 
 ## ChatGPT <a name = "chatgpt"></a>
 If the user wants to chat with ChatGPT, he presses the "💭Chatting — ChatGPT" button and chats.
 
 This bot saves the context of the dialogue!
 
-![Видео без названия — сделано в Clipchamp](https://github.com/user-attachments/assets/aa116f40-60ec-40dd-a137-94767b895666)
+![gif](images/chatgpt.gif)
 
-In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_chatgpt function:
+In [openaitools.py](app/services/openaitools.py) in the OpenAiTools class there are three parameters in the get_chatgpt function:
 
 ```model``` - The model which is used for generation.
 
@@ -40,13 +36,13 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## DALL·E <a name = "dalle"></a>
 If the user wants to generate image with DALL·E, he presses the "🌄Image generation — DALL·E" button and generates.
 
-![Видео без названия — сделано в Clipchamp (1)](https://github.com/user-attachments/assets/52e18bf1-ded4-406e-94f4-8fa5d5de6ffe)
+![gif](images/dalle.gif)
 
 Generated image:
 
-![image](https://github.com/user-attachments/assets/5fe18110-5fb3-4a73-b66c-0a34b3a1f8fc)
+![image](images/dalle.png)
 
-In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/openaitools.py) in the OpenAiTools class there are three parameters in the get_dalle function:
+In [openaitools.py](app/services/openaitools.py) in the OpenAiTools class there are three parameters in the get_dalle function:
 
 ```model``` - The model which is used for generation.
 
@@ -57,13 +53,13 @@ In [openaitools.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDi
 ## Stable Diffusion <a name = "stablediffusion"></a>
 If the user wants to generate image with Stable Diffusion, he presses the "🌅Image generation — Stable Diffusion" button and generates.
 
-![Видео без названия — сделано в Clipchamp (2)](https://github.com/user-attachments/assets/216214b7-7c0e-4baf-b399-fa6081e86142)
+![gif](images/stable.gif)
 
 Generated image:
 
-![image](https://github.com/user-attachments/assets/965fe6d3-ef9d-48e6-a096-209ec470694d)
+![image](images/stable.png)
 
-In [stablediffusion.py](https://github.com/vladislav-bordiug/ChatGPT_DALL_E_StableDiffusion_Telegram_Bot/blob/main/stablediffusion.py) there is one parameter:
+In [stablediffusion.py](app/services/stablediffusion.py) there is one parameter:
 
 ```model``` - The model to use for generation: sd3-medium requires 3.5 credits per generation, sd3-large requires 6.5 credits per generation, sd3-large-turbo requires 4 credits per generation.
 
@@ -72,19 +68,31 @@ If the user wants to see account information or buy tokens and generations, he p
 
 Payments are processed via webhooks.
 
-![Видео без названия — сделано в Clipchamp (4)](https://github.com/user-attachments/assets/24980ebf-cde4-4603-9d47-6a57f43e189a)
+![gif](images/buy.gif)
 
-## API tokens <a name = "apitokens"></a>
+## Tests <a name = "tests"></a>
 
-These project needs these API tokens: 
+Unit tests are located in [tests folder](tests).
 
-```OPENAI_API_KEY``` - OpenAI API key which you can get here: [OpenAI API key](https://platform.openai.com/account/api-keys)
+Coverage 91%:
 
-```STABLE_DIFFUSION_API_KEY``` - Stable Diffusion API key which you can get here: [Stable Diffusion API key](https://beta.dreamstudio.ai/account)
+![img.png](images/img.png)
 
-```TELEGRAM_BOT_TOKEN``` - Telegram Bot API key which you can get here after creation of your bot: [@BotFather](https://t.me/BotFather)
+## Variables<a name = "variables"></a>
 
-```CRYPTOPAY_KEY``` - Crypto Bot API key which you can get here after registration in bot (Crypto Pay - Create App): [@CryptoBot](https://t.me/CryptoBot)
+All variables: 
+
+```OPENAI_API_KEY``` - OpenAI API key
+
+```STABLE_DIFFUSION_API_KEY``` - Stable Diffusion API key
+
+```TELEGRAM_BOT_TOKEN``` - Telegram Bot API key
+
+```CRYPTOPAY_KEY``` - Crypto Bot API key
+
+```BASE_WEBHOOK_URL``` - Server URL
+
+```DATABASE_URL``` - Database URL
 
 ## Database <a name = "database"></a>
 
@@ -92,47 +100,14 @@ This project requires PostgreSQL database with two tables: users(user_id, userna
 
 Users and information about them will be added to the "users" table, orders will be added to the "orders" table and ChatGPT context window messages will be added to the "messages" table.
 
-```DATABASE_URL``` - url to database.
+```DATABASE_URL``` - database url.
 
 ## How to deploy <a name = "howtodeploy"></a>
 
-This project was deployed on the [Railway](https://railway.app/).
+This project can be easily deployed on the [Railway](https://railway.app/).
 
-For deployment you just need to create the GitHub repository, click "Start a New Project" button on the Railway website.
-
-![image](https://user-images.githubusercontent.com/60838512/232328076-fd3f8281-e523-4b08-ade9-47cd3c7fb9ab.png)
-
-After that you need to choose "Deploy from GitHub repo".
-
-![image](https://user-images.githubusercontent.com/60838512/232328194-5fbfcea8-1cfd-4b4e-b484-727a3e9498be.png)
-
-Here you need to choose your repository.
-
-![image](https://user-images.githubusercontent.com/60838512/232328334-2db545e9-07ba-4b1b-a89a-14f0ecbbf12e.png)
-
-After that click "add variables".
-
-![image](https://user-images.githubusercontent.com/60838512/232328415-5d10a920-a8a6-4c11-8675-9ad5ce6fb30a.png)
-
-Add your project's variables. For example, for this project you need to add here 4 variables: CRYPTOPAY_KEY, OPENAI_API_KEY, STABLE_DIFFUSION_API_KEY and TELEGRAM_BOT_TOKEN.
-
-![image](https://user-images.githubusercontent.com/60838512/232328573-8cbb0eca-aca9-4fc0-8656-e303b4af90e8.png)
-
-Return to your project and add database.
-
-![image](https://user-images.githubusercontent.com/60838512/232328651-e02d41cc-2cd3-4b1c-ac52-a7f6312ed2cd.png)
-
-Choose PostgreSQL.
-
-![image](https://user-images.githubusercontent.com/60838512/232328670-25835f92-57bd-4f2b-9477-075638574454.png)
-
-Go back to the variables and add DATABASE_URL via "Add reference". 
-
-Also go to worker – Settings – Public network and click “Generate Domain”. Copy this domain and add it to the "BASE_WEBHOOK_URL" variable. It should be something like “https://**Your unique part**.up.railway.app/”. After that, go to Crypto Bot - Crypto Pay - My Applications - **Your Application** - Webhooks, click "Enable Webhooks" and send the URL "https://**Your unique part**.up.railway.app/**CRYPTO BOT API TOKEN**".
-
-All variables:
-
-![image](https://github.com/user-attachments/assets/b68b26a9-fce8-4666-a33c-aaac12ef861e)
+It can be also deployed via [docker-compose.yml](docker-compose.yml) if all variables are passed into the [.env](.env) file.
+```BASE_WEBHOOK_URL``` in this case can be obtained via ngrok.
 
 ## License <a name = "license"></a>
 

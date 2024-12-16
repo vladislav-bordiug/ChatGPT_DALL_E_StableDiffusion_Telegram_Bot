@@ -19,7 +19,7 @@ encoding = encoding_for_model("gpt-4o")
 translator = Translator()
 
 class TelegramError(Exception):
-    def __init__(self, msg: str):
+    def __init__(self, msg: str = "Error"):
         self.msg=msg
     def output(self):
         logging.error("Telegram error:", self.msg)

@@ -10,7 +10,7 @@ class CryptoPayError(Exception):
 class CryptoPay:
     def __init__(self, token: str):
         self.crypto = AioCryptoPay(token=token, network=Networks.MAIN_NET)
-    async def getprice(self, cost: int, currency: str):
+    async def getprice(self, cost: int, currency: str) -> float:
         try:
             rates = await self.crypto.get_exchange_rates()
             if currency == "USDT":

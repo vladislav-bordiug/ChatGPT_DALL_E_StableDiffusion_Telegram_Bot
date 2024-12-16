@@ -58,4 +58,4 @@ def run():
 
     app.add_event_handler("startup", on_startup_handler(database_core, database))
 
-    uvicorn.run(app, host=os.getenv("0.0.0.0"), port=int(os.environ.get("PORT", 5000)))
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

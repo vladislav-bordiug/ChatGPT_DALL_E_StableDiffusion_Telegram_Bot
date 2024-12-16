@@ -1,8 +1,8 @@
-from ..utils import States, TelegramError
+from app.bot.utils import States, TelegramError
 
 from aiogram import types
 
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, Update
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 
 async def question_handler(message: types.Message, state: FSMContext):

@@ -23,7 +23,7 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def is_user(self, user_id: int):
+    async def is_user(self, user_id: int) -> Tuple[int]:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
@@ -44,12 +44,12 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def get_chatgpt(self, user_id: int):
+    async def get_chatgpt(self, user_id: int) -> int:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("SELECT chatgpt FROM users WHERE user_id = %s", (user_id, ))
-                    result = int((await cursor.fetchone())[0])
+                    result = (await cursor.fetchone())[0]
                     return result
         except Exception as e:
             err = DatabaseError(str(e))
@@ -65,12 +65,12 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def get_dalle(self, user_id: int):
+    async def get_dalle(self, user_id: int) -> int:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("SELECT dall_e FROM users WHERE user_id = %s", (user_id, ))
-                    result = int((await cursor.fetchone())[0])
+                    result = (await cursor.fetchone())[0]
                     return result
         except Exception as e:
             err = DatabaseError(str(e))
@@ -86,12 +86,12 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def get_stable(self, user_id: int):
+    async def get_stable(self, user_id: int) -> int:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("SELECT stable_diffusion FROM users WHERE user_id = %s", (user_id, ))
-                    result = int((await cursor.fetchone())[0])
+                    result = (await cursor.fetchone())[0]
                     return result
         except Exception as e:
             err = DatabaseError(str(e))
@@ -107,7 +107,7 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def get_userinfo(self, user_id: int):
+    async def get_userinfo(self, user_id: int) -> Tuple[int, int, int]:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
@@ -128,7 +128,7 @@ class DataBase:
             err = DatabaseError(str(e))
             err.output()
             raise err
-    async def get_orderdata(self, invoice_id: int):
+    async def get_orderdata(self, invoice_id: int) -> Tuple[int, str]:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
@@ -176,7 +176,6 @@ class DataBase:
         try:
             async with self.pool.connection() as conn:
                 async with conn.cursor() as cursor:
-                    conn.commit()
                     await cursor.execute("INSERT INTO messages(user_id, role, content, tokens) VALUES (%s, %s, %s, %s)", (user_id, role, message, tokens))
                     await conn.commit()
         except Exception as e:
