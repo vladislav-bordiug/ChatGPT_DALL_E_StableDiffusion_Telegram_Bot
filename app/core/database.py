@@ -9,5 +9,4 @@ class DataBaseCore:
         await self.pool.wait()
 
     async def close_pool(self):
-        if self.pool:
-            await self.pool.close()
+        await self.pool.close()
