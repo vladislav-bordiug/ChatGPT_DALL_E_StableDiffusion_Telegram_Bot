@@ -96,6 +96,8 @@ All variables:
 
 ```REDIS_URL``` - Redis URL
 
+```WEB_CONCURRENCY``` - amount of uvicorn workers, 2*cpu_count+1 if not passed
+
 ## Database <a name = "database"></a>
 
 This project requires a PostgreSQL database with two tables: users(user_id, username, chatgpt, dall_e, stable_diffusion), orders(invoice_id, user_id, product) and messages(id, user_id, role, content, messages). 
