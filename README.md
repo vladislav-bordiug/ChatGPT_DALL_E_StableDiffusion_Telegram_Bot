@@ -96,7 +96,7 @@ All variables:
 
 ```REDIS_URL``` - Redis URL
 
-```WEB_CONCURRENCY``` - amount of uvicorn workers, 2*cpu_count+1 if not passed
+```WEB_CONCURRENCY``` - amount of gunicorn workers, 2*cpu_count+1 if not passed
 
 ## Database <a name = "database"></a>
 
