@@ -110,7 +110,7 @@ Also this project requires a Redis database for aiogram’s FSMContext.
 
 ## How to deploy <a name = "howtodeploy"></a>
 
-This project can be easily deployed on the [Railway](https://railway.app/) (if all variables are passed here and Postgres and Redis databases are created, BASE_WEBHOOK_URL is a free URL from Railway, DATABASE URL and REDIS_URL can be viewed in variables of created Postgres and Redis).
+This project can be easily deployed on the [Railway](https://railway.app/) (if all variables are passed here and Postgres and Redis databases are created, BASE_WEBHOOK_URL is a free URL from Railway, DATABASE URL and REDIS_URL can be viewed in variables of created Postgres and Redis, use WEB_CONCURRENCY variable to set limit of workers on Railway).
 
 It can be also deployed via [docker-compose.yml](docker-compose.yml) if all variables are passed into the [.env](.env) file.
 ```BASE_WEBHOOK_URL``` in this case can be obtained via ngrok.
