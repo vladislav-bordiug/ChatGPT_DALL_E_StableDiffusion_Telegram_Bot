@@ -1,61 +1,72 @@
+import os
+from dotenv import load_dotenv
+
+from fastapi import FastAPI, APIRouter
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from aiogram.client.bot import DefaultBotProperties
+from aiogram.fsm.storage.redis import RedisStorage
+
 from app.services.db import DataBase
 from app.services.cryptopay import CryptoPay
 from app.services.openaitools import OpenAiTools
 from app.services.stablediffusion import StableDiffusion
-
-from dotenv import load_dotenv
-
-import os
-
-from fastapi import FastAPI, APIRouter
-import uvicorn
-
-from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
-from aiogram.client.bot import DefaultBotProperties
-
+from app.core.database import DataBaseCore
 from app.bot.setup import register_handlers
-
 from app.api.setup import register_routes
 
-from app.core.database import DataBaseCore
+load_dotenv()
 
-def run():
-    load_dotenv()
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+WEBHOOK_URL = os.getenv("BASE_WEBHOOK_URL") + TOKEN
 
-    dp = Dispatcher()
+bot = Bot(
+    token=TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 
-    app = FastAPI()
+storage = RedisStorage.from_url(os.getenv("REDIS_URL"))
 
-    cryptopay = CryptoPay(os.getenv("CRYPTOPAY_KEY"))
+dp = Dispatcher(storage=storage)
 
-    database_core = DataBaseCore(os.getenv("DATABASE_URL"))
+db_core = DataBaseCore(os.getenv("DATABASE_URL"))
+database = DataBase(db_core.pool)
+cryptopay = CryptoPay(os.getenv("CRYPTOPAY_KEY"))
+openai_tools = OpenAiTools(os.getenv("OPENAI_API_KEY"))
+stable = StableDiffusion(os.getenv("STABLE_DIFFUSION_API_KEY"))
 
-    database = DataBase(database_core.pool)
+register_handlers(dp, database, openai_tools, stable, cryptopay)
 
-    openai = OpenAiTools(os.getenv("OPENAI_API_KEY"))
+app = FastAPI()
 
-    stable = StableDiffusion(os.getenv("STABLE_DIFFUSION_API_KEY"))
+router = APIRouter()
 
-    register_handlers(dp, database, openai, stable, cryptopay)
+register_routes(router, database, dp, bot, os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("CRYPTOPAY_KEY"))
 
-    bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+app.include_router(router)
 
-    router = APIRouter()
 
-    register_routes(router, database, dp, bot, os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("CRYPTOPAY_KEY"))
+def on_startup_handler(database_core: DataBaseCore, database: DataBase):
+    async def on_startup() -> None:
+        await database_core.open_pool()
+        await database.create_tables()
+        lockfile = "/tmp/.webhook_registered"
+        try:
+            fd = os.open(lockfile, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            with os.fdopen(fd, "w") as f:
+                f.write(str(os.getpid()))
+            await bot.set_webhook(url=WEBHOOK_URL)
+        except FileExistsError:
+            pass
+    return on_startup
 
-    app.include_router(router)
+app.add_event_handler("startup", on_startup_handler(db_core, database))
 
-    def on_startup_handler(database_core: DataBaseCore, database: DataBase):
-        async def on_startup() -> None:
-            await database_core.open_pool()
-            await database.create_tables()
-            url_webhook = os.getenv("BASE_WEBHOOK_URL") + os.getenv("TELEGRAM_BOT_TOKEN")
-            await bot.set_webhook(url=url_webhook)
 
-        return on_startup
+def on_shutdown_handler():
+    async def on_shutdown() -> None:
+        await bot.delete_webhook()
+        await bot.session.close()
+    return on_shutdown
 
-    app.add_event_handler("startup", on_startup_handler(database_core, database))
-
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+app.add_event_handler("shutdown", on_shutdown_handler())

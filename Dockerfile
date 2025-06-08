@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 WORKDIR ..
 
-CMD ["python", "-c", "from app.application import run; run()"]
+CMD ["gunicorn", "app.application:app", "-c", "app/gunicorn_conf.py"]

@@ -1,53 +1,1 @@
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfilebot
-    ports:
-      - "80:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - .env
-
-  postgres:
-    image: postgres:17
-    container_name: postgres_container_bot
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 12345
-      POSTGRES_DB: postgres_db_bot
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data/pgdata
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    command: >
-      postgres -c max_connections=1000
-               -c shared_buffers=256MB
-               -c effective_cache_size=768MB
-               -c maintenance_work_mem=64MB
-               -c checkpoint_completion_target=0.7
-               -c wal_buffers=16MB
-               -c default_statistics_target=100
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d postgres_db_bot" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-
-volumes:
-  pgdata:
-    driver: local
+services:  redis:    image: redis:7-alpine    container_name: redis_bot    ports:      - "6379:6379"    volumes:      - ./redisdata:/data    restart: unless-stopped    healthcheck:      test: [ "CMD-SHELL", "redis-cli ping" ]      interval: 10s      timeout: 5s      retries: 3  app:    build:      context: .      dockerfile: Dockerfile    ports:      - "80:80"    depends_on:      redis:        condition: service_healthy      postgres:        condition: service_healthy    env_file:      - .env  postgres:    image: postgres:17    container_name: postgres_container_bot    environment:      POSTGRES_USER: admin      POSTGRES_PASSWORD: 12345      POSTGRES_DB: postgres_db_bot      PGDATA: /var/lib/postgresql/data/pgdata    ports:      - "5432:5432"    volumes:      - ./pgdata:/var/lib/postgresql/data/pgdata    deploy:      resources:        limits:          cpus: '0.50'          memory: 512M        reservations:          cpus: '0.25'          memory: 256M    command: >      postgres -c max_connections=1000               -c shared_buffers=256MB               -c effective_cache_size=768MB               -c maintenance_work_mem=64MB               -c checkpoint_completion_target=0.7               -c wal_buffers=16MB               -c default_statistics_target=100    healthcheck:      test: [ "CMD-SHELL", "pg_isready -U admin -d postgres_db_bot" ]      interval: 30s      timeout: 10s      retries: 5    restart: unless-stopped    tty: true    stdin_open: truevolumes:  pgdata:    driver: local
